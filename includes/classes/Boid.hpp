@@ -17,6 +17,7 @@ class Boid {
         Boid(Vector2 pos);
         ~Boid();
         void draw();
+        void align(Boid *flock);
         void update();
         void mirror();
 };

@@ -26,6 +26,40 @@ void Boid::draw() {
     DrawCircle(this->pos.x, this->pos.y, this->radius, this->color);
 }
 
+void Boid::align(Boid *flock) {
+    const float perception = 50;
+    Vector2 steer = Vector2Zero();
+    int count;
+
+    count = 0;
+    for (size_t i = 0; i < NB_BOIDS; i++)
+    {
+        if (this->pos.x == flock[i].pos.x && this->pos.y == flock[i].pos.y)
+            continue;
+        const float distance = sqrt(pow(this->pos.x - flock[i].pos.x, 2) + pow(this->pos.y - flock[i].pos.y, 2));
+        if (distance >= perception)
+            continue ;
+        steer.x += flock[i].vel.x;
+        steer.y += flock[i].vel.y;
+        count++;
+    }
+    steer.x /= count;
+    steer.y /= count;
+
+    this->acc.x += (steer.x - this->vel.x) * STEERING;
+    this->acc.y += (steer.y - this->vel.y) * STEERING;
+}
+
+void Boid::update() {
+    this->pos.x += (this->vel.x * GetFrameTime() * 15);
+    this->pos.y += (this->vel.y * GetFrameTime() * 15);
+    this->vel.x += this->acc.x;
+    this->vel.y += this->acc.y;
+    this->acc.x = 0;
+    this->acc.y = 0;
+    this->mirror();
+}
+
 void Boid::mirror() {
     if (this->pos.x > WIDTH) {
         this->pos.x = 0;
@@ -39,14 +73,4 @@ void Boid::mirror() {
     if (this->pos.y < 0) {
         this->pos.y = HEIGHT;
     }
-}
-
-void Boid::update() {
-    this->pos.x += (this->vel.x * GetFrameTime() * 10);
-    this->pos.y += (this->vel.y * GetFrameTime() * 10);
-    this->vel.x += this->acc.x;
-    this->vel.y += this->acc.y;
-    this->acc.x = 0;
-    this->acc.y = 0;
-    this->mirror();
 }
