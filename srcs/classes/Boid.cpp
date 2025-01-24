@@ -35,8 +35,6 @@ void Boid::align(Boid *flock) {
     count = 0;
     for (size_t i = 0; i < NB_BOIDS; i++)
     {
-        if (this->pos.x == flock[i].pos.x && this->pos.y == flock[i].pos.y)
-            continue ;
         distance = sqrt(pow(this->pos.x - flock[i].pos.x, 2) + pow(this->pos.y - flock[i].pos.y, 2));
         if (distance >= perception)
             continue ;
