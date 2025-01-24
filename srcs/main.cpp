@@ -1,15 +1,11 @@
 #include "../includes/game.hpp"
 
-void constrainVector2(Vector2 *v, float min, float max)
+void flock_align(Boid *flock)
 {
-	if (v->x < min)
-		v->x = min;
-	if (v->y < min)
-		v->y = min;
-	if (v->x > max)
-		v->x = max;
-	if (v->y > max)
-		v->y = max;
+	for (int i = 0; i < NB_BOIDS; i++)
+	{
+		flock[i].align(flock);
+	}
 }
 
 void flock_update(Boid *flock)
@@ -42,6 +38,7 @@ void update_engine(Boid *flock)
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 		DrawFPS(10, 10);
+		flock_align(flock);
 		flock_update(flock);
 		flock_draw(flock);
 		//rlImGuiBegin();
