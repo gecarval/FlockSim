@@ -28,6 +28,7 @@ void Boid::draw() {
 
 void Boid::align(Boid *flock) {
     const float perception = 50;
+    float distance;
     Vector2 steer = Vector2Zero();
     int count;
 
@@ -35,8 +36,8 @@ void Boid::align(Boid *flock) {
     for (size_t i = 0; i < NB_BOIDS; i++)
     {
         if (this->pos.x == flock[i].pos.x && this->pos.y == flock[i].pos.y)
-            continue;
-        const float distance = sqrt(pow(this->pos.x - flock[i].pos.x, 2) + pow(this->pos.y - flock[i].pos.y, 2));
+            continue ;
+        distance = sqrt(pow(this->pos.x - flock[i].pos.x, 2) + pow(this->pos.y - flock[i].pos.y, 2));
         if (distance >= perception)
             continue ;
         steer.x += flock[i].vel.x;
