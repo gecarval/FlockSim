@@ -1,7 +1,16 @@
 #ifndef BOID_HPP
 # define BOID_HPP
 
-# include "../game.hpp"
+// MACROS
+# define WIDTH 1600
+# define HEIGHT 900
+# define NB_BOIDS 100
+# define BOID_SIZE 3
+# define STEERING 0.03
+
+// INCLUDES
+# include "raylib.h"
+# include "raymath.h"
 
 // CLASS DEFINITIONS
 class Boid {
