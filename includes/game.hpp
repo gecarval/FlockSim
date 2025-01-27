@@ -1,21 +1,15 @@
 #ifndef GAME_HPP
 # define GAME_HPP
 
-# include "raylib.h"
-# include "raymath.h"
-
+// INCLUDES
 # include <iostream>
 # include <cmath>
 
 # include "imgui.h"
 # include "rlImGui.h"
-# include "./classes/Boid.hpp"
 
-// MACROS
-# define WIDTH 1600
-# define HEIGHT 900
-# define NB_BOIDS 100
-# define STEERING 0.01
+# include "./classes/Boid.hpp"
+# include "./classes/Flock.hpp"
 
 // DATA STRUCTURES
 // MAIN GAME ENGINE DATA STRUCTURE

@@ -387,6 +387,18 @@ RMAPI Vector2 Vector2Divide(Vector2 v1, Vector2 v2)
     return result;
 }
 
+// Limit vector values to a max value
+RMAPI Vector2 Vector2Limit(Vector2 v, float max)
+{
+    Vector2 result = v;
+
+    if (v.x > max)
+        result.x = max;
+    if (v.y > max)
+        result.y = max;
+    return result;
+}
+
 // Normalize provided vector
 RMAPI Vector2 Vector2Normalize(Vector2 v)
 {
