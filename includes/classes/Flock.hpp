@@ -5,11 +5,10 @@
 # include "./Boid.hpp"
 
 // CLASS DEFINITIONS
-class Flock {
-    private:
-        Boid boids[NB_BOIDS];
-
+class Flock
+{
     public:
+        Boid boids[NB_BOIDS];
         Flock();
         ~Flock();
         void align();
