@@ -10,6 +10,7 @@
 // INCLUDES
 # include "raylib.h"
 # include "raymath.h"
+# include <iostream>
 
 // DATA STRUCTURES
 typedef struct s_check_box
@@ -19,6 +20,17 @@ typedef struct s_check_box
 	bool	draw_velocity;
 }				t_check_box;
 
+typedef struct s_boid
+{
+  Vector2		pos;
+  Color		color;
+  t_check_box	check;
+  float		perception;
+  float		max_steer;
+  float		max_speed;
+  float		min_speed;
+}				t_boid;
+
 // CLASS DEFINITIONS
 class Boid
 {
@@ -27,20 +39,15 @@ class Boid
         float	radius;
 
     protected:
-        Vector2	vel;
         Vector2	acc;
         float	rotation;
         int		sides;
 
     public:
-        Vector2		pos;
-        Color	    color;
-        t_check_box	check;
-        float		perception;
-        float		max_speed;
-        float		min_speed;
+        Vector2 vel;
+        t_boid  properties;
         Boid();
-        Boid(Vector2 pos, float perception, float min_speed, float max_speed, Color col);
+        Boid(t_boid properties);
         ~Boid();
         void	draw();
         void	align(Boid *flock);
