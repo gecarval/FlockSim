@@ -8,13 +8,17 @@
 class Flock
 {
     public:
+		t_globaloptions options;
         Boid boids[NB_BOIDS];
-        Flock();
-        ~Flock();
-        void align();
-        void update();
-        void draw();
-        void mirror();
+        Flock(void);
+        ~Flock(void);
+		void average(void);
+		void separate(void);
+        void align(void);
+		void cohese(void);
+        void update(void);
+        void mirror(void);
+        void draw(t_globaloptions options);
 };
 
 #endif

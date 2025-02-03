@@ -20,54 +20,85 @@ void  set_random_values(Flock *flok)
 
 void	set_values(Flock *flok, t_boid properties, t_check_box check)
 {
-  t_boid save;
+	t_boid save;
 
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-    save = flok->boids[i].properties;
+		save = flok->boids[i].properties;
 		flok->boids[i].properties = properties;
-    flok->boids[i].properties.pos = save.pos;
-    flok->boids[i].properties.check = check;
+		flok->boids[i].properties.pos = save.pos;
+		flok->boids[i].properties.check = check;
 	}
 }
 
 void	render_imgui(Flock *flok)
 {
-  t_boid properties = flok->boids[0].properties;
-  t_check_box check = flok->boids[0].properties.check;
+	t_boid properties = flok->boids[0].properties;
+	t_check_box check = flok->boids[0].properties.check;
 
 	rlImGuiBegin();
 	ImGui::Begin("Flock Settings");
 	ImGui::Text("Flock Settings");
 	ImGui::SliderFloat("Perception", &properties.perception, 0, 100);
 	ImGui::SliderFloat("Max Speed", &properties.max_speed, 0, 10);
-  ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
-  ImGui::InputFloat("Max Steer", &properties.max_steer);
-  ImGui::Separator();
+	ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
+	ImGui::SliderFloat("Max Alignment", &properties.max_steer, 0, 0.1);
+	ImGui::SliderFloat("Max Cohesion", &properties.max_cohesion, 0, 0.1);
+	ImGui::SliderFloat("Max Separation", &properties.max_separation, 0, 1);
+	ImGui::Separator();
 	ImGui::Text("Display Options");
-  ImGui::Checkbox("Draw Boids", &check.draw);
-  ImGui::Checkbox("Draw Perception", &check.draw_perception);
-  ImGui::Checkbox("Draw Velocity", &check.draw_velocity);
-  ImGui::Separator();
-  ImGui::Text("Other Options");
-  if (ImGui::Button("Randomize") == true)
-    set_random_values(flok);
+	ImGui::Checkbox("Draw Boids", &check.draw);
+	ImGui::Checkbox("Draw Perception", &check.draw_perception);
+	ImGui::Checkbox("Draw Velocity", &check.draw_velocity);
+	ImGui::Separator();
+	ImGui::Text("Other Options");
+	ImGui::Checkbox("Show FPS", &flok->options.show_fps);
+	ImGui::Checkbox("Mirror", &flok->options.mirror);
+	ImGui::Checkbox("Align", &flok->options.align);
+	ImGui::Checkbox("Cohese", &flok->options.cohese);
+	ImGui::Checkbox("Separate", &flok->options.separate);
+	if (ImGui::Button("Randomize") == true)
+		set_random_values(flok);
 	set_values(flok, properties, check);
 	ImGui::End();
 	rlImGuiEnd();
+}
+
+void	engine_input(Flock *flok)
+{
+	if (IsKeyPressed(KEY_F1))
+		flok->options.show_fps = !flok->options.show_fps;
+	if (IsKeyPressed(KEY_F2))
+		flok->options.mirror = !flok->options.mirror;
+	if (IsKeyPressed(KEY_F3))
+		flok->options.align = !flok->options.align;
+	if (IsKeyPressed(KEY_F4))
+		flok->options.cohese = !flok->options.cohese;
+	if (IsKeyPressed(KEY_F5))
+		flok->options.separate = !flok->options.separate;
 }
 
 void	update_engine(Flock *flok)
 {
 	while (!WindowShouldClose())
 	{
+		engine_input(flok);
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		DrawFPS(10, 10);
-		flok->mirror();
-		flok->align();
+		if (flok->options.show_fps == true)
+			DrawFPS(10, 10);
+		if (flok->options.mirror == true)
+			flok->mirror();
+		if (flok->options.separate == true || flok->options.align == true || flok->options.cohese == true)
+			flok->average();
+		if (flok->options.separate == true)
+			flok->separate();
+		if (flok->options.align == true)
+			flok->align();
+		if (flok->options.cohese == true)
+			flok->cohese();
 		flok->update();
-		flok->draw();
+		flok->draw(flok->options);
 		render_imgui(flok);
 		EndDrawing();
 	}
