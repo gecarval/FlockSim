@@ -394,8 +394,28 @@ RMAPI Vector2 Vector2Limit(Vector2 v, float max)
 
     if (v.x > max)
         result.x = max;
+	else if (v.x < -max)
+		result.x = -max;
     if (v.y > max)
         result.y = max;
+	else if (v.y < -max)
+		result.y = -max;
+    return result;
+}
+
+// Limit vector values to a min value
+RMAPI Vector2 Vector2Min(Vector2 v, float min)
+{
+    Vector2 result = v;
+
+    if (v.x < min && v.x > 0)
+        result.x = min;
+	else if (v.x > -min && v.x < 0)
+		result.x = -min;
+    if (v.y < min && v.y > 0)
+        result.y = min;
+	else if (v.y > -min && v.y < 0)
+		result.y = -min;
     return result;
 }
 

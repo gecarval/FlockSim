@@ -12,7 +12,17 @@
 # include "raymath.h"
 # include <iostream>
 
-// DATA STRUCTURES
+// STRUCTURES
+typedef struct s_globaloptions
+{
+	bool	show_fps;
+	bool	mirror;
+	bool	separate;
+	bool	align;
+	bool	cohese;
+}				t_globaloptions;
+
+
 typedef struct s_check_box
 {
 	bool	draw;
@@ -20,15 +30,24 @@ typedef struct s_check_box
 	bool	draw_velocity;
 }				t_check_box;
 
+typedef struct s_average
+{
+  Vector2		vel;
+  Vector2		pos;
+  Vector2		sep;
+}				t_average;
+
 typedef struct s_boid
 {
   Vector2		pos;
   Color		color;
   t_check_box	check;
   float		perception;
-  float		max_steer;
-  float		max_speed;
   float		min_speed;
+  float		max_speed;
+  float		max_steer;
+  float		max_cohesion;
+  float		max_separation;
 }				t_boid;
 
 // CLASS DEFINITIONS
@@ -46,13 +65,17 @@ class Boid
     public:
         Vector2 vel;
         t_boid  properties;
-        Boid();
+		t_average average;
         Boid(t_boid properties);
-        ~Boid();
-        void	draw();
-        void	align(Boid *flock);
-        void	update();
-        void	mirror();
+        Boid(void);
+        ~Boid(void);
+        void	getaverage(Boid *flock);
+		void	separate(void);
+        void	align(void);
+		void	cohese(void);
+        void	update(void);
+        void	mirror(void);
+        void	draw(t_globaloptions options);
 };
 
 #endif
