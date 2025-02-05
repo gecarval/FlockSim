@@ -11,7 +11,7 @@ Boid::Boid(void)
 	this->properties.max_speed = 5;
 	this->properties.perception = 50;
 	this->properties.max_steer = 0.03;
-	this->properties.max_cohesion = 0.005;
+	this->properties.max_cohesion = 0.035;
 	this->properties.max_separation = 0.05;
 	this->properties.check = {true, true, true};
 	this->frame_time_counter = 0;
@@ -50,20 +50,20 @@ void Boid::draw(t_globaloptions options)
 		frame_time_counter -= 0.1;
 		this->rotation = atan2(this->vel.y, this->vel.x) * RAD2DEG;
 	}
-  if (this->properties.check.draw == true)
-    DrawPoly(this->properties.pos, this->sides, this->radius, this->rotation, this->properties.color);
-  if (this->properties.check.draw_perception == true)
-    DrawCircleLines(this->properties.pos.x, this->properties.pos.y, this->properties.perception, GREEN);
-  if (this->properties.check.draw_velocity == true)
-  {
-	  DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->vel.x * 30, this->properties.pos.y + this->vel.y * 30, RED);
-	  if (options.align == true)
-		  DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->average.vel.x * 3000, this->properties.pos.y + this->average.vel.y * 3000, BLUE);
-	  if (options.cohese == true)
-		  DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->average.pos.x * 3000, this->properties.pos.y + this->average.pos.y * 3000, YELLOW);
-	  if (options.separate == true)
-		  DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->average.sep.x * 3000, this->properties.pos.y + this->average.sep.y * 3000, PURPLE);
-  }
+	if (this->properties.check.draw == true)
+		DrawPoly(this->properties.pos, this->sides, this->radius, this->rotation, this->properties.color);
+	if (this->properties.check.draw_perception == true)
+		DrawCircleLines(this->properties.pos.x, this->properties.pos.y, this->properties.perception, GREEN);
+	if (this->properties.check.draw_velocity == true)
+	{
+		DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->vel.x * 30, this->properties.pos.y + this->vel.y * 30, RED);
+		if (options.align == true)
+			DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->average.vel.x * 3000, this->properties.pos.y + this->average.vel.y * 3000, BLUE);
+		if (options.cohese == true)
+			DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->average.pos.x * 3000, this->properties.pos.y + this->average.pos.y * 3000, YELLOW);
+		if (options.separate == true)
+			DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->average.sep.x * 3000, this->properties.pos.y + this->average.sep.y * 3000, PURPLE);
+	}
 }
 
 void Boid::getaverage(Boid *flock)
@@ -110,13 +110,42 @@ void Boid::separate(void)
 
 void Boid::align(void)
 {
+	float myangle = 0;
+	float avarageangle = 0;
+	float inter = 0;
+	float angle = 0;
+
 	if (this->average.vel.x == 0 && this->average.vel.y == 0)
 		return ;
-	this->average.vel = Vector2Subtract(this->average.vel, this->vel);
-	this->average.vel = Vector2Normalize(this->average.vel);
+	myangle = atan2(this->vel.y, this->vel.x);
+	avarageangle = atan2(this->average.vel.y, this->average.vel.x);
+	if (myangle < 0)
+		myangle += 2 * PI;
+	if (avarageangle < 0)
+		avarageangle += 2 * PI;
+	if (avarageangle < myangle)
+		inter = myangle - avarageangle;
+	else
+		inter = avarageangle - myangle;
+	if (inter >= PI)
+		angle = (inter - PI) * -1;
+	else
+		angle = inter;
+	std::cout << "my angle    : " << myangle * RAD2DEG << std::endl;
+	std::cout << "other angle : " << avarageangle * RAD2DEG << std::endl;
+	std::cout << "target angle: " << angle * RAD2DEG << std::endl;
+	std::cout << "vel         : " << this->vel.x << " " << this->vel.y << std::endl;
+	std::cout << "average.vel : " << this->average.vel.x << " " << this->average.vel.y << std::endl;
+	this->average.vel = Vector2Rotate(this->vel, angle);
 	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_steer);
 	this->acc = Vector2Add(this->acc, this->average.vel);
-//	this->acc = Vector2MoveTowards(this->vel, this->average.vel, this->properties.perception);
+	this->average.vel = Vector2Rotate(this->vel, angle);
+	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_steer);
+	this->acc = Vector2Add(this->acc, this->average.vel);
+/*	this->average.vel = Vector2Subtract(this->average.vel, this->vel);
+	this->average.vel = Vector2Normalize(this->average.vel);
+	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_steer);
+	this->acc = Vector2Add(this->acc, this->average.vel);*/
 }
 
 void Boid::cohese(void)

@@ -261,8 +261,8 @@ BgFgDrawLists	includes/imgui_internal.h	/^    ImDrawList*         BgFgDrawLists[
 BgFgDrawListsLastFrame	includes/imgui_internal.h	/^    int                 BgFgDrawListsLastFrame[2]; \/\/ Last frame number the background (0) and/;"	m	struct:ImGuiViewportP	typeref:typename:int[2]
 BlendMode	includes/raylib.h	/^} BlendMode;$/;"	t	typeref:enum:__anonce11f6a41203
 Boid	includes/classes/Boid.hpp	/^class Boid$/;"	c
-Boid	srcs/classes/Boid.cpp	/^Boid::Boid()$/;"	f	class:Boid
 Boid	srcs/classes/Boid.cpp	/^Boid::Boid(t_boid properties)$/;"	f	class:Boid
+Boid	srcs/classes/Boid.cpp	/^Boid::Boid(void)$/;"	f	class:Boid
 BoneInfo	includes/raylib.h	/^typedef struct BoneInfo {$/;"	s
 BoneInfo	includes/raylib.h	/^} BoneInfo;$/;"	t	typeref:struct:BoneInfo
 BorderColorLight	includes/imgui_internal.h	/^    ImU32                       BorderColorLight;$/;"	m	struct:ImGuiTable	typeref:typename:ImU32
@@ -477,6 +477,7 @@ Codepoint	includes/imgui.h	/^    unsigned int    Codepoint : 30;     \/\/ 0x0000
 Col	imgui.cpp	/^    struct KeyLayoutData { int Row, Col; const char* Label; ImGuiKey Key; };$/;"	m	struct:ImGui::DebugRenderKeyboardPreview::KeyLayoutData	typeref:typename:int	file:
 Col	includes/imgui_internal.h	/^    ImGuiCol        Col;$/;"	m	struct:ImGuiColorMod	typeref:typename:ImGuiCol
 CollapseButton	imgui_widgets.cpp	/^bool ImGui::CollapseButton(ImGuiID id, const ImVec2& pos)$/;"	f	class:ImGui	typeref:typename:bool
+Collapsed	imgui.ini	/^Collapsed=1$/;"	k	section:Window
 Collapsed	includes/imgui_internal.h	/^    bool                    Collapsed;                          \/\/ Set when collapsing window /;"	m	struct:ImGuiWindow	typeref:typename:bool
 Collapsed	includes/imgui_internal.h	/^    bool        Collapsed;$/;"	m	struct:ImGuiWindowSettings	typeref:typename:bool
 CollapsedCond	includes/imgui_internal.h	/^    ImGuiCond                   CollapsedCond;$/;"	m	struct:ImGuiNextWindowData	typeref:typename:ImGuiCond
@@ -5563,7 +5564,7 @@ PopupId	includes/imgui_internal.h	/^    ImGuiID             PopupId;        \/\/
 PopupRounding	includes/imgui.h	/^    float       PopupRounding;              \/\/ Radius of popup window corners rounding. (Note /;"	m	struct:ImGuiStyle	typeref:typename:float
 Pos	imgui.ini	/^Pos=119,69$/;"	k	section:Window
 Pos	imgui.ini	/^Pos=12,78$/;"	k	section:Window
-Pos	imgui.ini	/^Pos=1214,4$/;"	k	section:Window
+Pos	imgui.ini	/^Pos=1253,23$/;"	k	section:Window
 Pos	imgui.ini	/^Pos=17,277$/;"	k	section:Window
 Pos	imgui.ini	/^Pos=197,227$/;"	k	section:Window
 Pos	imgui.ini	/^Pos=244,76$/;"	k	section:Window
@@ -6557,7 +6558,7 @@ Size	imgui.ini	/^Size=150,386$/;"	k	section:Window
 Size	imgui.ini	/^Size=200,100$/;"	k	section:Window
 Size	imgui.ini	/^Size=240,48$/;"	k	section:Window
 Size	imgui.ini	/^Size=247,48$/;"	k	section:Window
-Size	imgui.ini	/^Size=331,376$/;"	k	section:Window
+Size	imgui.ini	/^Size=331,521$/;"	k	section:Window
 Size	imgui.ini	/^Size=400,400$/;"	k	section:Window
 Size	imgui.ini	/^Size=451,61$/;"	k	section:Window
 Size	imgui.ini	/^Size=500,400$/;"	k	section:Window
@@ -7057,6 +7058,7 @@ Vector2Lerp	includes/raymath.h	/^RMAPI Vector2 Vector2Lerp(Vector2 v1, Vector2 v
 Vector2Limit	includes/raymath.h	/^RMAPI Vector2 Vector2Limit(Vector2 v, float max)$/;"	f	typeref:typename:RMAPI Vector2
 Vector2LineAngle	includes/raymath.h	/^RMAPI float Vector2LineAngle(Vector2 start, Vector2 end)$/;"	f	typeref:typename:RMAPI float
 Vector2Max	includes/raymath.h	/^RMAPI Vector2 Vector2Max(Vector2 v1, Vector2 v2)$/;"	f	typeref:typename:RMAPI Vector2
+Vector2Min	includes/raymath.h	/^RMAPI Vector2 Vector2Min(Vector2 v, float min)$/;"	f	typeref:typename:RMAPI Vector2
 Vector2Min	includes/raymath.h	/^RMAPI Vector2 Vector2Min(Vector2 v1, Vector2 v2)$/;"	f	typeref:typename:RMAPI Vector2
 Vector2MoveTowards	includes/raymath.h	/^RMAPI Vector2 Vector2MoveTowards(Vector2 v, Vector2 target, float maxDistance)$/;"	f	typeref:typename:RMAPI Vector2
 Vector2Multiply	includes/raymath.h	/^RMAPI Vector2 Vector2Multiply(Vector2 v1, Vector2 v2)$/;"	f	typeref:typename:RMAPI Vector2
@@ -7434,9 +7436,10 @@ activeTextureId	includes/rlgl.h	/^        unsigned int activeTextureId[RL_DEFAUL
 active_head	includes/imstb_rectpack.h	/^   stbrp_node *active_head;$/;"	m	struct:stbrp_context	typeref:typename:stbrp_node *
 advance	includes/imstb_truetype.h	/^   int advance;$/;"	m	struct:stbtt_kerningentry	typeref:typename:int
 advanceX	includes/raylib.h	/^    int advanceX;           \/\/ Character advance position X$/;"	m	struct:GlyphInfo	typeref:typename:int
+align	includes/classes/Boid.hpp	/^	bool	align;$/;"	m	struct:s_globaloptions	typeref:typename:bool
 align	includes/imstb_rectpack.h	/^   int align;$/;"	m	struct:stbrp_context	typeref:typename:int
-align	srcs/classes/Boid.cpp	/^void Boid::align(Boid *flock)$/;"	f	class:Boid	typeref:typename:void
-align	srcs/classes/Flock.cpp	/^void Flock::align()$/;"	f	class:Flock	typeref:typename:void
+align	srcs/classes/Boid.cpp	/^void Boid::align(void)$/;"	f	class:Boid	typeref:typename:void
+align	srcs/classes/Flock.cpp	/^void Flock::align(void)$/;"	f	class:Flock	typeref:typename:void
 all	Makefile	/^all: $(NAME)$/;"	t
 alloc_chunk	includes/imgui_internal.h	/^    T*      alloc_chunk(size_t sz)      { size_t HDR_SZ = 4; sz = IM_MEMALIGN(HDR_SZ + sz, 4u); /;"	f	struct:ImChunkStream	typeref:typename:T *
 animNormals	includes/raylib.h	/^    float *animNormals;     \/\/ Animated normals (after bones transformations)$/;"	m	struct:Mesh	typeref:typename:float *
@@ -7446,6 +7449,8 @@ append	imgui.cpp	/^void ImGuiTextIndex::append(const char* base, int old_size, i
 appendf	imgui.cpp	/^void ImGuiTextBuffer::appendf(const char* fmt, ...)$/;"	f	class:ImGuiTextBuffer	typeref:typename:void
 appendfv	imgui.cpp	/^void ImGuiTextBuffer::appendfv(const char* fmt, va_list args)$/;"	f	class:ImGuiTextBuffer	typeref:typename:void
 array_of_unicode_codepoints	includes/imstb_truetype.h	/^   int *array_of_unicode_codepoints;       \/\/ if non-zero, then this is an array of unicode co/;"	m	struct:__anon0587e8010508	typeref:typename:int *
+average	includes/classes/Boid.hpp	/^		t_average average;$/;"	m	class:Boid	typeref:typename:t_average
+average	srcs/classes/Flock.cpp	/^void Flock::average(void)$/;"	f	class:Flock	typeref:typename:void
 b	includes/imgui.h	/^        const char*     b;$/;"	m	struct:ImGuiTextFilter::ImGuiTextRange	typeref:typename:const char *
 b	includes/raylib.h	/^    unsigned char b;        \/\/ Color blue value$/;"	m	struct:Color	typeref:typename:unsigned char
 back	includes/imgui.h	/^    inline T&           back()                              { IM_ASSERT(Size > 0); return Data[S/;"	f	struct:ImVector	typeref:typename:T &
@@ -7484,7 +7489,7 @@ channels	includes/raylib.h	/^    unsigned int channels;      \/\/ Number of chan
 char_storage	includes/imstb_textedit.h	/^   int                        char_storage;$/;"	m	struct:__anon3e283e0a0108	typeref:typename:int
 chardata_for_range	includes/imstb_truetype.h	/^   stbtt_packedchar *chardata_for_range; \/\/ output$/;"	m	struct:__anon0587e8010508	typeref:typename:stbtt_packedchar *
 charstrings	includes/imstb_truetype.h	/^   stbtt__buf charstrings;            \/\/ the charstring index$/;"	m	struct:stbtt_fontinfo	typeref:typename:stbtt__buf
-check	includes/classes/Boid.hpp	/^  t_check_box	check;$/;"	m	struct:s_boid	typeref:typename:t_check_box
+check	includes/classes/Boid.hpp	/^    t_check_box	check;$/;"	m	struct:s_boid	typeref:typename:t_check_box
 chromaAbCorrection	includes/raylib.h	/^    float chromaAbCorrection[4];    \/\/ Chromatic aberration correction parameters$/;"	m	struct:VrDeviceInfo	typeref:typename:float[4]
 chunk_size	includes/imgui_internal.h	/^    int     chunk_size(const T* p)      { return ((const int*)p)[-1]; }$/;"	f	struct:ImChunkStream	typeref:typename:int
 clean	Makefile	/^clean:$/;"	t
@@ -7494,8 +7499,11 @@ clear	includes/imgui_internal.h	/^    void            clear()                   
 clear	includes/imgui_internal.h	/^    void    clear()                     { Buf.clear(); }$/;"	f	struct:ImChunkStream	typeref:typename:void
 clear_delete	includes/imgui.h	/^    inline void         clear_delete()                      { for (int n = 0; n < Size; n++) IM_/;"	f	struct:ImVector	typeref:typename:void
 clear_destruct	includes/imgui.h	/^    inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Dat/;"	f	struct:ImVector	typeref:typename:void
+cohese	includes/classes/Boid.hpp	/^	bool	cohese;$/;"	m	struct:s_globaloptions	typeref:typename:bool
+cohese	srcs/classes/Boid.cpp	/^void Boid::cohese(void)$/;"	f	class:Boid	typeref:typename:void
+cohese	srcs/classes/Flock.cpp	/^void Flock::cohese(void)$/;"	f	class:Flock	typeref:typename:void
 col	includes/imgui.h	/^    ImU32   col;$/;"	m	struct:ImDrawVert	typeref:typename:ImU32
-color	includes/classes/Boid.hpp	/^  Color		color;$/;"	m	struct:s_boid	typeref:typename:Color
+color	includes/classes/Boid.hpp	/^    Color		color;$/;"	m	struct:s_boid	typeref:typename:Color
 color	includes/raylib.h	/^    Color color;            \/\/ Material map color$/;"	m	struct:MaterialMap	typeref:typename:Color
 colora	includes/rlgl.h	/^        unsigned char colorr, colorg, colorb, colora;   \/\/ Current active color (added on glVe/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:unsigned char
 colorb	includes/rlgl.h	/^        unsigned char colorr, colorg, colorb, colora;   \/\/ Current active color (added on glVe/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:unsigned char
@@ -7542,15 +7550,15 @@ defaultTextureId	includes/rlgl.h	/^        unsigned int defaultTextureId;      \
 defaultVShaderId	includes/rlgl.h	/^        unsigned int defaultVShaderId;      \/\/ Default vertex shader id (used by default shade/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:unsigned int
 defines	.vscode/c_cpp_properties.json	/^            "defines": [],$/;"	a	object:configurations.0
 delete_length	includes/imstb_textedit.h	/^   IMSTB_TEXTEDIT_POSITIONTYPE  delete_length;$/;"	m	struct:__anon3e283e0a0108	typeref:typename:IMSTB_TEXTEDIT_POSITIONTYPE
-delta_time	includes/game.hpp	/^  double_t      delta_time;$/;"	m	struct:s_game	typeref:typename:double_t
+delta_time	includes/game.hpp	/^	double_t      delta_time;$/;"	m	struct:s_game	typeref:typename:double_t
 depth	includes/raylib.h	/^    Texture depth;          \/\/ Depth buffer attachment texture$/;"	m	struct:RenderTexture	typeref:typename:Texture
 direction	includes/imstb_truetype.h	/^   float direction;$/;"	m	struct:stbtt__active_edge	typeref:typename:float
 direction	includes/imstb_truetype.h	/^   int direction;$/;"	m	struct:stbtt__active_edge	typeref:typename:int
 direction	includes/raylib.h	/^    Vector3 direction;      \/\/ Ray direction (normalized)$/;"	m	struct:Ray	typeref:typename:Vector3
 distance	includes/raylib.h	/^    float distance;         \/\/ Distance to the nearest hit$/;"	m	struct:RayCollision	typeref:typename:float
 draw	includes/classes/Boid.hpp	/^	bool	draw;$/;"	m	struct:s_check_box	typeref:typename:bool
-draw	srcs/classes/Boid.cpp	/^void Boid::draw()$/;"	f	class:Boid	typeref:typename:void
-draw	srcs/classes/Flock.cpp	/^void Flock::draw()$/;"	f	class:Flock	typeref:typename:void
+draw	srcs/classes/Boid.cpp	/^void Boid::draw(t_globaloptions options)$/;"	f	class:Boid	typeref:typename:void
+draw	srcs/classes/Flock.cpp	/^void Flock::draw(t_globaloptions options)$/;"	f	class:Flock	typeref:typename:void
 drawCounter	includes/rlgl.h	/^    int drawCounter;            \/\/ Draw calls counter$/;"	m	struct:rlRenderBatch	typeref:typename:int
 draw_perception	includes/classes/Boid.hpp	/^	bool	draw_perception;$/;"	m	struct:s_check_box	typeref:typename:bool
 draw_velocity	includes/classes/Boid.hpp	/^	bool	draw_velocity;$/;"	m	struct:s_check_box	typeref:typename:bool
@@ -7569,6 +7577,7 @@ end	includes/imgui_internal.h	/^    T*      end()                       { return
 end	includes/imgui_internal.h	/^    inline T*           end()                       { return DataEnd; }$/;"	f	struct:ImSpan	typeref:typename:T *
 end	includes/imgui_internal.h	/^    inline const T*     end() const                 { return DataEnd; }$/;"	f	struct:ImSpan	typeref:typename:const T *
 end_engine	srcs/main.cpp	/^void	end_engine(void)$/;"	f	typeref:typename:void
+engine_input	srcs/main.cpp	/^void	engine_input(Flock *flok)$/;"	f	typeref:typename:void
 equal	includes/imstb_truetype.h	/^static int equal(float *a, float *b)$/;"	f	typeref:typename:int
 erase	includes/imgui.h	/^    inline T*           erase(const T* it)                  { IM_ASSERT(it >= Data && it < Data /;"	f	struct:ImVector	typeref:typename:T *
 erase	includes/imgui.h	/^    inline T*           erase(const T* it, const T* it_last){ IM_ASSERT(it >= Data && it < Data /;"	f	struct:ImVector	typeref:typename:T *
@@ -7623,6 +7632,7 @@ fx	includes/imstb_truetype.h	/^   float fx,fdx,fdy;$/;"	m	struct:stbtt__active_e
 g	includes/raylib.h	/^    unsigned char g;        \/\/ Color green value$/;"	m	struct:Color	typeref:typename:unsigned char
 get_line_begin	includes/imgui_internal.h	/^    const char*     get_line_begin(const char* base, int n) { return base + LineOffsets[n]; }$/;"	f	struct:ImGuiTextIndex	typeref:typename:const char *
 get_line_end	includes/imgui_internal.h	/^    const char*     get_line_end(const char* base, int n)   { return base + (n + 1 < LineOffsets/;"	f	struct:ImGuiTextIndex	typeref:typename:const char *
+getaverage	srcs/classes/Boid.cpp	/^void Boid::getaverage(Boid *flock)$/;"	f	class:Boid	typeref:typename:void
 glBindVertexArray	includes/rlgl.h	/^static PFNGLBINDVERTEXARRAYOESPROC glBindVertexArray = NULL;$/;"	v	typeref:typename:PFNGLBINDVERTEXARRAYOESPROC
 glBlendDestFactorAlpha	includes/rlgl.h	/^        int glBlendDestFactorAlpha;         \/\/ Blending destination alpha factor$/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:int
 glBlendDestFactorRGB	includes/rlgl.h	/^        int glBlendDestFactorRGB;           \/\/ Blending destination RGB factor$/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:int
@@ -7766,22 +7776,25 @@ materials	includes/raylib.h	/^    Material *materials;    \/\/ Materials array$/
 max	includes/raylib.h	/^    Vector3 max;            \/\/ Maximum vertex box-corner$/;"	m	struct:BoundingBox	typeref:typename:Vector3
 maxAnisotropyLevel	includes/rlgl.h	/^        float maxAnisotropyLevel;           \/\/ Maximum anisotropy level supported (minimum is /;"	m	struct:rlglData::__anon315aabf20e08	typeref:typename:float
 maxDepthBits	includes/rlgl.h	/^        int maxDepthBits;                   \/\/ Maximum bits for depth component$/;"	m	struct:rlglData::__anon315aabf20e08	typeref:typename:int
+max_cohesion	includes/classes/Boid.hpp	/^    float		max_cohesion;$/;"	m	struct:s_boid	typeref:typename:float
+max_separation	includes/classes/Boid.hpp	/^    float		max_separation;$/;"	m	struct:s_boid	typeref:typename:float
 max_size	includes/imgui.h	/^    inline int          max_size() const                    { return 0x7FFFFFFF \/ (int)sizeof(T/;"	f	struct:ImVector	typeref:typename:int
-max_speed	includes/classes/Boid.hpp	/^  float		max_speed;$/;"	m	struct:s_boid	typeref:typename:float
-max_steer	includes/classes/Boid.hpp	/^  float		max_steer;$/;"	m	struct:s_boid	typeref:typename:float
+max_speed	includes/classes/Boid.hpp	/^    float		max_speed;$/;"	m	struct:s_boid	typeref:typename:float
+max_steer	includes/classes/Boid.hpp	/^    float		max_steer;$/;"	m	struct:s_boid	typeref:typename:float
 max_x	includes/imstb_truetype.h	/^   stbtt_int32 min_x, max_x, min_y, max_y;$/;"	m	struct:__anon0587e8010f08	typeref:typename:stbtt_int32
 max_y	includes/imstb_truetype.h	/^   stbtt_int32 min_x, max_x, min_y, max_y;$/;"	m	struct:__anon0587e8010f08	typeref:typename:stbtt_int32
 meshCount	includes/raylib.h	/^    int meshCount;          \/\/ Number of meshes$/;"	m	struct:Model	typeref:typename:int
 meshMaterial	includes/raylib.h	/^    int *meshMaterial;      \/\/ Mesh material number$/;"	m	struct:Model	typeref:typename:int *
 meshes	includes/raylib.h	/^    Mesh *meshes;           \/\/ Meshes array$/;"	m	struct:Model	typeref:typename:Mesh *
 min	includes/raylib.h	/^    Vector3 min;            \/\/ Minimum vertex box-corner$/;"	m	struct:BoundingBox	typeref:typename:Vector3
-min_speed	includes/classes/Boid.hpp	/^  float		min_speed;$/;"	m	struct:s_boid	typeref:typename:float
+min_speed	includes/classes/Boid.hpp	/^    float		min_speed;$/;"	m	struct:s_boid	typeref:typename:float
 min_x	includes/imstb_truetype.h	/^   stbtt_int32 min_x, max_x, min_y, max_y;$/;"	m	struct:__anon0587e8010f08	typeref:typename:stbtt_int32
 min_y	includes/imstb_truetype.h	/^   stbtt_int32 min_x, max_x, min_y, max_y;$/;"	m	struct:__anon0587e8010f08	typeref:typename:stbtt_int32
 mipmaps	includes/raylib.h	/^    int mipmaps;            \/\/ Mipmap levels, 1 by default$/;"	m	struct:Image	typeref:typename:int
 mipmaps	includes/raylib.h	/^    int mipmaps;            \/\/ Mipmap levels, 1 by default$/;"	m	struct:Texture	typeref:typename:int
-mirror	srcs/classes/Boid.cpp	/^void Boid::mirror()$/;"	f	class:Boid	typeref:typename:void
-mirror	srcs/classes/Flock.cpp	/^void Flock::mirror()$/;"	f	class:Flock	typeref:typename:void
+mirror	includes/classes/Boid.hpp	/^	bool	mirror;$/;"	m	struct:s_globaloptions	typeref:typename:bool
+mirror	srcs/classes/Boid.cpp	/^void Boid::mirror(void)$/;"	f	class:Boid	typeref:typename:void
+mirror	srcs/classes/Flock.cpp	/^void Flock::mirror(void)$/;"	f	class:Flock	typeref:typename:void
 mode	includes/rlgl.h	/^    int mode;                   \/\/ Drawing mode: LINES, TRIANGLES, QUADS$/;"	m	struct:rlDrawCall	typeref:typename:int
 modelview	includes/rlgl.h	/^        Matrix modelview;                   \/\/ Default modelview matrix$/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:Matrix
 name	.vscode/c_cpp_properties.json	/^            "name": "Linux",$/;"	s	object:configurations.0
@@ -7900,6 +7913,7 @@ operator [] 	includes/imgui.h	/^    float& operator[] (size_t idx)          { IM
 operator bool	includes/imgui.h	/^    operator bool() const { int current_frame = ImGui::GetFrameCount(); if (RefFrame == current_/;"	f	struct:ImGuiOnceUponAFrame
 operator delete	includes/imgui.h	/^inline void  operator delete(void*, ImNewWrapper, void*)   {} \/\/ This is only required so we c/;"	f	typeref:typename:void
 operator new	includes/imgui.h	/^inline void* operator new(size_t, ImNewWrapper, void* ptr) { return ptr; }$/;"	f	typeref:typename:void *
+options	includes/classes/Flock.hpp	/^		t_globaloptions options;$/;"	m	class:Flock	typeref:typename:t_globaloptions
 pack_info	includes/imstb_truetype.h	/^   void *pack_info;$/;"	m	struct:stbtt_pack_context	typeref:typename:void *
 padding	includes/imstb_truetype.h	/^      unsigned char type,padding;$/;"	m	struct:__anon0587e8010708	typeref:typename:unsigned char
 padding	includes/imstb_truetype.h	/^   int   padding;$/;"	m	struct:stbtt_pack_context	typeref:typename:int
@@ -7910,12 +7924,14 @@ params	includes/raylib.h	/^    float params[4];        \/\/ Material generic par
 params	includes/raylib.h	/^    int params[4];                  \/\/ Event parameters (if required)$/;"	m	struct:AutomationEvent	typeref:typename:int[4]
 parent	includes/raylib.h	/^    int parent;             \/\/ Bone parent$/;"	m	struct:BoneInfo	typeref:typename:int
 paths	includes/raylib.h	/^    char **paths;                   \/\/ Filepaths entries$/;"	m	struct:FilePathList	typeref:typename:char **
-perception	includes/classes/Boid.hpp	/^  float		perception;$/;"	m	struct:s_boid	typeref:typename:float
+pause	srcs/main.cpp	/^bool pause = false;$/;"	v	typeref:typename:bool
+perception	includes/classes/Boid.hpp	/^    float		perception;$/;"	m	struct:s_boid	typeref:typename:float
 pixels	includes/imstb_truetype.h	/^   unsigned char *pixels;$/;"	m	struct:__anon0587e8010808	typeref:typename:unsigned char *
 pixels	includes/imstb_truetype.h	/^   unsigned char *pixels;$/;"	m	struct:stbtt_pack_context	typeref:typename:unsigned char *
 point	includes/raylib.h	/^    Vector3 point;          \/\/ Point of the nearest hit$/;"	m	struct:RayCollision	typeref:typename:Vector3
 pop_back	includes/imgui.h	/^    inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }$/;"	f	struct:ImVector	typeref:typename:void
-pos	includes/classes/Boid.hpp	/^  Vector2		pos;$/;"	m	struct:s_boid	typeref:typename:Vector2
+pos	includes/classes/Boid.hpp	/^    Vector2		pos;$/;"	m	struct:s_average	typeref:typename:Vector2
+pos	includes/classes/Boid.hpp	/^    Vector2		pos;$/;"	m	struct:s_boid	typeref:typename:Vector2
 pos	includes/imgui.h	/^    ImVec2  pos;$/;"	m	struct:ImDrawVert	typeref:typename:ImVec2
 position	includes/raylib.h	/^    Vector3 position;       \/\/ Camera position$/;"	m	struct:Camera3D	typeref:typename:Vector3
 position	includes/raylib.h	/^    Vector3 position;       \/\/ Ray position (origin)$/;"	m	struct:Ray	typeref:typename:Vector3
@@ -8192,6 +8208,7 @@ row_count_per_page	includes/imstb_textedit.h	/^   int row_count_per_page;$/;"	m	
 run	Makefile	/^run: all$/;"	t
 s0	includes/imstb_truetype.h	/^   float x0,y0,s0,t0; \/\/ top-left$/;"	m	struct:__anon0587e8010308	typeref:typename:float
 s1	includes/imstb_truetype.h	/^   float x1,y1,s1,t1; \/\/ bottom-right$/;"	m	struct:__anon0587e8010308	typeref:typename:float
+s_average	includes/classes/Boid.hpp	/^typedef struct s_average$/;"	s
 s_boid	includes/classes/Boid.hpp	/^typedef struct s_boid$/;"	s
 s_check_box	includes/classes/Boid.hpp	/^typedef struct s_check_box$/;"	s
 s_current_sort_specs	imgui_demo.cpp	/^    static const ImGuiTableSortSpecs* s_current_sort_specs;$/;"	m	struct:ExampleAsset	typeref:typename:const ImGuiTableSortSpecs *	file:
@@ -8199,6 +8216,7 @@ s_current_sort_specs	imgui_demo.cpp	/^    static const ImGuiTableSortSpecs* s_cu
 s_current_sort_specs	imgui_demo.cpp	/^const ImGuiTableSortSpecs* ExampleAsset::s_current_sort_specs = NULL;$/;"	m	class:ExampleAsset	typeref:typename:const ImGuiTableSortSpecs *
 s_current_sort_specs	imgui_demo.cpp	/^const ImGuiTableSortSpecs* MyItem::s_current_sort_specs = NULL;$/;"	m	class:__anon5ba881550511::MyItem	typeref:typename:const ImGuiTableSortSpecs *
 s_game	includes/game.hpp	/^typedef struct s_game$/;"	s
+s_globaloptions	includes/classes/Boid.hpp	/^typedef struct s_globaloptions$/;"	s
 sampleRate	includes/raylib.h	/^    unsigned int sampleRate;    \/\/ Frequency (samples per second)$/;"	m	struct:AudioStream	typeref:typename:unsigned int
 sampleRate	includes/raylib.h	/^    unsigned int sampleRate;    \/\/ Frequency (samples per second)$/;"	m	struct:Wave	typeref:typename:unsigned int
 sampleSize	includes/raylib.h	/^    unsigned int sampleSize;    \/\/ Bit depth (bits per sample): 8, 16, 32 (24 not supported)$/;"	m	struct:AudioStream	typeref:typename:unsigned int
@@ -8209,11 +8227,16 @@ scaleIn	includes/raylib.h	/^    float scaleIn[2];               \/\/ VR distorti
 score	includes/game.hpp	/^	unsigned int	score;$/;"	m	struct:s_game	typeref:typename:unsigned int
 select_end	includes/imstb_textedit.h	/^   int select_end;$/;"	m	struct:STB_TexteditState	typeref:typename:int
 select_start	includes/imstb_textedit.h	/^   int select_start;          \/\/ selection start point$/;"	m	struct:STB_TexteditState	typeref:typename:int
+sep	includes/classes/Boid.hpp	/^    Vector2		sep;$/;"	m	struct:s_average	typeref:typename:Vector2
+separate	includes/classes/Boid.hpp	/^	bool	separate;$/;"	m	struct:s_globaloptions	typeref:typename:bool
+separate	srcs/classes/Boid.cpp	/^void Boid::separate(void)$/;"	f	class:Boid	typeref:typename:void
+separate	srcs/classes/Flock.cpp	/^void Flock::separate(void)$/;"	f	class:Flock	typeref:typename:void
 set	includes/imgui_internal.h	/^    inline void         set(T* data, T* data_end)   { Data = data; DataEnd = data_end; }$/;"	f	struct:ImSpan	typeref:typename:void
 set	includes/imgui_internal.h	/^    inline void         set(T* data, int size)      { Data = data; DataEnd = data + size; }$/;"	f	struct:ImSpan	typeref:typename:void
 set_random_values	srcs/main.cpp	/^void  set_random_values(Flock *flok)$/;"	f	typeref:typename:void
 set_values	srcs/main.cpp	/^void	set_values(Flock *flok, t_boid properties, t_check_box check)$/;"	f	typeref:typename:void
 shader	includes/raylib.h	/^    Shader shader;          \/\/ Material shader$/;"	m	struct:Material	typeref:typename:Shader
+show_fps	includes/classes/Boid.hpp	/^	bool	show_fps;$/;"	m	struct:s_globaloptions	typeref:typename:bool
 shrink	includes/imgui.h	/^    inline void         shrink(int new_size)                { IM_ASSERT(new_size <= Size); Size /;"	f	struct:ImVector	typeref:typename:void
 sides	includes/classes/Boid.hpp	/^        int		sides;$/;"	m	class:Boid	typeref:typename:int
 single_line	includes/imstb_textedit.h	/^   unsigned char single_line;$/;"	m	struct:STB_TexteditState	typeref:typename:unsigned char
@@ -8479,9 +8502,11 @@ swap	includes/imgui_internal.h	/^    void    swap(ImChunkStream<T>& rhs) { rhs.B
 sy	includes/imstb_truetype.h	/^   float sy;$/;"	m	struct:stbtt__active_edge	typeref:typename:float
 t0	includes/imstb_truetype.h	/^   float x0,y0,s0,t0; \/\/ top-left$/;"	m	struct:__anon0587e8010308	typeref:typename:float
 t1	includes/imstb_truetype.h	/^   float x1,y1,s1,t1; \/\/ bottom-right$/;"	m	struct:__anon0587e8010308	typeref:typename:float
+t_average	includes/classes/Boid.hpp	/^}				t_average;$/;"	t	typeref:struct:s_average
 t_boid	includes/classes/Boid.hpp	/^}				t_boid;$/;"	t	typeref:struct:s_boid
 t_check_box	includes/classes/Boid.hpp	/^}				t_check_box;$/;"	t	typeref:struct:s_check_box
 t_game	includes/game.hpp	/^}					t_game;$/;"	t	typeref:struct:s_game
+t_globaloptions	includes/classes/Boid.hpp	/^}				t_globaloptions;$/;"	t	typeref:struct:s_globaloptions
 tangents	includes/raylib.h	/^    float *tangents;        \/\/ Vertex tangents (XYZW - 4 components per vertex) (shader-locati/;"	m	struct:Mesh	typeref:typename:float *
 target	includes/raylib.h	/^    Vector2 target;         \/\/ Camera target (rotation and zoom origin)$/;"	m	struct:Camera2D	typeref:typename:Vector2
 target	includes/raylib.h	/^    Vector3 target;         \/\/ Camera target it looks-at$/;"	m	struct:Camera3D	typeref:typename:Vector3
@@ -8527,9 +8552,10 @@ undo_point	includes/imstb_textedit.h	/^   short undo_point, redo_point;$/;"	m	st
 undo_rec	includes/imstb_textedit.h	/^   StbUndoRecord          undo_rec [IMSTB_TEXTEDIT_UNDOSTATECOUNT];$/;"	m	struct:__anon3e283e0a0208	typeref:typename:StbUndoRecord[]
 undostate	includes/imstb_textedit.h	/^   StbUndoState undostate;$/;"	m	struct:STB_TexteditState	typeref:typename:StbUndoState
 up	includes/raylib.h	/^    Vector3 up;             \/\/ Camera up vector (rotation over its axis)$/;"	m	struct:Camera3D	typeref:typename:Vector3
-update	srcs/classes/Boid.cpp	/^void Boid::update()$/;"	f	class:Boid	typeref:typename:void
-update	srcs/classes/Flock.cpp	/^void Flock::update()$/;"	f	class:Flock	typeref:typename:void
+update	srcs/classes/Boid.cpp	/^void Boid::update(void)$/;"	f	class:Boid	typeref:typename:void
+update	srcs/classes/Flock.cpp	/^void Flock::update(void)$/;"	f	class:Flock	typeref:typename:void
 update_engine	srcs/main.cpp	/^void	update_engine(Flock *flok)$/;"	f	typeref:typename:void
+update_flock	srcs/main.cpp	/^void	update_flock(Flock *flok)$/;"	f	typeref:typename:void
 user_allocator_context	includes/imstb_truetype.h	/^   void *user_allocator_context;$/;"	m	struct:stbtt_pack_context	typeref:typename:void *
 userdata	includes/imstb_truetype.h	/^   void           * userdata;$/;"	m	struct:stbtt_fontinfo	typeref:typename:void *
 uv	includes/imgui.h	/^    ImVec2  uv;$/;"	m	struct:ImDrawVert	typeref:typename:ImVec2
@@ -8553,6 +8579,7 @@ vaoId	includes/rlgl.h	/^    unsigned int vaoId;         \/\/ OpenGL Vertex Array
 vboId	includes/raylib.h	/^    unsigned int *vboId;    \/\/ OpenGL Vertex Buffer Objects id (default vertex data)$/;"	m	struct:Mesh	typeref:typename:unsigned int *
 vboId	includes/rlgl.h	/^    unsigned int vboId[5];      \/\/ OpenGL Vertex Buffer Objects id (5 types of vertex data)$/;"	m	struct:rlVertexBuffer	typeref:typename:unsigned int[5]
 vel	includes/classes/Boid.hpp	/^        Vector2 vel;$/;"	m	class:Boid	typeref:typename:Vector2
+vel	includes/classes/Boid.hpp	/^    Vector2		vel;$/;"	m	struct:s_average	typeref:typename:Vector2
 version	.vscode/c_cpp_properties.json	/^    "version": 4$/;"	n
 vertexAlignment	includes/rlgl.h	/^    int vertexAlignment;        \/\/ Number of vertex required for index alignment (LINES, TRIAN/;"	m	struct:rlDrawCall	typeref:typename:int
 vertexBuffer	includes/rlgl.h	/^    rlVertexBuffer *vertexBuffer; \/\/ Dynamic buffer(s) for vertex data$/;"	m	struct:rlRenderBatch	typeref:typename:rlVertexBuffer *
@@ -8655,7 +8682,7 @@ z	includes/raylib.h	/^    float z;                \/\/ Vector z component$/;"	m	
 z	includes/raymath.h	/^    float z;$/;"	m	struct:Vector3	typeref:typename:float
 z	includes/raymath.h	/^    float z;$/;"	m	struct:Vector4	typeref:typename:float
 zoom	includes/raylib.h	/^    float zoom;             \/\/ Camera zoom (scaling), should be 1.0f by default$/;"	m	struct:Camera2D	typeref:typename:float
-~Boid	srcs/classes/Boid.cpp	/^Boid::~Boid()$/;"	f	class:Boid
+~Boid	srcs/classes/Boid.cpp	/^Boid::~Boid(void)$/;"	f	class:Boid
 ~ExampleAppConsole	imgui_demo.cpp	/^    ~ExampleAppConsole()$/;"	f	struct:ExampleAppConsole	file:
 ~Flock	srcs/classes/Flock.cpp	/^Flock::~Flock()$/;"	f	class:Flock
 ~ImDrawList	imgui_draw.cpp	/^ImDrawList::~ImDrawList()$/;"	f	class:ImDrawList
