@@ -1,5 +1,7 @@
 #include "../includes/game.hpp"
 
+bool pause = false;
+
 void	init_engine(void)
 {
 	InitWindow(WIDTH, HEIGHT, "Flocking Simulation");
@@ -9,13 +11,13 @@ void	init_engine(void)
 
 void  set_random_values(Flock *flok)
 {
-  for (size_t i = 0; i < NB_BOIDS; i++)
-  {
-    flok->boids[i].properties.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
-      static_cast<float>(GetRandomValue(0, HEIGHT))};
-    flok->boids[i].vel = {static_cast<float>(GetRandomValue(-flok->boids[i].properties.max_speed, flok->boids[i].properties.max_speed)),
-      static_cast<float>(GetRandomValue(-flok->boids[i].properties.max_speed, flok->boids[i].properties.max_speed))};
-  }
+	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
+		flok->boids[i].properties.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
+		static_cast<float>(GetRandomValue(0, HEIGHT))};
+		flok->boids[i].vel = {static_cast<float>(GetRandomValue(-flok->boids[i].properties.max_speed, flok->boids[i].properties.max_speed)),
+		static_cast<float>(GetRandomValue(-flok->boids[i].properties.max_speed, flok->boids[i].properties.max_speed))};
+	}
 }
 
 void	set_values(Flock *flok, t_boid properties, t_check_box check)
@@ -31,6 +33,21 @@ void	set_values(Flock *flok, t_boid properties, t_check_box check)
 	}
 }
 
+void	update_flock(Flock *flok)
+{
+	if (flok->options.mirror == true)
+		flok->mirror();
+	if (flok->options.separate == true || flok->options.align == true || flok->options.cohese == true)
+		flok->average();
+	if (flok->options.separate == true)
+		flok->separate();
+	if (flok->options.align == true)
+		flok->align();
+	if (flok->options.cohese == true)
+		flok->cohese();
+	flok->update();
+}
+
 void	render_imgui(Flock *flok)
 {
 	t_boid properties = flok->boids[0].properties;
@@ -39,7 +56,7 @@ void	render_imgui(Flock *flok)
 	rlImGuiBegin();
 	ImGui::Begin("Flock Settings");
 	ImGui::Text("Flock Settings");
-	ImGui::SliderFloat("Perception", &properties.perception, 0, 100);
+	ImGui::SliderFloat("Perception", &properties.perception, 0, 200);
 	ImGui::SliderFloat("Max Speed", &properties.max_speed, 0, 10);
 	ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
 	ImGui::SliderFloat("Max Alignment", &properties.max_steer, 0, 0.1);
@@ -76,6 +93,11 @@ void	engine_input(Flock *flok)
 		flok->options.cohese = !flok->options.cohese;
 	if (IsKeyPressed(KEY_F5))
 		flok->options.separate = !flok->options.separate;
+	if (IsKeyPressed(KEY_SPACE))
+		pause = !pause;
+	if (pause == true)
+		if (IsKeyPressed(KEY_RIGHT))
+			update_flock(flok);
 }
 
 void	update_engine(Flock *flok)
@@ -87,17 +109,8 @@ void	update_engine(Flock *flok)
 		ClearBackground(RAYWHITE);
 		if (flok->options.show_fps == true)
 			DrawFPS(10, 10);
-		if (flok->options.mirror == true)
-			flok->mirror();
-		if (flok->options.separate == true || flok->options.align == true || flok->options.cohese == true)
-			flok->average();
-		if (flok->options.separate == true)
-			flok->separate();
-		if (flok->options.align == true)
-			flok->align();
-		if (flok->options.cohese == true)
-			flok->cohese();
-		flok->update();
+		if (pause == false)
+			update_flock(flok);
 		flok->draw(flok->options);
 		render_imgui(flok);
 		EndDrawing();

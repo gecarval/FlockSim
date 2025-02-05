@@ -4,7 +4,7 @@
 // MACROS
 # define WIDTH 1600
 # define HEIGHT 900
-# define NB_BOIDS 100
+# define NB_BOIDS 2
 # define BOID_SIZE 8
 
 // INCLUDES
@@ -32,22 +32,22 @@ typedef struct s_check_box
 
 typedef struct s_average
 {
-  Vector2		vel;
-  Vector2		pos;
-  Vector2		sep;
+    Vector2		vel;
+    Vector2		pos;
+    Vector2		sep;
 }				t_average;
 
 typedef struct s_boid
 {
-  Vector2		pos;
-  Color		color;
-  t_check_box	check;
-  float		perception;
-  float		min_speed;
-  float		max_speed;
-  float		max_steer;
-  float		max_cohesion;
-  float		max_separation;
+    Vector2		pos;
+    Color		color;
+    t_check_box	check;
+    float		perception;
+    float		min_speed;
+    float		max_speed;
+    float		max_steer;
+    float		max_cohesion;
+    float		max_separation;
 }				t_boid;
 
 // CLASS DEFINITIONS

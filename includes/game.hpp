@@ -13,7 +13,7 @@
 // MAIN GAME ENGINE DATA STRUCTURE
 typedef struct s_game
 {
-  double_t      delta_time;
+	double_t      delta_time;
 	unsigned int	frame_count;
 	unsigned int	fps;
 	unsigned int	score;
