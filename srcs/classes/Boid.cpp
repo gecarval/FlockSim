@@ -8,12 +8,14 @@ Boid::Boid(void)
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
 	this->properties.min_speed = 0.0;
-	this->properties.max_speed = 5;
+	this->properties.max_speed = 10;
 	this->properties.perception = 50;
 	this->properties.max_steer = 0.03;
+	this->properties.avoid_force = 0.005;
+  this->properties.max_alignment = 5;
 	this->properties.max_cohesion = 0.035;
-	this->properties.max_separation = 0.05;
-	this->properties.check = {true, true, true};
+	this->properties.max_separation = 0.20;
+	this->properties.check = {true, false, false};
 	this->frame_time_counter = 0;
 	this->properties.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
 		static_cast<float>(GetRandomValue(0, HEIGHT))};
@@ -44,16 +46,11 @@ Boid::~Boid(void)
 // MEMBER FUNCTIONS
 void Boid::draw(t_globaloptions options)
 {
-	frame_time_counter += GetFrameTime();
-	if (frame_time_counter >= 0.1)
-	{
-		frame_time_counter -= 0.1;
-		this->rotation = atan2(this->vel.y, this->vel.x) * RAD2DEG;
-	}
 	if (this->properties.check.draw == true)
 		DrawPoly(this->properties.pos, this->sides, this->radius, this->rotation, this->properties.color);
 	if (this->properties.check.draw_perception == true)
 		DrawCircleLines(this->properties.pos.x, this->properties.pos.y, this->properties.perception, GREEN);
+	this->rotation = atan2(this->vel.y, this->vel.x) * RAD2DEG;
 	if (this->properties.check.draw_velocity == true)
 	{
 		DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->vel.x * 30, this->properties.pos.y + this->vel.y * 30, RED);
@@ -64,6 +61,9 @@ void Boid::draw(t_globaloptions options)
 		if (options.separate == true)
 			DrawLine(this->properties.pos.x, this->properties.pos.y, this->properties.pos.x + this->average.sep.x * 3000, this->properties.pos.y + this->average.sep.y * 3000, PURPLE);
 	}
+	frame_time_counter += GetFrameTime();
+	if (frame_time_counter >= 0.1)
+		frame_time_counter -= 0.1;
 }
 
 void Boid::getaverage(Boid *flock)
@@ -110,42 +110,15 @@ void Boid::separate(void)
 
 void Boid::align(void)
 {
-	float myangle = 0;
-	float avarageangle = 0;
-	float inter = 0;
-	float angle = 0;
-
 	if (this->average.vel.x == 0 && this->average.vel.y == 0)
 		return ;
-	myangle = atan2(this->vel.y, this->vel.x);
-	avarageangle = atan2(this->average.vel.y, this->average.vel.x);
-	if (myangle < 0)
-		myangle += 2 * PI;
-	if (avarageangle < 0)
-		avarageangle += 2 * PI;
-	if (avarageangle < myangle)
-		inter = myangle - avarageangle;
-	else
-		inter = avarageangle - myangle;
-	if (inter >= PI)
-		angle = (inter - PI) * -1;
-	else
-		angle = inter;
-	std::cout << "my angle    : " << myangle * RAD2DEG << std::endl;
-	std::cout << "other angle : " << avarageangle * RAD2DEG << std::endl;
-	std::cout << "target angle: " << angle * RAD2DEG << std::endl;
-	std::cout << "vel         : " << this->vel.x << " " << this->vel.y << std::endl;
-	std::cout << "average.vel : " << this->average.vel.x << " " << this->average.vel.y << std::endl;
-	this->average.vel = Vector2Rotate(this->vel, angle);
-	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_steer);
-	this->acc = Vector2Add(this->acc, this->average.vel);
-	this->average.vel = Vector2Rotate(this->vel, angle);
-	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_steer);
-	this->acc = Vector2Add(this->acc, this->average.vel);
-/*	this->average.vel = Vector2Subtract(this->average.vel, this->vel);
 	this->average.vel = Vector2Normalize(this->average.vel);
-	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_steer);
-	this->acc = Vector2Add(this->acc, this->average.vel);*/
+	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_alignment);
+	this->average.vel = Vector2Subtract(this->average.vel, this->vel);
+  const float length = Vector2Length(this->average.vel);
+  if (length != 0 && length > this->properties.max_steer)
+    this->average.vel = Vector2Scale(Vector2Normalize(this->average.vel), this->properties.max_steer);
+	this->acc = Vector2Add(this->acc, this->average.vel);
 }
 
 void Boid::cohese(void)
@@ -168,6 +141,21 @@ void Boid::mirror(void)
 		this->properties.pos.y = 1;
 	else if (this->properties.pos.y < 0)
 		this->properties.pos.y = HEIGHT - 1;
+  avoidborder();
+}
+
+void Boid::avoidborder(void)
+{
+  Vector2 border = {0, 0};
+  if (this->properties.pos.x < this->properties.perception)
+    border.x = this->properties.avoid_force * (this->properties.perception - this->properties.pos.x);
+  else if (this->properties.pos.x > WIDTH - this->properties.perception)
+    border.x = -this->properties.avoid_force * (this->properties.pos.x - (WIDTH - this->properties.perception));
+  if (this->properties.pos.y < this->properties.perception)
+    border.y = this->properties.avoid_force * (this->properties.perception - this->properties.pos.y);
+  else if (this->properties.pos.y > HEIGHT - this->properties.perception)
+    border.y = -this->properties.avoid_force * (this->properties.pos.y - (HEIGHT - this->properties.perception));
+  this->acc = Vector2Add(this->acc, border);
 }
 
 void Boid::update(void)
