@@ -43,10 +43,11 @@ typedef struct s_boid
     Color		color;
     t_check_box	check;
     float		perception;
+    float   separation_ratio;
     float		min_speed;
     float		max_speed;
     float		max_steer;
-    float   avoid_force;
+    float   obstacle_avoidance;
     float		max_alignment;
     float		max_cohesion;
     float		max_separation;
