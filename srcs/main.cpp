@@ -59,13 +59,14 @@ void	render_imgui(Flock *flok)
 	ImGui::SliderFloat("Perception", &properties.perception, 0, 200);
 	ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
 	ImGui::SliderFloat("Max Speed", &properties.max_speed, 0, 10);
-  ImGui::SliderFloat("Max Steer", &properties.max_steer, 0, 0.1);
-  ImGui::SliderFloat("Avoid Force", &properties.avoid_force, 0, 0.1);
+  ImGui::SliderFloat("Obstacle Avoidance", &properties.obstacle_avoidance, 0, 0.1);
   ImGui::Separator();
   ImGui::Text("Flocking Properties");
 	ImGui::SliderFloat("Max Alignment", &properties.max_alignment, 0, 10);
+  ImGui::SliderFloat("Alignment Ratio", &properties.max_steer, 0, 0.1);
 	ImGui::SliderFloat("Max Cohesion", &properties.max_cohesion, 0, 0.1);
 	ImGui::SliderFloat("Max Separation", &properties.max_separation, 0, 1);
+  ImGui::SliderFloat("Separation Ratio", &properties.separation_ratio, 0, 1);
 	ImGui::Separator();
 	ImGui::Text("Display Options");
 	ImGui::Checkbox("Draw Boids", &check.draw);
