@@ -4,11 +4,29 @@
 // INCLUDES
 # include "./Boid.hpp"
 
+// STRUCTURES
+typedef struct s_check_box
+{
+	bool	draw;
+	bool	draw_perception;
+	bool	draw_velocity;
+}				t_check_box;
+
+typedef struct s_globaloptions
+{
+	bool	show_fps;
+	bool	mirror;
+	bool	separate;
+	bool	align;
+	bool	cohese;
+}				t_globaloptions;
+
 // CLASS DEFINITIONS
 class Flock
 {
     public:
-		t_globaloptions options;
+		t_check_box		check;
+		t_globaloptions	options;
         Boid boids[NB_BOIDS];
         Flock(void);
         ~Flock(void);
@@ -18,7 +36,7 @@ class Flock
 		void cohese(void);
         void update(void);
         void mirror(void);
-        void draw(t_globaloptions options);
+        void draw(void);
 };
 
 #endif

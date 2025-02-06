@@ -6,6 +6,7 @@ Flock::Flock()
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->boids[i] = Boid();
 	this->options = {false, true, true, true, true};
+	this->check = {true, false, false};
 }
 
 // DESTRUCTOR
@@ -50,8 +51,23 @@ void Flock::mirror(void)
 		this->boids[i].mirror();
 }
 
-void Flock::draw(t_globaloptions options)
+void Flock::draw(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
-		this->boids[i].draw(options);
+	{
+		if (this->check.draw == true)
+			this->boids[i].draw_boid();
+		if (this->check.draw_velocity == true)
+		{
+			this->boids[i].draw_velocity();
+			if (this->options.align == true)
+				this->boids[i].draw_align();
+			if (this->options.cohese == true)
+				this->boids[i].draw_cohese();
+			if (this->options.separate == true)
+				this->boids[i].draw_avoid();
+		}
+		if (this->check.draw_perception == true)
+			this->boids[i].draw_perception();
+	}
 }

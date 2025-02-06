@@ -13,73 +13,60 @@
 # include <iostream>
 
 // STRUCTURES
-typedef struct s_globaloptions
-{
-	bool	show_fps;
-	bool	mirror;
-	bool	separate;
-	bool	align;
-	bool	cohese;
-}				t_globaloptions;
-
-
-typedef struct s_check_box
-{
-	bool	draw;
-	bool	draw_perception;
-	bool	draw_velocity;
-}				t_check_box;
-
 typedef struct s_average
 {
-    Vector2		vel;
-    Vector2		pos;
-    Vector2		sep;
+	Vector2		vel;
+	Vector2		pos;
+	Vector2		sep;
 }				t_average;
 
 typedef struct s_boid
 {
-    Vector2		pos;
-    Color		color;
-    t_check_box	check;
-    float		perception;
-    float   separation_ratio;
-    float		min_speed;
-    float		max_speed;
-    float		max_steer;
-    float   obstacle_avoidance;
-    float		max_alignment;
-    float		max_cohesion;
-    float		max_separation;
+	Vector2		pos;
+	Color		color;
+	float		perception;
+	float		separation_ratio;
+	float		min_speed;
+	float		max_speed;
+	float		max_steer;
+	float		obstacle_avoidance;
+	float		max_alignment;
+	float		max_cohesion;
+	float		max_separation;
 }				t_boid;
 
 // CLASS DEFINITIONS
 class Boid
 {
-    private:
-        float	frame_time_counter;
-        float	radius;
+	private:
+		float	frame_time_counter;
+		float	radius;
 
-    protected:
-        Vector2	acc;
-        float	rotation;
-        int		sides;
+	protected:
+		Vector2	acc;
+		float	rotation;
+		int		sides;
 
-    public:
-        Vector2 vel;
-        t_boid  properties;
+	public:
+		Vector2 vel;
+		t_boid  properties;
 		t_average average;
-        Boid(t_boid properties);
-        Boid(void);
-        ~Boid(void);
-        void	getaverage(Boid *flock);
+		Boid(t_boid properties);
+		Boid(void);
+		~Boid(void);
+		void	getaverage(Boid *flock);
 		void	separate(void);
-        void	align(void);
+		void	align(void);
 		void	cohese(void);
-        void	update(void);
-        void	mirror(void);
-        void  avoidborder(void);
-        void	draw(t_globaloptions options);
+		void	update(void);
+		void	mirror(void);
+		void	avoidborder(void);
+		void	draw_boid(void);
+		void	draw_perception(void);
+		void	draw_velocity(void);
+		void	draw_align(void);
+		void	draw_cohese(void);
+		void	draw_avoid(void);
 };
 
 #endif
