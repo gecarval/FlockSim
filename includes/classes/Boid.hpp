@@ -4,7 +4,7 @@
 // MACROS
 # define WIDTH 1600
 # define HEIGHT 900
-# define NB_BOIDS 2
+# define NB_BOIDS 100
 # define BOID_SIZE 8
 
 // INCLUDES
@@ -46,6 +46,8 @@ typedef struct s_boid
     float		min_speed;
     float		max_speed;
     float		max_steer;
+    float   avoid_force;
+    float		max_alignment;
     float		max_cohesion;
     float		max_separation;
 }				t_boid;
@@ -75,6 +77,7 @@ class Boid
 		void	cohese(void);
         void	update(void);
         void	mirror(void);
+        void  avoidborder(void);
         void	draw(t_globaloptions options);
 };
 
