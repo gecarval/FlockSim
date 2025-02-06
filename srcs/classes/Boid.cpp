@@ -11,12 +11,11 @@ Boid::Boid(void)
 	this->properties.max_speed = 10;
 	this->properties.perception = 50;
 	this->properties.max_steer = 0.03;
-  this->properties.max_alignment = 5;
+	this->properties.max_alignment = 5;
 	this->properties.max_cohesion = 0.035;
 	this->properties.max_separation = 0.20;
-  this->properties.separation_ratio = 0.5;
+	this->properties.separation_ratio = 0.5;
 	this->properties.obstacle_avoidance = 0.005;
-	this->properties.check = {true, false, false};
 	this->frame_time_counter = 0;
 	this->properties.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
 		static_cast<float>(GetRandomValue(0, HEIGHT))};
@@ -33,8 +32,9 @@ Boid::Boid(t_boid properties)
 	this->frame_time_counter = 0;
 	this->radius = BOID_SIZE;
 	this->properties = properties;
-	this->vel = {static_cast<float>(GetRandomValue(-this->properties.max_speed, this->properties.max_speed)),
-		static_cast<float>(GetRandomValue(-this->properties.max_speed, this->properties.max_speed))};
+	const float max_speed = this->properties.max_speed;
+	this->vel = {static_cast<float>(GetRandomValue(-max_speed, max_speed)),
+		static_cast<float>(GetRandomValue(-max_speed, max_speed))};
 	this->acc = Vector2Zero();
 	this->average = {Vector2Zero(), Vector2Zero(), Vector2Zero()};
 }
@@ -45,35 +45,46 @@ Boid::~Boid(void)
 }
 
 // MEMBER FUNCTIONS
-void Boid::draw(t_globaloptions options)
+void Boid::draw_boid(void)
 {
-	if (this->properties.check.draw == true)
-  {
-    this->rotation = atan2(this->vel.y, this->vel.x) * RAD2DEG;
-		DrawPoly(this->properties.pos, this->sides, this->radius, this->rotation, this->properties.color);
-  }
-	if (this->properties.check.draw_perception == true)
-  {
-    const float radius = this->properties.perception;
-    DrawCircleLines(this->properties.pos.x, this->properties.pos.y, radius, GREEN);
-    const float avoid_radius = radius * this->properties.separation_ratio;
-    DrawCircleLines(this->properties.pos.x, this->properties.pos.y, avoid_radius, PINK);
-  }
-	if (this->properties.check.draw_velocity == true)
-	{
-    const float line_length = 10;
-    Vector2 line = Vector2Add(this->properties.pos, this->vel * line_length);
-		DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, RED);
-    line = Vector2Add(this->properties.pos, this->average.vel * line_length);
-		if (options.align == true)
-			DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, BLUE);
-    line = Vector2Add(this->properties.pos, this->average.pos * line_length);
-		if (options.cohese == true)
-			DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, YELLOW);
-    line = Vector2Add(this->properties.pos, this->average.sep * line_length);
-		if (options.separate == true)
-			DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, PURPLE);
-	}
+	this->rotation = atan2(this->vel.y, this->vel.x) * RAD2DEG;
+	DrawPoly(this->properties.pos, this->sides, this->radius, this->rotation, this->properties.color);
+}
+
+void Boid::draw_perception(void)
+{
+	const float radius = this->properties.perception;
+	DrawCircleLines(this->properties.pos.x, this->properties.pos.y, radius, GREEN);
+	const float avoid_radius = radius * this->properties.separation_ratio;
+	DrawCircleLines(this->properties.pos.x, this->properties.pos.y, avoid_radius, PINK);
+}
+
+void Boid::draw_velocity(void)
+{
+	const float line_length = 10;
+	const Vector2 line = Vector2Add(this->properties.pos, this->vel * line_length);
+	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, RED);
+}
+
+void Boid::draw_align(void)
+{
+	const float line_length = 10;
+	const Vector2 line = Vector2Add(this->properties.pos, this->average.vel * line_length);
+	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, BLUE);
+}
+
+void Boid::draw_avoid(void)
+{
+	const float line_length = 10;
+	const Vector2 line = Vector2Add(this->properties.pos, this->average.sep * line_length);
+	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, PURPLE);
+}
+
+void Boid::draw_cohese(void)
+{
+	const float line_length = 10;
+	const Vector2 line = Vector2Add(this->properties.pos, this->average.pos * line_length);
+	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, YELLOW);
 }
 
 void Boid::getaverage(Boid *flock)
@@ -125,9 +136,9 @@ void Boid::align(void)
 	this->average.vel = Vector2Normalize(this->average.vel);
 	this->average.vel = Vector2Scale(this->average.vel, this->properties.max_alignment);
 	this->average.vel = Vector2Subtract(this->average.vel, this->vel);
-  const float length = Vector2Length(this->average.vel);
-  if (length != 0 && length > this->properties.max_steer)
-    this->average.vel = Vector2Scale(Vector2Normalize(this->average.vel), this->properties.max_steer);
+	const float length = Vector2Length(this->average.vel);
+	if (length != 0 && length > this->properties.max_steer)
+	this->average.vel = Vector2Scale(Vector2Normalize(this->average.vel), this->properties.max_steer);
 	this->acc = Vector2Add(this->acc, this->average.vel);
 }
 
@@ -151,21 +162,21 @@ void Boid::mirror(void)
 		this->properties.pos.y = 1;
 	else if (this->properties.pos.y < 0)
 		this->properties.pos.y = HEIGHT - 1;
-  avoidborder();
+	avoidborder();
 }
 
 void Boid::avoidborder(void)
 {
-  Vector2 border = {0, 0};
-  if (this->properties.pos.x < this->properties.perception)
-    border.x = this->properties.obstacle_avoidance * (this->properties.perception - this->properties.pos.x);
-  else if (this->properties.pos.x > WIDTH - this->properties.perception)
-    border.x = -this->properties.obstacle_avoidance * (this->properties.pos.x - (WIDTH - this->properties.perception));
-  if (this->properties.pos.y < this->properties.perception)
-    border.y = this->properties.obstacle_avoidance * (this->properties.perception - this->properties.pos.y);
-  else if (this->properties.pos.y > HEIGHT - this->properties.perception)
-    border.y = -this->properties.obstacle_avoidance * (this->properties.pos.y - (HEIGHT - this->properties.perception));
-  this->acc = Vector2Add(this->acc, border);
+	Vector2 border = {0, 0};
+	if (this->properties.pos.x < this->properties.perception)
+		border.x = this->properties.obstacle_avoidance * (this->properties.perception - this->properties.pos.x);
+	else if (this->properties.pos.x > WIDTH - this->properties.perception)
+		border.x = -this->properties.obstacle_avoidance * (this->properties.pos.x - (WIDTH - this->properties.perception));
+	if (this->properties.pos.y < this->properties.perception)
+		border.y = this->properties.obstacle_avoidance * (this->properties.perception - this->properties.pos.y);
+	else if (this->properties.pos.y > HEIGHT - this->properties.perception)
+		border.y = -this->properties.obstacle_avoidance * (this->properties.pos.y - (HEIGHT - this->properties.perception));
+	this->acc = Vector2Add(this->acc, border);
 }
 
 void Boid::update(void)

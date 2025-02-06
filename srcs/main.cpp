@@ -24,12 +24,12 @@ void	set_values(Flock *flok, t_boid properties, t_check_box check)
 {
 	t_boid save;
 
+	flok->check = check;
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		save = flok->boids[i].properties;
 		flok->boids[i].properties = properties;
 		flok->boids[i].properties.pos = save.pos;
-		flok->boids[i].properties.check = check;
 	}
 }
 
@@ -51,7 +51,7 @@ void	update_flock(Flock *flok)
 void	render_imgui(Flock *flok)
 {
 	t_boid properties = flok->boids[0].properties;
-	t_check_box check = flok->boids[0].properties.check;
+	t_check_box check = flok->check;
 
 	rlImGuiBegin();
 	ImGui::Begin("Flock Settings");
@@ -59,14 +59,14 @@ void	render_imgui(Flock *flok)
 	ImGui::SliderFloat("Perception", &properties.perception, 0, 200);
 	ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
 	ImGui::SliderFloat("Max Speed", &properties.max_speed, 0, 10);
-  ImGui::SliderFloat("Obstacle Avoidance", &properties.obstacle_avoidance, 0, 0.1);
-  ImGui::Separator();
-  ImGui::Text("Flocking Properties");
+	ImGui::SliderFloat("Obstacle Avoidance", &properties.obstacle_avoidance, 0, 0.1);
+	ImGui::Separator();
+	ImGui::Text("Flocking Properties");
 	ImGui::SliderFloat("Max Alignment", &properties.max_alignment, 0, 10);
-  ImGui::SliderFloat("Alignment Ratio", &properties.max_steer, 0, 0.1);
+	ImGui::SliderFloat("Alignment Ratio", &properties.max_steer, 0, 0.1);
 	ImGui::SliderFloat("Max Cohesion", &properties.max_cohesion, 0, 0.1);
 	ImGui::SliderFloat("Max Separation", &properties.max_separation, 0, 1);
-  ImGui::SliderFloat("Separation Ratio", &properties.separation_ratio, 0, 1);
+	ImGui::SliderFloat("Separation Ratio", &properties.separation_ratio, 0, 1);
 	ImGui::Separator();
 	ImGui::Text("Display Options");
 	ImGui::Checkbox("Draw Boids", &check.draw);
@@ -116,7 +116,7 @@ void	update_engine(Flock *flok)
 			DrawFPS(10, 10);
 		if (pause == false)
 			update_flock(flok);
-		flok->draw(flok->options);
+		flok->draw();
 		render_imgui(flok);
 		EndDrawing();
 	}
