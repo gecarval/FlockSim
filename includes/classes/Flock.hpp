@@ -3,6 +3,7 @@
 
 // INCLUDES
 # include "./Boid.hpp"
+# include "./SpatialHashing.hpp"
 
 // STRUCTURES
 typedef struct s_check_box
