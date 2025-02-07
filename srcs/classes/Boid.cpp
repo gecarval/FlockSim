@@ -61,30 +61,30 @@ void Boid::draw_perception(void)
 
 void Boid::draw_velocity(void)
 {
-	const float line_length = 10;
+	const float line_length = 1 * this->radius;
 	const Vector2 line = Vector2Add(this->properties.pos, this->vel * line_length);
 	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, RED);
 }
 
 void Boid::draw_align(void)
 {
-	const float line_length = 10;
+	const float line_length = 100 * this->radius;
 	const Vector2 line = Vector2Add(this->properties.pos, this->average.vel * line_length);
-	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, BLUE);
+	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, GREEN);
 }
 
 void Boid::draw_avoid(void)
 {
-	const float line_length = 10;
+	const float line_length = 15 * this->radius;
 	const Vector2 line = Vector2Add(this->properties.pos, this->average.sep * line_length);
-	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, PURPLE);
+	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, PINK);
 }
 
 void Boid::draw_cohese(void)
 {
-	const float line_length = 10;
+	const float line_length = 40 * this->radius;
 	const Vector2 line = Vector2Add(this->properties.pos, this->average.pos * line_length);
-	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, YELLOW);
+	DrawLine(this->properties.pos.x, this->properties.pos.y, line.x, line.y, BLUE);
 }
 
 void Boid::getaverage(Boid *flock)

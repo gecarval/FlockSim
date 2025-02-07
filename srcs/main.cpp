@@ -57,29 +57,51 @@ void	render_imgui(Flock *flok)
 	ImGui::Begin("Flock Settings");
 	ImGui::Text("Boid Properties");
 	ImGui::SliderFloat("Perception", &properties.perception, 0, 200);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("The perception radius of each boid.");
 	ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
 	ImGui::SliderFloat("Max Speed", &properties.max_speed, 0, 10);
 	ImGui::SliderFloat("Obstacle Avoidance", &properties.obstacle_avoidance, 0, 0.1);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
 	ImGui::Separator();
 	ImGui::Text("Flocking Properties");
 	ImGui::SliderFloat("Max Alignment", &properties.max_alignment, 0, 10);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the maximum influence of the alignment force.");
 	ImGui::SliderFloat("Alignment Ratio", &properties.max_steer, 0, 0.1);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the maximum steering force of the alignment force.\nThe force that makes boids follow each other.");
 	ImGui::SliderFloat("Max Cohesion", &properties.max_cohesion, 0, 0.1);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the maximum influence of the cohesion force.\nThe force that makes boids stick together.");
 	ImGui::SliderFloat("Max Separation", &properties.max_separation, 0, 1);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the maximum influence of the separation force.\nthe force that makes boids avoid each other when they get too close.");
 	ImGui::SliderFloat("Separation Ratio", &properties.separation_ratio, 0, 1);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the ratio of the separation force.\nThe ratio is based on the perception radius of the boid.");
 	ImGui::Separator();
 	ImGui::Text("Display Options");
 	ImGui::Checkbox("Draw Boids", &check.draw);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Draws the boids on the screen.");
 	ImGui::Checkbox("Draw Perception", &check.draw_perception);
-	ImGui::Checkbox("Draw Velocity", &check.draw_velocity);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Draws the perception radius of each boid.");
+	ImGui::Checkbox("Draw Forces", &check.draw_velocity);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Draws the Vector of all forces of each boid.");
 	ImGui::Separator();
 	ImGui::Text("Other Options");
 	ImGui::Checkbox("Show FPS", &flok->options.show_fps);
 	ImGui::Checkbox("Mirror", &flok->options.mirror);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("The boids will wrap around the screen and avoid going out of bounds.");
 	ImGui::Checkbox("Align", &flok->options.align);
 	ImGui::Checkbox("Cohese", &flok->options.cohese);
 	ImGui::Checkbox("Separate", &flok->options.separate);
-	if (ImGui::Button("Randomize") == true)
+	if (ImGui::Button("Randomize Boids Position") == true)
 		set_random_values(flok);
 	set_values(flok, properties, check);
 	ImGui::End();
