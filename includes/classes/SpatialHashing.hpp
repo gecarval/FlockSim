@@ -1,2 +1,40 @@
-# include "raylib.h"
-# include "raymath.h"
+#ifndef SPATIALHASHING_HPP
+# define SPATIALHASHING_HPP
+
+# include "Boid.hpp"
+
+// MACROS
+# define HASH_SIZE 100
+
+// STRUCTURES
+
+typedef struct t_boid_list
+{
+	Boid		*boid;
+	struct t_boid_list	*next;
+}				t_boid_list;
+
+typedef struct s_hash_table
+{
+	Rectangle	rect;
+	Vector2		center;
+	t_boid_list *boids;
+}				t_hash_table;
+
+// CLASS DEFINITIONS
+class SpatialHashing
+{
+	public:
+		t_hash_table	table[HASH_SIZE];
+		SpatialHashing(void);
+		~SpatialHashing(void);
+		int		hash(Vector2 center);
+		void	insert(Boid *boid);
+		void	clear(void);
+		void	draw(void);
+
+	private:
+		void	draw_rect(Rectangle rect, Color color);
+};
+
+#endif

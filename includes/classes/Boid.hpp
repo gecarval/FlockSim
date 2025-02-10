@@ -4,7 +4,7 @@
 // MACROS
 # define WIDTH 1600
 # define HEIGHT 900
-# define NB_BOIDS 100
+# define NB_BOIDS 500
 # define BOID_SIZE 8
 
 // INCLUDES

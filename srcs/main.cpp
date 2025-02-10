@@ -5,7 +5,7 @@ bool pause = false;
 void	init_engine(void)
 {
 	InitWindow(WIDTH, HEIGHT, "Flocking Simulation");
-	SetTargetFPS(75);
+//	SetTargetFPS(75);
 	rlImGuiSetup(true);
 }
 
@@ -92,6 +92,9 @@ void	render_imgui(Flock *flok)
 	ImGui::Checkbox("Draw Forces", &check.draw_velocity);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Draws the Vector of all forces of each boid.");
+	ImGui::Checkbox("Draw Hash", &check.draw_hash);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Draws the partition of the screen.");
 	ImGui::Separator();
 	ImGui::Text("Other Options");
 	ImGui::Checkbox("Show FPS", &flok->options.show_fps);
@@ -132,6 +135,7 @@ void	update_engine(Flock *flok)
 	while (!WindowShouldClose())
 	{
 		engine_input(flok);
+		flok->gethash();
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 		if (flok->options.show_fps == true)

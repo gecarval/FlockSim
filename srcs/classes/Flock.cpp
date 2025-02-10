@@ -6,19 +6,43 @@ Flock::Flock()
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->boids[i] = Boid();
 	this->options = {false, true, true, true, true};
-	this->check = {true, false, false};
+	this->check = {true, false, false, false};
+	this->hash = SpatialHashing();
 }
 
 // DESTRUCTOR
 Flock::~Flock()
 {
+	this->hash.~SpatialHashing();
 }
 
-// MEMBER FUNCTIONS
 void Flock::average(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->boids[i].getaverage(this->boids);
+}
+
+// MEMBER FUNCTIONS
+void Flock::getaverage(void)
+{
+	float total;
+	float total_avoid;
+	t_boid_list *tmp;
+	Circle circ;
+
+	total = 0;
+	total_avoid = 0;
+	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
+		circ = {this->boids[i].properties.pos, this->boids[i].properties.perception};
+		const int hash = this->hash.hash(this->boids[i].properties.pos);
+		if (CheckCollisionCircleRec(circ.pos, circ.radius, this->hash.table[hash].rect) == false)
+			continue ;
+		tmp = this->hash.table[hash].boids;
+		total++;
+		total_avoid++;
+	}
+	(void)tmp;
 }
 
 void Flock::separate(void)
@@ -51,6 +75,13 @@ void Flock::mirror(void)
 		this->boids[i].mirror();
 }
 
+void Flock::gethash(void)
+{
+	this->hash.clear();
+	for (size_t i = 0; i < NB_BOIDS; i++)
+		this->hash.insert(&this->boids[i]);
+}
+
 void Flock::draw(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
@@ -69,5 +100,7 @@ void Flock::draw(void)
 		}
 		if (this->check.draw_perception == true)
 			this->boids[i].draw_perception();
+		if (this->check.draw_hash == true)
+			this->hash.draw();
 	}
 }
