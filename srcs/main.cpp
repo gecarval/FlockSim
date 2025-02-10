@@ -35,10 +35,11 @@ void	set_values(Flock *flok, t_boid properties, t_check_box check)
 
 void	update_flock(Flock *flok)
 {
+	flok->gethash();
 	if (flok->options.mirror == true)
 		flok->mirror();
 	if (flok->options.separate == true || flok->options.align == true || flok->options.cohese == true)
-		flok->average();
+		flok->hashaverage();
 	if (flok->options.separate == true)
 		flok->separate();
 	if (flok->options.align == true)
@@ -135,7 +136,6 @@ void	update_engine(Flock *flok)
 	while (!WindowShouldClose())
 	{
 		engine_input(flok);
-		flok->gethash();
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 		if (flok->options.show_fps == true)

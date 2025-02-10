@@ -30,19 +30,47 @@ void Flock::hashaverage(void)
 	t_boid_list *tmp;
 	Circle circ;
 
-	total = 0;
-	total_avoid = 0;
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
+		total = 0;
+		total_avoid = 0;
 		circ = {this->boids[i].properties.pos, this->boids[i].properties.perception};
 		const int hash = this->hash.hash(this->boids[i].properties.pos);
 		if (CheckCollisionCircleRec(circ.pos, circ.radius, this->hash.table[hash].rect) == false)
 			continue ;
 		tmp = this->hash.table[hash].boids;
-		total++;
-		total_avoid++;
+		while (tmp != nullptr)
+		{
+			if (&this->boids[i] == tmp->boid)
+			{
+				tmp = tmp->next;
+				continue ;
+			}
+			if (CheckCollisionCircles(circ.pos, circ.radius, tmp->boid->properties.pos, tmp->boid->radius) == false)
+			{
+				tmp = tmp->next;
+				continue ;
+			}
+			this->boids[i].average.vel = Vector2Add(this->boids[i].average.vel, tmp->boid->vel);
+			this->boids[i].average.pos = Vector2Add(this->boids[i].average.pos, tmp->boid->properties.pos);
+			total++;
+			if (CheckCollisionCircles(circ.pos, circ.radius * this->boids[i].properties.separation_ratio, tmp->boid->properties.pos, tmp->boid->radius) == false)
+			{
+				tmp = tmp->next;
+				continue ;
+			}
+			this->boids[i].average.sep = Vector2Add(this->boids[i].average.sep, Vector2Subtract(this->boids[i].properties.pos, tmp->boid->properties.pos));
+			total_avoid++;
+			tmp = tmp->next;
+		}
+		if (total <= 0)
+			continue ;
+		this->boids[i].average.vel = Vector2Divide(this->boids[i].average.vel, {total, total});
+		this->boids[i].average.pos = Vector2Divide(this->boids[i].average.pos, {total, total});
+		if (total_avoid <= 0)
+			continue ;
+		this->boids[i].average.sep = Vector2Divide(this->boids[i].average.sep, {total_avoid, total_avoid});
 	}
-	(void)tmp;
 }
 
 void Flock::separate(void)
