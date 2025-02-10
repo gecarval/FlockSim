@@ -4,6 +4,7 @@
 // INCLUDES
 # include "./classes/Boid.hpp"
 # include "./classes/Flock.hpp"
+# include "./classes/SpatialHashing.hpp"
 # include "imgui.h"
 # include "rlImGui.h"
 # include <cmath>
