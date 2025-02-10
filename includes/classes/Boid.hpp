@@ -4,7 +4,7 @@
 // MACROS
 # define WIDTH 1600
 # define HEIGHT 900
-# define NB_BOIDS 500
+# define NB_BOIDS 10000
 # define BOID_SIZE 8
 
 // INCLUDES
@@ -40,7 +40,6 @@ class Boid
 {
 	private:
 		float	frame_time_counter;
-		float	radius;
 
 	protected:
 		Vector2	acc;
@@ -48,6 +47,7 @@ class Boid
 		int		sides;
 
 	public:
+		float	radius;
 		Vector2 vel;
 		t_boid  properties;
 		t_average average;
