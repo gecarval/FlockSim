@@ -41,7 +41,7 @@ class Flock
         ~Flock(void);
 		void gethash(void);
 		void average(void);
-		void getaverage(void);
+		void hashaverage(void);
 		void separate(void);
         void align(void);
 		void cohese(void);

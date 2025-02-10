@@ -23,7 +23,7 @@ void Flock::average(void)
 }
 
 // MEMBER FUNCTIONS
-void Flock::getaverage(void)
+void Flock::hashaverage(void)
 {
 	float total;
 	float total_avoid;
