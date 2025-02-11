@@ -100,21 +100,17 @@ void	SpatialHashing::draw_rect(Rectangle rect, Color color)
 
 void	SpatialHashing::draw(void)
 {
-	int j = 1;
-
 	for (size_t i = 0; i < HASH_SIZE; i++)
 		if (this->table[i].boids == nullptr)
 			this->draw_rect(this->table[i].rect, GRAY);
 	for (size_t i = 0; i < HASH_SIZE; i++)
+	{
 		if (this->table[i].boids != nullptr)
 			this->draw_rect(this->table[i].rect, GREEN);
-	for (size_t i = 0; i < HASH_SIZE; i++)
-	{
 		t_boid_list *tmp = this->table[i].boids;
 		while (tmp != nullptr)
 		{
 			DrawText(std::to_string(i).c_str(), this->table[i].center.x, this->table[i].center.y, 10, BLACK);
-			DrawText(std::to_string(j++).c_str(), tmp->boid->properties.pos.x, tmp->boid->properties.pos.y, 10, BLACK);
 			tmp = tmp->next;
 		}
 	}
