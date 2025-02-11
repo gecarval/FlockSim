@@ -24,6 +24,7 @@ typedef struct s_globaloptions
 {
 	bool	show_fps;
 	bool	mirror;
+	int		alignAlgorithm;
 	bool	separate;
 	bool	align;
 	bool	cohese;

@@ -2,6 +2,7 @@
 # define SPATIALHASHING_HPP
 
 # include "Boid.hpp"
+# include <string.h>
 
 // MACROS
 # define HASH_SIZE 100
@@ -28,9 +29,9 @@ class SpatialHashing
 		t_hash_table	table[HASH_SIZE];
 		SpatialHashing(void);
 		~SpatialHashing(void);
+		void	clear(void);
 		int		hash(Vector2 center);
 		void	insert(Boid *boid);
-		void	clear(void);
 		void	draw(void);
 
 	private:

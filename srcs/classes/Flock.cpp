@@ -5,7 +5,7 @@ Flock::Flock()
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->boids[i] = Boid();
-	this->options = {false, true, true, true, true};
+	this->options = {false, true, 2, true, true, true};
 	this->check = {true, false, false, false};
 	this->hash = SpatialHashing();
 }
@@ -25,51 +25,87 @@ void Flock::average(void)
 // MEMBER FUNCTIONS
 void Flock::hashaverage(void)
 {
-	float total;
-	float total_avoid;
-	t_boid_list *tmp;
-	Circle circ;
+	int			hash;
+	int			x;
+	int			y;
+	int			ncheckonx;
+	int			ncheckony;
+	const int	hash_grid = sqrt(HASH_SIZE);
+	float		total;
+	float		total_avoid;
+	t_boid_list	*tmp;
 
+	hash = 0;
+	tmp = nullptr;
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		total = 0;
 		total_avoid = 0;
-		circ = {this->boids[i].properties.pos, this->boids[i].properties.perception};
-		const int hash = this->hash.hash(this->boids[i].properties.pos);
-		if (CheckCollisionCircleRec(circ.pos, circ.radius, this->hash.table[hash].rect) == false)
-			continue ;
-		tmp = this->hash.table[hash].boids;
-		while (tmp != nullptr)
+		this->boids[i].average.vel = Vector2Zero();
+		this->boids[i].average.pos = Vector2Zero();
+		this->boids[i].average.sep = Vector2Zero();
+		hash = this->hash.hash(this->boids[i].properties.pos);
+		ncheckonx = ceil(this->boids[i].properties.perception
+				/ this->hash.table[hash].rect.width);
+		ncheckony = ceil(this->boids[i].properties.perception
+				/ this->hash.table[hash].rect.height);
+		x = -ncheckonx - 1;
+		while (++x <= ncheckonx)
 		{
-			if (&this->boids[i] == tmp->boid)
+			y = -ncheckony - 1;
+			while (++y <= ncheckony)
 			{
-				tmp = tmp->next;
-				continue ;
+				if (hash + x + (y * hash_grid) < 0 || hash + x + (y
+						* hash_grid) >= HASH_SIZE)
+					continue ;
+				tmp = this->hash.table[hash + x + (y * hash_grid)].boids;
+				while (tmp != nullptr)
+				{
+					if (&this->boids[i] == tmp->boid)
+					{
+						tmp = tmp->next;
+						continue ;
+					}
+					if (CheckCollisionCircles(this->boids[i].properties.pos,
+							this->boids[i].properties.perception,
+							tmp->boid->properties.pos,
+							tmp->boid->radius) == false)
+					{
+						tmp = tmp->next;
+						continue ;
+					}
+					this->boids[i].average.vel = Vector2Add(this->boids[i].average.vel,
+							tmp->boid->vel);
+					this->boids[i].average.pos = Vector2Add(this->boids[i].average.pos,
+							tmp->boid->properties.pos);
+					total++;
+					if (CheckCollisionCircles(this->boids[i].properties.pos,
+							this->boids[i].properties.perception
+							* this->boids[i].properties.separation_ratio,
+							tmp->boid->properties.pos,
+							tmp->boid->radius) == false)
+					{
+						tmp = tmp->next;
+						continue ;
+					}
+					this->boids[i].average.sep = Vector2Add(this->boids[i].average.sep,
+							Vector2Subtract(this->boids[i].properties.pos,
+								tmp->boid->properties.pos));
+					total_avoid++;
+					tmp = tmp->next;
+				}
 			}
-			if (CheckCollisionCircles(circ.pos, circ.radius, tmp->boid->properties.pos, tmp->boid->radius) == false)
-			{
-				tmp = tmp->next;
-				continue ;
-			}
-			this->boids[i].average.vel = Vector2Add(this->boids[i].average.vel, tmp->boid->vel);
-			this->boids[i].average.pos = Vector2Add(this->boids[i].average.pos, tmp->boid->properties.pos);
-			total++;
-			if (CheckCollisionCircles(circ.pos, circ.radius * this->boids[i].properties.separation_ratio, tmp->boid->properties.pos, tmp->boid->radius) == false)
-			{
-				tmp = tmp->next;
-				continue ;
-			}
-			this->boids[i].average.sep = Vector2Add(this->boids[i].average.sep, Vector2Subtract(this->boids[i].properties.pos, tmp->boid->properties.pos));
-			total_avoid++;
-			tmp = tmp->next;
 		}
 		if (total <= 0)
 			continue ;
-		this->boids[i].average.vel = Vector2Divide(this->boids[i].average.vel, {total, total});
-		this->boids[i].average.pos = Vector2Divide(this->boids[i].average.pos, {total, total});
+		this->boids[i].average.vel = Vector2Divide(this->boids[i].average.vel,
+				{total, total});
+		this->boids[i].average.pos = Vector2Divide(this->boids[i].average.pos,
+				{total, total});
 		if (total_avoid <= 0)
 			continue ;
-		this->boids[i].average.sep = Vector2Divide(this->boids[i].average.sep, {total_avoid, total_avoid});
+		this->boids[i].average.sep = Vector2Divide(this->boids[i].average.sep,
+				{total_avoid, total_avoid});
 	}
 }
 
@@ -105,7 +141,6 @@ void Flock::mirror(void)
 
 void Flock::gethash(void)
 {
-	this->hash.clear();
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->hash.insert(&this->boids[i]);
 }

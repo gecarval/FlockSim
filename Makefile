@@ -6,12 +6,12 @@
 #    By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/20 08:19:33 by gecarval          #+#    #+#              #
-#    Updated: 2025/01/27 11:28:53 by gecarval         ###   ########.fr        #
+#    Updated: 2025/02/11 11:34:52 by gecarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 STDRULE = 
 NAME = flocksim
 DEBUG = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=./valgrind.supp -s
