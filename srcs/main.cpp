@@ -2,15 +2,15 @@
 
 void	init_engine(t_game *game)
 {
-	
-	game->player.camera.target = (Vector2){ 0.0f, 0.0f };
+	game->player.camera.target = (Vector2){ WIDTH / 2.0f, HEIGHT / 2.0f };
     game->player.camera.offset = (Vector2){ WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f };
     game->player.camera.rotation = 0.0f;
     game->player.camera.zoom = 1.0f;
 	game->flock = Flock();
 	game->pause = false;
+	game->frame_limit = 60;
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Flocking Simulation");
-	//SetTargetFPS(75);
+	SetTargetFPS(game->frame_limit);
 	rlImGuiSetup(true);
 }
 
@@ -148,7 +148,12 @@ void	render_imgui(t_game *game)
 	ImGui::Checkbox("Align", &game->flock.options.align);
 	ImGui::Checkbox("Cohese", &game->flock.options.cohese);
 	ImGui::Checkbox("Separate", &game->flock.options.separate);
-	ImGui::SliderFloat("GameSpeed", &game->flock.options.gamespeed, 0.1, 100.0);
+	ImGui::InputInt("Frame Rate Limit Number", &game->frame_limit);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Caps the max frame rate of the engine.");
+	if (ImGui::Button("Limit Frame Rate") == true)
+		SetTargetFPS(game->frame_limit);
+	ImGui::SliderFloat("GameSpeed", &game->flock.options.gamespeed, 0.1, 200.0);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("The speed of the flock simulation.\nPlease Note that high speeds may be unstable.");
 	ImGui::SliderInt("Alignment Algorithm", &game->flock.options.alignAlgorithm, 0, 2);
@@ -173,13 +178,13 @@ void	engine_input(t_game *game)
 	else if (IsKeyDown(KEY_E))
 		game->player.camera.rotation++;
 	if (IsKeyDown(KEY_W))
-		game->player.camera.target.y--;
+		game->player.camera.target.y -= (HEIGHT * 0.08f * GetFrameTime());
 	if (IsKeyDown(KEY_A))
-		game->player.camera.target.x--;
+		game->player.camera.target.x -= (WIDTH * 0.08f * GetFrameTime());
 	if (IsKeyDown(KEY_S))
-		game->player.camera.target.y++;
+		game->player.camera.target.y += (HEIGHT * 0.08f * GetFrameTime());
 	if (IsKeyDown(KEY_D))
-		game->player.camera.target.x++;
+		game->player.camera.target.x += (WIDTH * 0.08f * GetFrameTime());
 	if (IsKeyPressed(KEY_R))
 	{
 		game->player.camera.zoom = 1.0f;
