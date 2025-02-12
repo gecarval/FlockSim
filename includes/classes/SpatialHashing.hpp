@@ -5,7 +5,7 @@
 # include <string.h>
 
 // MACROS
-# define HASH_SIZE 100
+# define HASH_SIZE 225000
 
 // STRUCTURES
 

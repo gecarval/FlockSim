@@ -13,9 +13,9 @@ Boid::Boid(void)
 	this->properties.max_steer = 0.03;
 	this->properties.max_alignment = 5;
 	this->properties.max_cohesion = 0.035;
-	this->properties.max_separation = 0.20;
-	this->properties.separation_ratio = 0.5;
-	this->properties.obstacle_avoidance = 0.005;
+	this->properties.max_separation = 0.50;
+	this->properties.separation_ratio = 0.35;
+	this->properties.obstacle_avoidance = 0.1;
 	this->properties.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
 		static_cast<float>(GetRandomValue(0, HEIGHT))};
 	this->vel = {static_cast<float>(GetRandomValue(-this->properties.max_speed, this->properties.max_speed)),
@@ -137,7 +137,7 @@ void Boid::align(void)
 	this->average.vel = Vector2Subtract(this->average.vel, this->vel);
 	const float length = Vector2Length(this->average.vel);
 	if (length != 0 && length > this->properties.max_steer)
-	this->average.vel = Vector2Scale(Vector2Normalize(this->average.vel), this->properties.max_steer);
+		this->average.vel = Vector2Scale(Vector2Normalize(this->average.vel), this->properties.max_steer);
 	this->acc = Vector2Add(this->acc, this->average.vel);
 }
 

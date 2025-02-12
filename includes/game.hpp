@@ -25,6 +25,7 @@ typedef struct s_game
 	t_player	player;
 	Flock		flock;
 	bool		pause;
+	int			frame_limit;
 }					t_game;
 
 // FUNCTION PROTOTYPES
