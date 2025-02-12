@@ -23,11 +23,13 @@ typedef struct s_check_box
 typedef struct s_globaloptions
 {
 	bool	show_fps;
-	bool	mirror;
-	int		alignAlgorithm;
-	bool	separate;
 	bool	align;
+	bool	separate;
 	bool	cohese;
+	bool	mirror;
+	bool	avoidborder;
+	int		alignAlgorithm;
+	float	gamespeed;
 }				t_globaloptions;
 
 // CLASS DEFINITIONS
@@ -48,6 +50,7 @@ class Flock
 		void cohese(void);
         void update(void);
         void mirror(void);
+		void avoidborder(void);
         void draw(void);
 };
 

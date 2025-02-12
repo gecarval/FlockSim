@@ -16,7 +16,6 @@ Boid::Boid(void)
 	this->properties.max_separation = 0.20;
 	this->properties.separation_ratio = 0.5;
 	this->properties.obstacle_avoidance = 0.005;
-	this->frame_time_counter = 0;
 	this->properties.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
 		static_cast<float>(GetRandomValue(0, HEIGHT))};
 	this->vel = {static_cast<float>(GetRandomValue(-this->properties.max_speed, this->properties.max_speed)),
@@ -162,10 +161,9 @@ void Boid::mirror(void)
 		this->properties.pos.y = 1;
 	else if (this->properties.pos.y < 0)
 		this->properties.pos.y = HEIGHT - 1;
-	avoidborder();
 }
 
-void Boid::avoidborder(void)
+void Boid::avoidborder(float gamespeed)
 {
 	Vector2 border = {0, 0};
 	if (this->properties.pos.x < this->properties.perception)
@@ -176,15 +174,15 @@ void Boid::avoidborder(void)
 		border.y = this->properties.obstacle_avoidance * (this->properties.perception - this->properties.pos.y);
 	else if (this->properties.pos.y > HEIGHT - this->properties.perception)
 		border.y = -this->properties.obstacle_avoidance * (this->properties.pos.y - (HEIGHT - this->properties.perception));
+	border = Vector2Scale(border, GetFrameTime() * gamespeed);
 	this->acc = Vector2Add(this->acc, border);
 }
 
-void Boid::update(void)
+void Boid::update(float gamespeed)
 {
 	this->vel = Vector2Min(this->vel, this->properties.min_speed);
 	this->vel = Vector2Limit(this->vel, this->properties.max_speed);
 	this->vel = Vector2Add(this->vel, this->acc);
-	this->properties.pos.x += (this->vel.x * GetFrameTime() * 15);
-	this->properties.pos.y += (this->vel.y * GetFrameTime() * 15);
+	this->properties.pos = Vector2Add(this->properties.pos, Vector2Scale(this->vel, GetFrameTime() * gamespeed));
 	this->acc = Vector2Zero();
 }
