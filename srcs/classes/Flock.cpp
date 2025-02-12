@@ -5,7 +5,7 @@ Flock::Flock()
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->boids[i] = Boid();
-	this->options = {false, true, 2, true, true, true};
+	this->options = {true, true, true, true, true, true, 2, 15};
 	this->check = {true, false, false, false};
 	this->hash = SpatialHashing();
 }
@@ -130,13 +130,19 @@ void Flock::align(void)
 void Flock::update(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
-		this->boids[i].update();
+		this->boids[i].update(this->options.gamespeed);
 }
 
 void Flock::mirror(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->boids[i].mirror();
+}
+
+void Flock::avoidborder(void)
+{
+	for (size_t i = 0; i < NB_BOIDS; i++)
+		this->boids[i].avoidborder(this->options.gamespeed);
 }
 
 void Flock::gethash(void)

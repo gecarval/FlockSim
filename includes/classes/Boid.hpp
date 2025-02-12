@@ -2,8 +2,8 @@
 # define BOID_HPP
 
 // MACROS
-# define WIDTH 1600
-# define HEIGHT 900
+# define WIDTH 3000
+# define HEIGHT 2000
 # define NB_BOIDS 1000
 # define BOID_SIZE 8
 
@@ -58,9 +58,9 @@ class Boid
 		void	separate(void);
 		void	align(void);
 		void	cohese(void);
-		void	update(void);
+		void	update(float gamespeed);
 		void	mirror(void);
-		void	avoidborder(void);
+		void	avoidborder(float gamespeed);
 		void	draw_boid(void);
 		void	draw_perception(void);
 		void	draw_velocity(void);

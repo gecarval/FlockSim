@@ -1,74 +1,81 @@
 #include "../includes/game.hpp"
 
-bool	pause = false;
-
-void	init_engine(void)
+void	init_engine(t_game *game)
 {
-	InitWindow(WIDTH, HEIGHT, "Flocking Simulation");
-	//	SetTargetFPS(75);
+	
+	game->player.camera.target = (Vector2){ 0.0f, 0.0f };
+    game->player.camera.offset = (Vector2){ WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f };
+    game->player.camera.rotation = 0.0f;
+    game->player.camera.zoom = 1.0f;
+	game->flock = Flock();
+	game->pause = false;
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Flocking Simulation");
+	//SetTargetFPS(75);
 	rlImGuiSetup(true);
 }
 
-void	set_random_values(Flock *flok)
+void	set_random_values(Flock *flock)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-		flok->boids[i].properties.pos = {static_cast<float>(GetRandomValue(0,
+		flock->boids[i].properties.pos = {static_cast<float>(GetRandomValue(0,
 					WIDTH)), static_cast<float>(GetRandomValue(0, HEIGHT))};
-		flok->boids[i].vel = {static_cast<float>(GetRandomValue(-flok->boids[i].properties.max_speed,
-					flok->boids[i].properties.max_speed)),
-			static_cast<float>(GetRandomValue(-flok->boids[i].properties.max_speed,
-					flok->boids[i].properties.max_speed))};
+		flock->boids[i].vel = {static_cast<float>(GetRandomValue(-flock->boids[i].properties.max_speed,
+					flock->boids[i].properties.max_speed)),
+			static_cast<float>(GetRandomValue(-flock->boids[i].properties.max_speed,
+					flock->boids[i].properties.max_speed))};
 	}
 }
 
-void	set_values(Flock *flok, t_boid properties, t_check_box check)
+void	set_values(Flock *flock, t_boid properties, t_check_box check)
 {
 	t_boid	save;
 
-	flok->check = check;
+	flock->check = check;
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-		save = flok->boids[i].properties;
-		flok->boids[i].properties = properties;
-		flok->boids[i].properties.pos = save.pos;
+		save = flock->boids[i].properties;
+		flock->boids[i].properties = properties;
+		flock->boids[i].properties.pos = save.pos;
 	}
 }
 
-void	update_flock(Flock *flok)
+void	update_flock(t_game *game)
 {
-	if (flok->options.mirror == true)
-		flok->mirror();
-	if (flok->options.separate == true || flok->options.align == true
-		|| flok->options.cohese == true)
+	if (game->flock.options.mirror == true)
+		game->flock.mirror();
+	if (game->flock.options.avoidborder == true)
+		game->flock.avoidborder();
+	if (game->flock.options.separate == true || game->flock.options.align == true
+		|| game->flock.options.cohese == true)
 	{
-		if (flok->options.alignAlgorithm == 0)
+		if (game->flock.options.alignAlgorithm == 0)
 			;
-		else if (flok->options.alignAlgorithm == 1)
-			flok->average();
-		else if (flok->options.alignAlgorithm == 2)
+		else if (game->flock.options.alignAlgorithm == 1)
+			game->flock.average();
+		else if (game->flock.options.alignAlgorithm == 2)
 		{
-			flok->hash.clear();
-			flok->gethash();
-			flok->hashaverage();
+			game->flock.hash.clear();
+			game->flock.gethash();
+			game->flock.hashaverage();
 		}
 	}
-	if (flok->options.separate == true)
-		flok->separate();
-	if (flok->options.align == true)
-		flok->align();
-	if (flok->options.cohese == true)
-		flok->cohese();
-	flok->update();
+	if (game->flock.options.separate == true)
+		game->flock.separate();
+	if (game->flock.options.align == true)
+		game->flock.align();
+	if (game->flock.options.cohese == true)
+		game->flock.cohese();
+	game->flock.update();
 }
 
-void	render_imgui(Flock *flok)
+void	render_imgui(t_game *game)
 {
 	t_boid		properties;
 	t_check_box	check;
 
-	properties = flok->boids[0].properties;
-	check = flok->check;
+	properties = game->flock.boids[0].properties;
+	check = game->flock.check;
 	rlImGuiBegin();
 	ImGui::Begin("Flock Settings");
 	ImGui::Text("Boid Properties");
@@ -77,8 +84,7 @@ void	render_imgui(Flock *flok)
 		ImGui::SetTooltip("The perception radius of each boid.");
 	ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
 	ImGui::SliderFloat("Max Speed", &properties.max_speed, 0, 10);
-	ImGui::SliderFloat("Obstacle Avoidance", &properties.obstacle_avoidance, 0,
-		0.1);
+	ImGui::SliderFloat("Obstacle Avoidance", &properties.obstacle_avoidance, 0, 0.1);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
 	ImGui::Separator();
@@ -113,8 +119,7 @@ void	render_imgui(Flock *flok)
 		ImGui::OpenPopup("Warning");
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Draws the hash table of the boids.");
-	if (ImGui::BeginPopupModal("Warning", nullptr,
-			ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Warning", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		ImGui::Text("Are you sure you want to draw the hash table?\nThis will slow down the simulation.");
 		if (ImGui::Button("Enable"))
@@ -133,60 +138,79 @@ void	render_imgui(Flock *flok)
 	}
 	ImGui::Separator();
 	ImGui::Text("Other Options");
-	ImGui::Checkbox("Show FPS", &flok->options.show_fps);
-	ImGui::Checkbox("Mirror", &flok->options.mirror);
+	ImGui::Checkbox("Show FPS", &game->flock.options.show_fps);
+	ImGui::Checkbox("Mirror", &game->flock.options.mirror);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("The boids will wrap around the screen and avoid going out of bounds.");
-	ImGui::SliderInt("Alignment Algorithm", &flok->options.alignAlgorithm, 0,
-		2);
+		ImGui::SetTooltip("The boids will wrap around the canvas.");
+	ImGui::Checkbox("Avoid Border", &game->flock.options.avoidborder);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("The boids will avoid the borders of the canvas.");
+	ImGui::Checkbox("Align", &game->flock.options.align);
+	ImGui::Checkbox("Cohese", &game->flock.options.cohese);
+	ImGui::Checkbox("Separate", &game->flock.options.separate);
+	ImGui::SliderFloat("GameSpeed", &game->flock.options.gamespeed, 0.1, 100.0);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("The speed of the flock simulation.\nPlease Note that high speeds may be unstable.");
+	ImGui::SliderInt("Alignment Algorithm", &game->flock.options.alignAlgorithm, 0, 2);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("The boids will alignment algorithm.\n0-No Alignment\n1-n^2 Alignment iterating each one with every other\n2-nlogn Alignment iterating each one with the hash.");
-	ImGui::Checkbox("Align", &flok->options.align);
-	ImGui::Checkbox("Cohese", &flok->options.cohese);
-	ImGui::Checkbox("Separate", &flok->options.separate);
 	if (ImGui::Button("Randomize Boids Position") == true)
-		set_random_values(flok);
-	set_values(flok, properties, check);
+		set_random_values(&game->flock);
+	set_values(&game->flock, properties, check);
 	ImGui::End();
 	rlImGuiEnd();
 }
 
-void	engine_input(Flock *flok)
+void	engine_input(t_game *game)
 {
-	if (IsKeyPressed(KEY_F1))
-		flok->options.show_fps = !flok->options.show_fps;
-	if (IsKeyPressed(KEY_F2))
-		flok->options.mirror = !flok->options.mirror;
-	if (IsKeyPressed(KEY_F3))
-		flok->options.align = !flok->options.align;
-	if (IsKeyPressed(KEY_F4))
-		flok->options.cohese = !flok->options.cohese;
-	if (IsKeyPressed(KEY_F5))
-		flok->options.separate = !flok->options.separate;
+	game->player.camera.zoom += ((float)GetMouseWheelMove()) * 0.05f;
+	if (game->player.camera.zoom > 3.0f)
+		game->player.camera.zoom = 3.0f;
+    else if (game->player.camera.zoom < 0.1f)
+		game->player.camera.zoom = 0.1f;
+	if (IsKeyDown(KEY_Q))
+		game->player.camera.rotation--;
+	else if (IsKeyDown(KEY_E))
+		game->player.camera.rotation++;
+	if (IsKeyDown(KEY_W))
+		game->player.camera.target.y--;
+	if (IsKeyDown(KEY_A))
+		game->player.camera.target.x--;
+	if (IsKeyDown(KEY_S))
+		game->player.camera.target.y++;
+	if (IsKeyDown(KEY_D))
+		game->player.camera.target.x++;
+	if (IsKeyPressed(KEY_R))
+	{
+		game->player.camera.zoom = 1.0f;
+		game->player.camera.rotation = 0.0f;
+	}
 	if (IsKeyPressed(KEY_SPACE))
-		pause = !pause;
-	if (pause == true)
+		game->pause = !game->pause;
+	if (game->pause == true)
 		if (IsKeyPressed(KEY_RIGHT))
-			update_flock(flok);
+			update_flock(game);
 }
 
-void	update_engine(Flock *flok)
+void	update_engine(t_game *game)
 {
 	Color	color;
 
 	color = {0, 0, 0, 125};
 	while (!WindowShouldClose())
 	{
-		engine_input(flok);
-		if (pause == false)
-			update_flock(flok);
+		engine_input(game);
+		if (game->pause == false)
+			update_flock(game);
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-		flok->draw();
-		if (flok->options.show_fps == true)
+		BeginMode2D(game->player.camera);
+		game->flock.draw();
+		EndMode2D();
+		if (game->flock.options.show_fps == true)
 			DrawFPS(10, 10);
-		render_imgui(flok);
-		if (pause == true)
+		render_imgui(game);
+		if (game->pause == true)
 		{
 			DrawText("PAUSED", WIDTH / 2 - 122, HEIGHT / 2, 50, color);
 			DrawText("Press SPACE to resume", WIDTH / 2 - 110, HEIGHT / 2 + 50, 15, color);
@@ -196,20 +220,19 @@ void	update_engine(Flock *flok)
 	}
 }
 
-void	end_engine(Flock *flok)
+void	end_engine(t_game *game)
 {
-	flok->~Flock();
+	game->flock.~Flock();
 	rlImGuiShutdown();
 	CloseWindow();
 }
 
 int	main(void)
 {
-	Flock	flok;
+	t_game		game;
 
-	flok = Flock();
-	init_engine();
-	update_engine(&flok);
-	end_engine(&flok);
+	init_engine(&game);
+	update_engine(&game);
+	end_engine(&game);
 	return (0);
 }

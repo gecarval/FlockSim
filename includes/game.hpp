@@ -1,6 +1,10 @@
 #ifndef GAME_HPP
 # define GAME_HPP
 
+// MACROS
+# define WINDOW_WIDTH 1600
+# define WINDOW_HEIGHT 900
+
 // INCLUDES
 # include "./classes/Boid.hpp"
 # include "./classes/Flock.hpp"
@@ -11,13 +15,16 @@
 # include <iostream>
 
 // DATA STRUCTURES
+typedef struct s_player {
+	Camera2D	camera;
+}	t_player;
+
 // MAIN GAME ENGINE DATA STRUCTURE
 typedef struct s_game
 {
-	double_t      delta_time;
-	unsigned int	frame_count;
-	unsigned int	fps;
-	unsigned int	score;
+	t_player	player;
+	Flock		flock;
+	bool		pause;
 }					t_game;
 
 // FUNCTION PROTOTYPES
