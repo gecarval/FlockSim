@@ -174,9 +174,9 @@ void	engine_input(t_game *game)
     else if (game->player.camera.zoom < 0.1f)
 		game->player.camera.zoom = 0.1f;
 	if (IsKeyDown(KEY_Q))
-		game->player.camera.rotation--;
-	else if (IsKeyDown(KEY_E))
 		game->player.camera.rotation++;
+	else if (IsKeyDown(KEY_E))
+		game->player.camera.rotation--;
 	if (IsKeyDown(KEY_W))
 		game->player.camera.target.y -= (HEIGHT * 0.08f * GetFrameTime());
 	if (IsKeyDown(KEY_A))
@@ -186,10 +186,7 @@ void	engine_input(t_game *game)
 	if (IsKeyDown(KEY_D))
 		game->player.camera.target.x += (WIDTH * 0.08f * GetFrameTime());
 	if (IsKeyPressed(KEY_R))
-	{
-		game->player.camera.zoom = 1.0f;
 		game->player.camera.rotation = 0.0f;
-	}
 	if (IsKeyPressed(KEY_SPACE))
 		game->pause = !game->pause;
 	if (game->pause == true)
@@ -210,7 +207,7 @@ void	update_engine(t_game *game)
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 		BeginMode2D(game->player.camera);
-		game->flock.draw();
+		game->flock.draw(game->player.camera);
 		EndMode2D();
 		if (game->flock.options.show_fps == true)
 			DrawFPS(10, 10);

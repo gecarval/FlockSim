@@ -32,7 +32,7 @@ class SpatialHashing
 		void	clear(void);
 		int		hash(Vector2 center);
 		void	insert(Boid *boid);
-		void	draw(void);
+		void	draw(Camera2D camera);
 
 	private:
 		void	draw_rect(Rectangle rect, Color color);
