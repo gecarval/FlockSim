@@ -98,19 +98,37 @@ void	SpatialHashing::draw_rect(Rectangle rect, Color color)
 	DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, color);
 }
 
-void	SpatialHashing::draw(void)
+void	SpatialHashing::draw(Camera2D camera)
 {
 	for (size_t i = 0; i < HASH_SIZE; i++)
+	{
 		if (this->table[i].boids == nullptr)
-			this->draw_rect(this->table[i].rect, GRAY);
+		{
+			if (this->table[i].center.x > (camera.target.x - camera.offset.x / camera.zoom)
+				&& this->table[i].center.x < (camera.target.x + camera.offset.x / camera.zoom)
+				&& this->table[i].center.y > (camera.target.y - camera.offset.y / camera.zoom)
+				&& this->table[i].center.y < (camera.target.y + camera.offset.y / camera.zoom))
+				this->draw_rect(this->table[i].rect, GRAY);
+		}
+	}
 	for (size_t i = 0; i < HASH_SIZE; i++)
 	{
 		if (this->table[i].boids != nullptr)
-			this->draw_rect(this->table[i].rect, GREEN);
+		{
+			if (this->table[i].center.x > (camera.target.x - camera.offset.x / camera.zoom)
+				&& this->table[i].center.x < (camera.target.x + camera.offset.x / camera.zoom)
+				&& this->table[i].center.y > (camera.target.y - camera.offset.y / camera.zoom)
+				&& this->table[i].center.y < (camera.target.y + camera.offset.y / camera.zoom))
+				this->draw_rect(this->table[i].rect, GREEN);
+		}
 		t_boid_list *tmp = this->table[i].boids;
 		while (tmp != nullptr)
 		{
-			DrawText(std::to_string(i).c_str(), this->table[i].center.x, this->table[i].center.y, 10, BLACK);
+			if (this->table[i].center.x > (camera.target.x - camera.offset.x / camera.zoom)
+				&& this->table[i].center.x < (camera.target.x + camera.offset.x / camera.zoom)
+				&& this->table[i].center.y > (camera.target.y - camera.offset.y / camera.zoom)
+				&& this->table[i].center.y < (camera.target.y + camera.offset.y / camera.zoom))
+				DrawText(std::to_string(i).c_str(), this->table[i].center.x, this->table[i].center.y, 10, BLACK);
 			tmp = tmp->next;
 		}
 	}

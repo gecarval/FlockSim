@@ -151,25 +151,33 @@ void Flock::gethash(void)
 		this->hash.insert(&this->boids[i]);
 }
 
-void Flock::draw(void)
+void Flock::draw(Camera2D camera)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-		if (this->check.draw == true)
-			this->boids[i].draw_boid();
-		if (this->check.draw_velocity == true)
+		// this is also considering the camera.zoom
+		if (this->boids[i].properties.pos.x > (camera.target.x - camera.offset.x / camera.zoom)
+				&& this->boids[i].properties.pos.x < (camera.target.x + camera.offset.x / camera.zoom)
+				&& this->boids[i].properties.pos.y > (camera.target.y - camera.offset.y / camera.zoom)
+				&& this->boids[i].properties.pos.y < (camera.target.y + camera.offset.y / camera.zoom))
 		{
-			this->boids[i].draw_velocity();
-			if (this->options.align == true)
-				this->boids[i].draw_align();
-			if (this->options.cohese == true)
-				this->boids[i].draw_cohese();
-			if (this->options.separate == true)
-				this->boids[i].draw_avoid();
+			if (this->check.draw == true)
+				this->boids[i].draw_boid();
+			if (this->check.draw_velocity == true)
+			{
+				this->boids[i].draw_velocity();
+				if (this->options.align == true)
+					this->boids[i].draw_align();
+				if (this->options.cohese == true)
+					this->boids[i].draw_cohese();
+				if (this->options.separate == true)
+					this->boids[i].draw_avoid();
+			}
+			if (this->check.draw_perception == true)
+				this->boids[i].draw_perception();
 		}
-		if (this->check.draw_perception == true)
-			this->boids[i].draw_perception();
-		if (this->check.draw_hash == true)
-			this->hash.draw();
+		if (this->options.alignAlgorithm == 2)
+			if (this->check.draw_hash == true)
+				this->hash.draw(camera);
 	}
 }
