@@ -7585,6 +7585,7 @@ draw_avoid	srcs/classes/Boid.cpp	/^void Boid::draw_avoid(void)$/;"	f	class:Boid	
 draw_boid	srcs/classes/Boid.cpp	/^void Boid::draw_boid(void)$/;"	f	class:Boid	typeref:typename:void
 draw_cohese	srcs/classes/Boid.cpp	/^void Boid::draw_cohese(void)$/;"	f	class:Boid	typeref:typename:void
 draw_hash	includes/classes/Flock.hpp	/^	bool	draw_hash;$/;"	m	struct:s_check_box	typeref:typename:bool
+draw_map_in_texture	srcs/classes/SpatialHashing.cpp	/^void    SpatialHashing::draw_map_in_texture(Texture2D texture)$/;"	f	class:SpatialHashing	typeref:typename:void
 draw_perception	includes/classes/Flock.hpp	/^	bool	draw_perception;$/;"	m	struct:s_check_box	typeref:typename:bool
 draw_perception	srcs/classes/Boid.cpp	/^void Boid::draw_perception(void)$/;"	f	class:Boid	typeref:typename:void
 draw_rect	srcs/classes/SpatialHashing.cpp	/^void	SpatialHashing::draw_rect(Rectangle rect, Color color)$/;"	f	class:SpatialHashing	typeref:typename:void
@@ -7972,6 +7973,7 @@ pos	includes/classes/Boid.hpp	/^	Vector2		pos;$/;"	m	struct:s_average	typeref:ty
 pos	includes/classes/Boid.hpp	/^	Vector2		pos;$/;"	m	struct:s_boid	typeref:typename:Vector2
 pos	includes/classes/Flock.hpp	/^	Vector2 pos;$/;"	m	struct:Circle	typeref:typename:Vector2
 pos	includes/imgui.h	/^    ImVec2  pos;$/;"	m	struct:ImDrawVert	typeref:typename:ImVec2
+position	includes/game.hpp	/^    Vector2		position;$/;"	m	struct:s_texture2d	typeref:typename:Vector2
 position	includes/raylib.h	/^    Vector3 position;       \/\/ Camera position$/;"	m	struct:Camera3D	typeref:typename:Vector3
 position	includes/raylib.h	/^    Vector3 position;       \/\/ Ray position (origin)$/;"	m	struct:Ray	typeref:typename:Vector3
 preferred_x	includes/imstb_textedit.h	/^   float preferred_x; \/\/ this determines where the cursor up\/down tries to seek to along x$/;"	m	struct:STB_TexteditState	typeref:typename:float
@@ -8260,6 +8262,7 @@ s_game	includes/game.hpp	/^typedef struct s_game$/;"	s
 s_globaloptions	includes/classes/Flock.hpp	/^typedef struct s_globaloptions$/;"	s
 s_hash_table	includes/classes/SpatialHashing.hpp	/^typedef struct s_hash_table$/;"	s
 s_player	includes/game.hpp	/^typedef struct s_player {$/;"	s
+s_texture2d	includes/game.hpp	/^typedef struct s_texture2d {$/;"	s
 sampleRate	includes/raylib.h	/^    unsigned int sampleRate;    \/\/ Frequency (samples per second)$/;"	m	struct:AudioStream	typeref:typename:unsigned int
 sampleRate	includes/raylib.h	/^    unsigned int sampleRate;    \/\/ Frequency (samples per second)$/;"	m	struct:Wave	typeref:typename:unsigned int
 sampleSize	includes/raylib.h	/^    unsigned int sampleSize;    \/\/ Bit depth (bits per sample): 8, 16, 32 (24 not supported)$/;"	m	struct:AudioStream	typeref:typename:unsigned int
@@ -8554,6 +8557,7 @@ t_game	includes/game.hpp	/^}					t_game;$/;"	t	typeref:struct:s_game
 t_globaloptions	includes/classes/Flock.hpp	/^}				t_globaloptions;$/;"	t	typeref:struct:s_globaloptions
 t_hash_table	includes/classes/SpatialHashing.hpp	/^}				t_hash_table;$/;"	t	typeref:struct:s_hash_table
 t_player	includes/game.hpp	/^}	t_player;$/;"	t	typeref:struct:s_player
+t_texture2d	includes/game.hpp	/^}	t_texture2d;$/;"	t	typeref:struct:s_texture2d
 table	includes/classes/SpatialHashing.hpp	/^		t_hash_table	table[HASH_LEN];$/;"	m	class:SpatialHashing	typeref:typename:t_hash_table[]
 tangents	includes/raylib.h	/^    float *tangents;        \/\/ Vertex tangents (XYZW - 4 components per vertex) (shader-locati/;"	m	struct:Mesh	typeref:typename:float *
 target	includes/raylib.h	/^    Vector2 target;         \/\/ Camera target (rotation and zoom origin)$/;"	m	struct:Camera2D	typeref:typename:Vector2
@@ -8575,6 +8579,8 @@ texcoords	includes/rlgl.h	/^    float *texcoords;           \/\/ Vertex texture 
 texcoords2	includes/raylib.h	/^    float *texcoords2;      \/\/ Vertex texture second coordinates (UV - 2 components per vertex/;"	m	struct:Mesh	typeref:typename:float *
 texcoordx	includes/rlgl.h	/^        float texcoordx, texcoordy;         \/\/ Current active texture coordinate (added on glV/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:float
 texcoordy	includes/rlgl.h	/^        float texcoordx, texcoordy;         \/\/ Current active texture coordinate (added on glV/;"	m	struct:rlglData::__anon315aabf20d08	typeref:typename:float
+texture	includes/game.hpp	/^    Texture2D	texture;$/;"	m	struct:s_texture2d	typeref:typename:Texture2D
+texture	includes/game.hpp	/^    t_texture2d texture;$/;"	m	struct:s_game	typeref:typename:t_texture2d
 texture	includes/raylib.h	/^    Texture texture;        \/\/ Color buffer attachment texture$/;"	m	struct:RenderTexture	typeref:typename:Texture
 texture	includes/raylib.h	/^    Texture2D texture;      \/\/ Material map texture$/;"	m	struct:MaterialMap	typeref:typename:Texture2D
 texture	includes/raylib.h	/^    Texture2D texture;      \/\/ Texture atlas containing the glyphs$/;"	m	struct:Font	typeref:typename:Texture2D

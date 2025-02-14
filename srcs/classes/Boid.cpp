@@ -3,10 +3,9 @@
 // CONSTRUCTOR
 Boid::Boid(void)
 {
-	this->properties.color = RED;
-	this->sides = 3;
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
+	this->properties.color = RED;
 	this->properties.min_speed = 0.0;
 	this->properties.max_speed = 10;
 	this->properties.perception = 50;
@@ -26,7 +25,6 @@ Boid::Boid(void)
 
 Boid::Boid(t_boid properties)
 {
-	this->sides = 3;
 	this->rotation = 0;
 	this->frame_time_counter = 0;
 	this->radius = BOID_SIZE;
@@ -46,8 +44,11 @@ Boid::~Boid(void)
 // MEMBER FUNCTIONS
 void Boid::draw_boid(void)
 {
-	this->rotation = atan2(this->vel.y, this->vel.x) * RAD2DEG;
-	DrawPoly(this->properties.pos, this->sides, this->radius, this->rotation, this->properties.color);
+	this->rotation = atan2(this->vel.y, this->vel.x) + PI / 2;
+    DrawTriangle(Vector2Add(this->properties.pos, Vector2Rotate({0, -this->radius * 2.5f}, this->rotation)),
+        Vector2Add(this->properties.pos, Vector2Rotate({-this->radius, this->radius * 1.5f}, this->rotation)),
+        Vector2Add(this->properties.pos, Vector2Rotate({this->radius, this->radius * 1.5f}, this->rotation)),
+        this->properties.color);
 }
 
 void Boid::draw_perception(void)
