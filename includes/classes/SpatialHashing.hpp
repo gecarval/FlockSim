@@ -5,8 +5,9 @@
 # include <string.h>
 
 // MACROS
-# define HASH_SIZE 225000
-
+# define HASH_QUAD_SIZE 100
+# define HASH_CALC (((WIDTH + HEIGHT) / 2) / HASH_QUAD_SIZE)
+# define HASH_LEN HASH_CALC * HASH_CALC
 // STRUCTURES
 
 typedef struct t_boid_list
@@ -26,7 +27,7 @@ typedef struct s_hash_table
 class SpatialHashing
 {
 	public:
-		t_hash_table	table[HASH_SIZE];
+		t_hash_table	table[HASH_LEN];
 		SpatialHashing(void);
 		~SpatialHashing(void);
 		void	clear(void);

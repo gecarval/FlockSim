@@ -3,13 +3,13 @@
 // CONSTRUCTOR
 SpatialHashing::SpatialHashing(void)
 {
-	const float div = sqrt(HASH_SIZE);
+	const float div = sqrt(HASH_LEN);
 	const float grid_height = HEIGHT / div;
 	const float grid_width = WIDTH / div;
 	float xi = 0;
 	float yi = 0;
 
-	for (size_t i = 0; i < HASH_SIZE; i++)
+	for (size_t i = 0; i < HASH_LEN; i++)
 	{
 		this->table[i].rect.x = xi;
 		this->table[i].rect.y = yi;
@@ -33,7 +33,7 @@ SpatialHashing::~SpatialHashing(void)
 	t_boid_list *tmp = nullptr;
 	t_boid_list *next = nullptr;
 
-	for (size_t i = 0; i < HASH_SIZE; i++)
+	for (size_t i = 0; i < HASH_LEN; i++)
 	{
 		tmp = this->table[i].boids;
 		while (tmp != nullptr)
@@ -52,7 +52,7 @@ void	SpatialHashing::clear(void)
 	t_boid_list *tmp = nullptr;
 	t_boid_list *next = nullptr;
 
-	for (size_t i = 0; i < HASH_SIZE; i++)
+	for (size_t i = 0; i < HASH_LEN; i++)
 	{
 		tmp = this->table[i].boids;
 		while (tmp != nullptr)
@@ -67,15 +67,15 @@ void	SpatialHashing::clear(void)
 
 int		SpatialHashing::hash(Vector2 center)
 {
-	const float hash_grid = sqrtf(HASH_SIZE);
+	const float hash_grid = sqrtf(HASH_LEN);
 	const float x = floor(center.x / (WIDTH / hash_grid));
 	const float y = floor(center.y / (HEIGHT / hash_grid));
 	const float result = x + y * hash_grid;
 
 	if (result <= 0)
 		return (0);
-	else if (result >= HASH_SIZE)
-		return (HASH_SIZE - 1);
+	else if (result >= HASH_LEN)
+		return (HASH_LEN - 1);
 	return (static_cast<int>(result));
 }
 
@@ -100,36 +100,24 @@ void	SpatialHashing::draw_rect(Rectangle rect, Color color)
 
 void	SpatialHashing::draw(Camera2D camera)
 {
-	for (size_t i = 0; i < HASH_SIZE; i++)
+	const int	hash = this->hash(camera.target);
+	const int	topright = this->hash({camera.target.x + camera.offset.x / camera.zoom, camera.target.y - camera.offset.y / camera.zoom});
+	const int	topleft = this->hash({camera.target.x - camera.offset.x / camera.zoom, camera.target.y - camera.offset.y / camera.zoom});
+
+	std::cout << "hash: " << hash << std::endl;
+	std::cout << "topright: " << topright << std::endl;
+	std::cout << "topleft: " << topleft << std::endl;
+	for (size_t i = 0; i < HASH_LEN; i++)
 	{
+		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
+				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
+				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
+				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
+			continue ;
 		if (this->table[i].boids == nullptr)
-		{
-			if (this->table[i].center.x > (camera.target.x - camera.offset.x / camera.zoom)
-				&& this->table[i].center.x < (camera.target.x + camera.offset.x / camera.zoom)
-				&& this->table[i].center.y > (camera.target.y - camera.offset.y / camera.zoom)
-				&& this->table[i].center.y < (camera.target.y + camera.offset.y / camera.zoom))
-				this->draw_rect(this->table[i].rect, GRAY);
-		}
-	}
-	for (size_t i = 0; i < HASH_SIZE; i++)
-	{
+			this->draw_rect(this->table[i].rect, GRAY);
 		if (this->table[i].boids != nullptr)
-		{
-			if (this->table[i].center.x > (camera.target.x - camera.offset.x / camera.zoom)
-				&& this->table[i].center.x < (camera.target.x + camera.offset.x / camera.zoom)
-				&& this->table[i].center.y > (camera.target.y - camera.offset.y / camera.zoom)
-				&& this->table[i].center.y < (camera.target.y + camera.offset.y / camera.zoom))
-				this->draw_rect(this->table[i].rect, GREEN);
-		}
-		t_boid_list *tmp = this->table[i].boids;
-		while (tmp != nullptr)
-		{
-			if (this->table[i].center.x > (camera.target.x - camera.offset.x / camera.zoom)
-				&& this->table[i].center.x < (camera.target.x + camera.offset.x / camera.zoom)
-				&& this->table[i].center.y > (camera.target.y - camera.offset.y / camera.zoom)
-				&& this->table[i].center.y < (camera.target.y + camera.offset.y / camera.zoom))
-				DrawText(std::to_string(i).c_str(), this->table[i].center.x, this->table[i].center.y, 10, BLACK);
-			tmp = tmp->next;
-		}
+			this->draw_rect(this->table[i].rect, GREEN);
+		DrawText(std::to_string(i).c_str(), this->table[i].center.x, this->table[i].center.y, 10, BLACK);
 	}
 }

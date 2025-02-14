@@ -317,7 +317,6 @@ CAMERA_ORBITAL	includes/raylib.h	/^    CAMERA_ORBITAL,                 \/\/ Came
 CAMERA_ORTHOGRAPHIC	includes/raylib.h	/^    CAMERA_ORTHOGRAPHIC             \/\/ Orthographic projection$/;"	e	enum:__anonce11f6a41503
 CAMERA_PERSPECTIVE	includes/raylib.h	/^    CAMERA_PERSPECTIVE = 0,         \/\/ Perspective projection$/;"	e	enum:__anonce11f6a41503
 CAMERA_THIRD_PERSON	includes/raylib.h	/^    CAMERA_THIRD_PERSON             \/\/ Camera third person$/;"	e	enum:__anonce11f6a41403
-CC	Makefile	/^CC = c++$/;"	m
 CLITERAL	includes/raylib.h	/^    #define CLITERAL(/;"	d
 COLUMNS_HIT_RECT_HALF_THICKNESS	imgui_tables.cpp	/^static const float COLUMNS_HIT_RECT_HALF_THICKNESS = 4.0f;$/;"	v	typeref:typename:const float	file:
 CT_Button	imgui_demo.cpp	/^        enum ContentsType { CT_ShowWidth, CT_ShortText, CT_LongText, CT_Button, CT_FillButton, C/;"	e	enum:ShowDemoWindowTables::ContentsType	file:
@@ -339,6 +338,7 @@ CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE	includes/raylib.h	/^    CUBEMAP_LAYOUT_CROSS_
 CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR	includes/raylib.h	/^    CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR,     \/\/ Layout is defined by a 3x4 cross with cubemap f/;"	e	enum:__anonce11f6a41003
 CUBEMAP_LAYOUT_LINE_HORIZONTAL	includes/raylib.h	/^    CUBEMAP_LAYOUT_LINE_HORIZONTAL,         \/\/ Layout is defined by a horizontal line with fac/;"	e	enum:__anonce11f6a41003
 CUBEMAP_LAYOUT_LINE_VERTICAL	includes/raylib.h	/^    CUBEMAP_LAYOUT_LINE_VERTICAL,           \/\/ Layout is defined by a vertical line with faces$/;"	e	enum:__anonce11f6a41003
+CXX	Makefile	/^CXX = c++$/;"	m
 CalcCustomRectUV	imgui_draw.cpp	/^void ImFontAtlas::CalcCustomRectUV(const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2/;"	f	class:ImFontAtlas	typeref:typename:void
 CalcDelayFromHoveredFlags	imgui.cpp	/^static inline float CalcDelayFromHoveredFlags(ImGuiHoveredFlags flags)$/;"	f	typeref:typename:float	file:
 CalcFontSize	includes/imgui_internal.h	/^    float       CalcFontSize() const    { ImGuiContext& g = *Ctx; return g.FontBaseSize * FontWi/;"	f	struct:ImGuiWindow	typeref:typename:float
@@ -1448,7 +1448,9 @@ GrabRounding	includes/imgui.h	/^    float       GrabRounding;               \/\/
 GroupOffset	includes/imgui_internal.h	/^    ImVec1                  GroupOffset;$/;"	m	struct:ImGuiWindowTempData	typeref:typename:ImVec1
 GroupStack	includes/imgui_internal.h	/^    ImVector<ImGuiGroupData>        GroupStack;                 \/\/ Stack for BeginGroup()\/End/;"	m	struct:ImGuiContext	typeref:typename:ImVector<ImGuiGroupData>
 GrowIndex	imgui_draw.cpp	/^void ImFont::GrowIndex(int new_size)$/;"	f	class:ImFont	typeref:typename:void
-HASH_SIZE	includes/classes/SpatialHashing.hpp	/^# define HASH_SIZE /;"	d
+HASH_CALC	includes/classes/SpatialHashing.hpp	/^# define HASH_CALC /;"	d
+HASH_LEN	includes/classes/SpatialHashing.hpp	/^# define HASH_LEN /;"	d
+HASH_QUAD_SIZE	includes/classes/SpatialHashing.hpp	/^# define HASH_QUAD_SIZE /;"	d
 HEIGHT	includes/classes/Boid.hpp	/^# define HEIGHT /;"	d
 HSV	includes/imgui.h	/^    static ImColor HSV(float h, float s, float v, float a = 1.0f)   { float r, g, b; ImGui::Colo/;"	f	struct:ImColor	typeref:typename:ImColor
 HandleGamepadButtonEvent	rlImGui.cpp	/^void HandleGamepadButtonEvent(ImGuiIO& io, GamepadButton button, ImGuiKey key)$/;"	f	typeref:typename:void
@@ -5564,7 +5566,7 @@ PopupBorderSize	includes/imgui.h	/^    float       PopupBorderSize;            \
 PopupId	includes/imgui_internal.h	/^    ImGuiID                 PopupId;                            \/\/ ID in the popup stack when /;"	m	struct:ImGuiWindow	typeref:typename:ImGuiID
 PopupId	includes/imgui_internal.h	/^    ImGuiID             PopupId;        \/\/ Set on OpenPopup()$/;"	m	struct:ImGuiPopupData	typeref:typename:ImGuiID
 PopupRounding	includes/imgui.h	/^    float       PopupRounding;              \/\/ Radius of popup window corners rounding. (Note /;"	m	struct:ImGuiStyle	typeref:typename:float
-Pos	imgui.ini	/^Pos=1048,13$/;"	k	section:Window
+Pos	imgui.ini	/^Pos=1070,24$/;"	k	section:Window
 Pos	imgui.ini	/^Pos=119,69$/;"	k	section:Window
 Pos	imgui.ini	/^Pos=12,78$/;"	k	section:Window
 Pos	imgui.ini	/^Pos=17,277$/;"	k	section:Window
@@ -7575,8 +7577,8 @@ direction	includes/imstb_truetype.h	/^   int direction;$/;"	m	struct:stbtt__acti
 direction	includes/raylib.h	/^    Vector3 direction;      \/\/ Ray direction (normalized)$/;"	m	struct:Ray	typeref:typename:Vector3
 distance	includes/raylib.h	/^    float distance;         \/\/ Distance to the nearest hit$/;"	m	struct:RayCollision	typeref:typename:float
 draw	includes/classes/Flock.hpp	/^	bool	draw;$/;"	m	struct:s_check_box	typeref:typename:bool
-draw	srcs/classes/Flock.cpp	/^void Flock::draw(void)$/;"	f	class:Flock	typeref:typename:void
-draw	srcs/classes/SpatialHashing.cpp	/^void	SpatialHashing::draw(void)$/;"	f	class:SpatialHashing	typeref:typename:void
+draw	srcs/classes/Flock.cpp	/^void Flock::draw(Camera2D camera)$/;"	f	class:Flock	typeref:typename:void
+draw	srcs/classes/SpatialHashing.cpp	/^void	SpatialHashing::draw(Camera2D camera)$/;"	f	class:SpatialHashing	typeref:typename:void
 drawCounter	includes/rlgl.h	/^    int drawCounter;            \/\/ Draw calls counter$/;"	m	struct:rlRenderBatch	typeref:typename:int
 draw_align	srcs/classes/Boid.cpp	/^void Boid::draw_align(void)$/;"	f	class:Boid	typeref:typename:void
 draw_avoid	srcs/classes/Boid.cpp	/^void Boid::draw_avoid(void)$/;"	f	class:Boid	typeref:typename:void
@@ -8552,7 +8554,7 @@ t_game	includes/game.hpp	/^}					t_game;$/;"	t	typeref:struct:s_game
 t_globaloptions	includes/classes/Flock.hpp	/^}				t_globaloptions;$/;"	t	typeref:struct:s_globaloptions
 t_hash_table	includes/classes/SpatialHashing.hpp	/^}				t_hash_table;$/;"	t	typeref:struct:s_hash_table
 t_player	includes/game.hpp	/^}	t_player;$/;"	t	typeref:struct:s_player
-table	includes/classes/SpatialHashing.hpp	/^		t_hash_table	table[HASH_SIZE];$/;"	m	class:SpatialHashing	typeref:typename:t_hash_table[]
+table	includes/classes/SpatialHashing.hpp	/^		t_hash_table	table[HASH_LEN];$/;"	m	class:SpatialHashing	typeref:typename:t_hash_table[]
 tangents	includes/raylib.h	/^    float *tangents;        \/\/ Vertex tangents (XYZW - 4 components per vertex) (shader-locati/;"	m	struct:Mesh	typeref:typename:float *
 target	includes/raylib.h	/^    Vector2 target;         \/\/ Camera target (rotation and zoom origin)$/;"	m	struct:Camera2D	typeref:typename:Vector2
 target	includes/raylib.h	/^    Vector3 target;         \/\/ Camera target it looks-at$/;"	m	struct:Camera3D	typeref:typename:Vector3
