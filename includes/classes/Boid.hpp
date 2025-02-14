@@ -2,9 +2,9 @@
 # define BOID_HPP
 
 // MACROS
-# define WIDTH 1000
-# define HEIGHT 1000
-# define NB_BOIDS 1000
+# define WIDTH 2000
+# define HEIGHT 2000
+# define NB_BOIDS 100
 # define BOID_SIZE 8
 
 // INCLUDES
