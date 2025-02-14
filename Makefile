@@ -1,5 +1,5 @@
-CC = c++
-CFLAGS = -Wall -Wextra -Werror -g
+CXX = c++
+CXXFLAGS = -Wall -Wextra -Werror -g
 STDRULE = 
 NAME = flocksim
 DEBUG = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=./valgrind.supp -s
@@ -20,10 +20,10 @@ OBJ = $(SRC:.cpp=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(STDRULE) $(OBJ) -o $(NAME) $(INCS)
+	$(CXX) $(CXXFLAGS) $(STDRULE) $(OBJ) -o $(NAME) $(INCS)
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) $(STDRULE) -c $< -o $@ $(INCS)
+	$(CXX) $(CXXFLAGS) $(STDRULE) -c $< -o $@ $(INCS)
 
 clean:
 	rm -f $(OBJ)
@@ -39,4 +39,4 @@ run: all
 debug:
 	$(DEBUG) ./$(NAME)
 
-.PHONY: all clean fclean re start debug
+.PHONY: all clean fclean re run debug

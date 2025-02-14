@@ -30,7 +30,7 @@ void Flock::hashaverage(void)
 	int			y;
 	int			ncheckonx;
 	int			ncheckony;
-	const int	hash_grid = sqrt(HASH_SIZE);
+	const int	hash_grid = sqrt(HASH_LEN);
 	float		total;
 	float		total_avoid;
 	t_boid_list	*tmp;
@@ -56,7 +56,7 @@ void Flock::hashaverage(void)
 			while (++y <= ncheckony)
 			{
 				if (hash + x + (y * hash_grid) < 0 || hash + x + (y
-						* hash_grid) >= HASH_SIZE)
+						* hash_grid) >= HASH_LEN)
 					continue ;
 				tmp = this->hash.table[hash + x + (y * hash_grid)].boids;
 				while (tmp != nullptr)
