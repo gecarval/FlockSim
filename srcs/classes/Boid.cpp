@@ -9,7 +9,7 @@ Boid::Boid(void)
 	this->properties.min_speed = 0.0;
 	this->properties.max_speed = 10;
 	this->properties.perception = 50;
-	this->properties.max_steer = 0.03;
+	this->properties.max_steer = 0.06;
 	this->properties.max_alignment = 5;
 	this->properties.max_cohesion = 0.035;
 	this->properties.max_separation = 0.50;
@@ -164,7 +164,7 @@ void Boid::mirror(void)
 		this->properties.pos.y = HEIGHT - 1;
 }
 
-void Boid::avoidborder(float gamespeed)
+void Boid::avoidborder(void)
 {
 	Vector2 border = {0, 0};
 	if (this->properties.pos.x < this->properties.perception)
@@ -175,7 +175,6 @@ void Boid::avoidborder(float gamespeed)
 		border.y = this->properties.obstacle_avoidance * (this->properties.perception - this->properties.pos.y);
 	else if (this->properties.pos.y > HEIGHT - this->properties.perception)
 		border.y = -this->properties.obstacle_avoidance * (this->properties.pos.y - (HEIGHT - this->properties.perception));
-	border = Vector2Scale(border, GetFrameTime() * gamespeed);
 	this->acc = Vector2Add(this->acc, border);
 }
 
@@ -183,7 +182,7 @@ void Boid::update(float gamespeed)
 {
 	this->vel = Vector2Min(this->vel, this->properties.min_speed);
 	this->vel = Vector2Limit(this->vel, this->properties.max_speed);
-	this->vel = Vector2Add(this->vel, this->acc);
+	this->vel = Vector2Add(this->vel, Vector2Scale(this->acc, GetFrameTime() * gamespeed));
 	this->properties.pos = Vector2Add(this->properties.pos, Vector2Scale(this->vel, GetFrameTime() * gamespeed));
 	this->acc = Vector2Zero();
 }

@@ -180,7 +180,15 @@ void	render_imgui(t_game *game)
 
 void	engine_input(t_game *game)
 {
-	game->player.camera.zoom += ((float)GetMouseWheelMove()) * 0.05f;
+	const float walkspeed = (0.8f * GetFrameTime()) / (game->player.camera.zoom * 20);
+	if (GetMouseWheelMove() != 0)
+	{
+		const float zoomdir = (GetMouseWheelMove() > 0) ? 1.0f : -1.0f;
+		const Vector2 calc = Vector2Scale(Vector2Subtract(GetMousePosition(), game->player.camera.offset), zoomdir);
+		const Vector2 mousepos = Vector2Limit(calc, 10.0f);
+		game->player.camera.target = Vector2Add(game->player.camera.target,	mousepos);
+		game->player.camera.zoom += ((float)GetMouseWheelMove()) * 0.05f;
+	}
 	if (game->player.camera.zoom > 3.0f)
 		game->player.camera.zoom = 3.0f;
     else if (game->player.camera.zoom < 0.1f)
@@ -190,13 +198,13 @@ void	engine_input(t_game *game)
 	else if (IsKeyDown(KEY_E))
 		game->player.camera.rotation--;
 	if (IsKeyDown(KEY_W))
-		game->player.camera.target.y -= (HEIGHT * 0.08f * GetFrameTime());
+		game->player.camera.target.y -= (HEIGHT * walkspeed);
 	if (IsKeyDown(KEY_A))
-		game->player.camera.target.x -= (WIDTH * 0.08f * GetFrameTime());
+		game->player.camera.target.x -= (WIDTH * walkspeed);
 	if (IsKeyDown(KEY_S))
-		game->player.camera.target.y += (HEIGHT * 0.08f * GetFrameTime());
+		game->player.camera.target.y += (HEIGHT * walkspeed);
 	if (IsKeyDown(KEY_D))
-		game->player.camera.target.x += (WIDTH * 0.08f * GetFrameTime());
+		game->player.camera.target.x += (WIDTH * walkspeed);
 	if (IsKeyPressed(KEY_R))
 		game->player.camera.rotation = 0.0f;
 	if (IsKeyPressed(KEY_SPACE))
