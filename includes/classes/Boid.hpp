@@ -2,10 +2,10 @@
 # define BOID_HPP
 
 // MACROS
-# define WIDTH 15000
-# define HEIGHT 15000
+# define WIDTH 2000
+# define HEIGHT 2000
 # define NB_BOIDS 1000
-# define BOID_SIZE 6
+# define BOID_SIZE 3
 
 // INCLUDES
 # include "raylib.h"
@@ -59,7 +59,7 @@ class Boid
 		void	cohese(void);
 		void	update(float gamespeed);
 		void	mirror(void);
-		void	avoidborder(float gamespeed);
+		void	avoidborder(void);
 		void	draw_boid(void);
 		void	draw_perception(void);
 		void	draw_velocity(void);

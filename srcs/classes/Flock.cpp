@@ -142,7 +142,7 @@ void Flock::mirror(void)
 void Flock::avoidborder(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
-		this->boids[i].avoidborder(this->options.gamespeed);
+		this->boids[i].avoidborder();
 }
 
 void Flock::gethash(void)
