@@ -98,15 +98,27 @@ void	SpatialHashing::draw_rect(Rectangle rect, Color color)
 	DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, color);
 }
 
+void    SpatialHashing::renderhashmaptexture(RenderTexture2D texture)
+{
+    BeginTextureMode(texture);
+    for (size_t i = 0; i < HASH_LEN; i++)
+    {
+        this->draw_rect(this->table[i].rect, GRAY);
+        DrawText(std::to_string(i).c_str(),
+                this->table[i].center.x, this->table[i].center.y, 10, BLACK);
+    }
+    EndTextureMode();
+}
+
+void    SpatialHashing::drawhashmaptexture(RenderTexture2D texture)
+{
+    DrawTextureRec(texture.texture, (Rectangle){0, 0,
+            (float)texture.texture.width, (float)-texture.texture.height},
+            (Vector2){0, 0}, WHITE);
+}
+
 void	SpatialHashing::draw(Camera2D camera)
 {
-	const int	hash = this->hash(camera.target);
-	const int	topright = this->hash({camera.target.x + camera.offset.x / camera.zoom, camera.target.y - camera.offset.y / camera.zoom});
-	const int	topleft = this->hash({camera.target.x - camera.offset.x / camera.zoom, camera.target.y - camera.offset.y / camera.zoom});
-
-	std::cout << "hash: " << hash << std::endl;
-	std::cout << "topright: " << topright << std::endl;
-	std::cout << "topleft: " << topleft << std::endl;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
 		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
@@ -114,10 +126,7 @@ void	SpatialHashing::draw(Camera2D camera)
 				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
 				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
 			continue ;
-		if (this->table[i].boids == nullptr)
-			this->draw_rect(this->table[i].rect, GRAY);
 		if (this->table[i].boids != nullptr)
 			this->draw_rect(this->table[i].rect, GREEN);
-		DrawText(std::to_string(i).c_str(), this->table[i].center.x, this->table[i].center.y, 10, BLACK);
 	}
 }

@@ -151,7 +151,7 @@ void Flock::gethash(void)
 		this->hash.insert(&this->boids[i]);
 }
 
-void Flock::draw(Camera2D camera)
+void Flock::draw(Camera2D camera, RenderTexture2D texture)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
@@ -176,8 +176,9 @@ void Flock::draw(Camera2D camera)
 			if (this->check.draw_perception == true)
 				this->boids[i].draw_perception();
 		}
-		if (this->options.alignAlgorithm == 2)
-			if (this->check.draw_hash == true)
-				this->hash.draw(camera);
+		if (this->check.draw_hash == true)
+            this->hash.drawhashmaptexture(texture);
+		if (this->check.draw_hash == true)
+			this->hash.draw(camera);
 	}
 }

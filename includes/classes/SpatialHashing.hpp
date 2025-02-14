@@ -34,6 +34,8 @@ class SpatialHashing
 		int		hash(Vector2 center);
 		void	insert(Boid *boid);
 		void	draw(Camera2D camera);
+        void    drawhashmaptexture(RenderTexture2D texture);
+        void    renderhashmaptexture(RenderTexture2D texture);
 
 	private:
 		void	draw_rect(Rectangle rect, Color color);

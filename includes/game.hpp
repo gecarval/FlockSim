@@ -19,10 +19,16 @@ typedef struct s_player {
 	Camera2D	camera;
 }	t_player;
 
+typedef struct s_texture2d {
+    RenderTexture2D hashmap;
+}	t_texture2d;
+
 // MAIN GAME ENGINE DATA STRUCTURE
 typedef struct s_game
 {
 	t_player	player;
+    t_texture2d texture;
+    Color       textcolor;
 	Flock		flock;
 	bool		pause;
 	int			frame_limit;

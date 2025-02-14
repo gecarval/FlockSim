@@ -2,10 +2,10 @@
 # define BOID_HPP
 
 // MACROS
-# define WIDTH 2000
-# define HEIGHT 2000
-# define NB_BOIDS 100
-# define BOID_SIZE 8
+# define WIDTH 15000
+# define HEIGHT 15000
+# define NB_BOIDS 1000
+# define BOID_SIZE 6
 
 // INCLUDES
 # include "raylib.h"
@@ -44,7 +44,6 @@ class Boid
 	protected:
 		Vector2	acc;
 		float	rotation;
-		int		sides;
 
 	public:
 		float	radius;

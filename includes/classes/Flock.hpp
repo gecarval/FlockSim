@@ -51,7 +51,7 @@ class Flock
         void update(void);
         void mirror(void);
 		void avoidborder(void);
-        void draw(Camera2D camera);
+        void draw(Camera2D camera, RenderTexture2D texture);
 };
 
 #endif
