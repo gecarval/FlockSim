@@ -44,10 +44,10 @@ void Flock::hashaverage(void)
 		this->boids[i].average.vel = Vector2Zero();
 		this->boids[i].average.pos = Vector2Zero();
 		this->boids[i].average.sep = Vector2Zero();
-		hash = this->hash.hash(this->boids[i].properties.pos);
-		ncheckonx = ceil(this->boids[i].properties.perception
+		hash = this->hash.hash(this->boids[i].stats.pos);
+		ncheckonx = ceil(this->boids[i].stats.perception
 				/ this->hash.table[hash].rect.width);
-		ncheckony = ceil(this->boids[i].properties.perception
+		ncheckony = ceil(this->boids[i].stats.perception
 				/ this->hash.table[hash].rect.height);
 		x = -ncheckonx - 1;
 		while (++x <= ncheckonx)
@@ -66,9 +66,9 @@ void Flock::hashaverage(void)
 						tmp = tmp->next;
 						continue ;
 					}
-					if (CheckCollisionCircles(this->boids[i].properties.pos,
-							this->boids[i].properties.perception,
-							tmp->boid->properties.pos,
+					if (CheckCollisionCircles(this->boids[i].stats.pos,
+							this->boids[i].stats.perception,
+							tmp->boid->stats.pos,
 							tmp->boid->radius) == false)
 					{
 						tmp = tmp->next;
@@ -77,20 +77,20 @@ void Flock::hashaverage(void)
 					this->boids[i].average.vel = Vector2Add(this->boids[i].average.vel,
 							tmp->boid->vel);
 					this->boids[i].average.pos = Vector2Add(this->boids[i].average.pos,
-							tmp->boid->properties.pos);
+							tmp->boid->stats.pos);
 					total++;
-					if (CheckCollisionCircles(this->boids[i].properties.pos,
-							this->boids[i].properties.perception
-							* this->boids[i].properties.separation_ratio,
-							tmp->boid->properties.pos,
+					if (CheckCollisionCircles(this->boids[i].stats.pos,
+							this->boids[i].stats.perception
+							* this->boids[i].stats.separation_ratio,
+							tmp->boid->stats.pos,
 							tmp->boid->radius) == false)
 					{
 						tmp = tmp->next;
 						continue ;
 					}
 					this->boids[i].average.sep = Vector2Add(this->boids[i].average.sep,
-							Vector2Subtract(this->boids[i].properties.pos,
-								tmp->boid->properties.pos));
+							Vector2Subtract(this->boids[i].stats.pos,
+								tmp->boid->stats.pos));
 					total_avoid++;
 					tmp = tmp->next;
 				}
@@ -156,10 +156,10 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		// this is also considering the camera.zoom
-		if (this->boids[i].properties.pos.x > (camera.target.x - camera.offset.x / camera.zoom)
-				&& this->boids[i].properties.pos.x < (camera.target.x + camera.offset.x / camera.zoom)
-				&& this->boids[i].properties.pos.y > (camera.target.y - camera.offset.y / camera.zoom)
-				&& this->boids[i].properties.pos.y < (camera.target.y + camera.offset.y / camera.zoom))
+		if (this->boids[i].stats.pos.x > (camera.target.x - camera.offset.x / camera.zoom)
+				&& this->boids[i].stats.pos.x < (camera.target.x + camera.offset.x / camera.zoom)
+				&& this->boids[i].stats.pos.y > (camera.target.y - camera.offset.y / camera.zoom)
+				&& this->boids[i].stats.pos.y < (camera.target.y + camera.offset.y / camera.zoom))
 		{
 			if (this->check.draw == true)
 				this->boids[i].draw_boid();

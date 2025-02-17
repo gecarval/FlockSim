@@ -22,25 +22,25 @@ void	set_random_values(Flock *flock)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-		flock->boids[i].properties.pos = {static_cast<float>(GetRandomValue(0,
+		flock->boids[i].stats.pos = {static_cast<float>(GetRandomValue(0,
 					WIDTH)), static_cast<float>(GetRandomValue(0, HEIGHT))};
-		flock->boids[i].vel = {static_cast<float>(GetRandomValue(-flock->boids[i].properties.max_speed,
-					flock->boids[i].properties.max_speed)),
-			static_cast<float>(GetRandomValue(-flock->boids[i].properties.max_speed,
-					flock->boids[i].properties.max_speed))};
+		flock->boids[i].vel = {static_cast<float>(GetRandomValue(-flock->boids[i].stats.max_speed,
+					flock->boids[i].stats.max_speed)),
+			static_cast<float>(GetRandomValue(-flock->boids[i].stats.max_speed,
+					flock->boids[i].stats.max_speed))};
 	}
 }
 
-void	set_values(Flock *flock, t_boid properties, t_check_box check)
+void	set_values(Flock *flock, t_boid stats, t_check_box check)
 {
 	t_boid	save;
 
 	flock->check = check;
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-		save = flock->boids[i].properties;
-		flock->boids[i].properties = properties;
-		flock->boids[i].properties.pos = save.pos;
+		save = flock->boids[i].stats;
+		flock->boids[i].stats = stats;
+		flock->boids[i].stats.pos = save.pos;
 	}
 }
 
@@ -75,37 +75,37 @@ void	update_flock(t_game *game)
 
 void	render_imgui(t_game *game)
 {
-	t_boid		properties;
+	t_boid		stats;
 	t_check_box	check;
 
-    properties = game->flock.boids[0].properties;
+    stats = game->flock.boids[0].stats;
     check = game->flock.check;
     rlImGuiBegin();
     ImGui::Begin("Flock Settings");
-    ImGui::Text("Boid Properties");
-    ImGui::SliderFloat("Perception", &properties.perception, 0, 200);
+    ImGui::Text("Boid stats");
+    ImGui::SliderFloat("Perception", &stats.perception, 0, 200);
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("The perception radius of each boid.");
-    ImGui::SliderFloat("Min Speed", &properties.min_speed, 0, 10);
-    ImGui::SliderFloat("Max Speed", &properties.max_speed, 0, 10);
-    ImGui::SliderFloat("Obstacle Avoidance", &properties.obstacle_avoidance, 0, 0.1);
+    ImGui::SliderFloat("Min Speed", &stats.min_speed, 0, 10);
+    ImGui::SliderFloat("Max Speed", &stats.max_speed, 0, 10);
+    ImGui::SliderFloat("Obstacle Avoidance", &stats.obstacle_avoidance, 0, 0.1);
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
     ImGui::Separator();
-    ImGui::Text("Flocking Properties");
-    ImGui::SliderFloat("Max Alignment", &properties.max_alignment, 0, 10);
+    ImGui::Text("Flocking stats");
+    ImGui::SliderFloat("Max Alignment", &stats.max_alignment, 0, 10);
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Shows the maximum influence of the alignment force.");
-    ImGui::SliderFloat("Alignment Ratio", &properties.max_steer, 0, 0.1);
+    ImGui::SliderFloat("Alignment Ratio", &stats.max_steer, 0, 0.1);
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Shows the maximum steering force of the alignment force.\nThe force that makes boids follow each other.");
-    ImGui::SliderFloat("Max Cohesion", &properties.max_cohesion, 0, 0.1);
+    ImGui::SliderFloat("Max Cohesion", &stats.max_cohesion, 0, 0.1);
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Shows the maximum influence of the cohesion force.\nThe force that makes boids stick together.");
-    ImGui::SliderFloat("Max Separation", &properties.max_separation, 0, 1);
+    ImGui::SliderFloat("Max Separation", &stats.max_separation, 0, 1);
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Shows the maximum influence of the separation force.\nthe force that makes boids avoid each other when they get too close.");
-    ImGui::SliderFloat("Separation Ratio", &properties.separation_ratio, 0, 1);
+    ImGui::SliderFloat("Separation Ratio", &stats.separation_ratio, 0, 1);
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Shows the ratio of the separation force.\nThe ratio is based on the perception radius of the boid.");
     ImGui::Separator();
@@ -173,7 +173,7 @@ void	render_imgui(t_game *game)
         ImGui::SetTooltip("The boids will alignment algorithm.\n0-No Alignment\n1-n^2 Alignment iterating each one with every other\n2-nlogn Alignment iterating each one with the hash.");
     if (ImGui::Button("Randomize Boids Position") == true)
         set_random_values(&game->flock);
-    set_values(&game->flock, properties, check);
+    set_values(&game->flock, stats, check);
     ImGui::End();
     rlImGuiEnd();
 }
@@ -181,14 +181,15 @@ void	render_imgui(t_game *game)
 void	engine_input(t_game *game)
 {
 	const float walkspeed = (0.8f * GetFrameTime()) / (game->player.camera.zoom * 20);
-	if (GetMouseWheelMove() != 0)
+	/*if (GetMouseWheelMove() != 0)
 	{
 		const float zoomdir = (GetMouseWheelMove() > 0) ? 1.0f : -1.0f;
 		const Vector2 calc = Vector2Scale(Vector2Subtract(GetMousePosition(), game->player.camera.offset), zoomdir);
 		const Vector2 mousepos = Vector2Limit(calc, 10.0f);
 		game->player.camera.target = Vector2Add(game->player.camera.target,	mousepos);
 		game->player.camera.zoom += ((float)GetMouseWheelMove()) * 0.05f;
-	}
+	}*/
+	game->player.camera.zoom += ((float)GetMouseWheelMove() * 5.0f * GetFrameTime() * game->player.camera.zoom);
 	if (game->player.camera.zoom > 3.0f)
 		game->player.camera.zoom = 3.0f;
     else if (game->player.camera.zoom < 0.1f)
