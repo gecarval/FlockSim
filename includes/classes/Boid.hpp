@@ -20,39 +20,49 @@ typedef struct s_average
 	Vector2		sep;
 }				t_average;
 
+typedef struct s_lifestats
+{
+	float		health;
+	float		energy;
+	float		age;
+	int			generation;
+	int			children;
+	int			food;
+}				t_lifestats;
+
 typedef struct s_boid
 {
+	t_lifestats	life;
 	Vector2		pos;
 	Color		color;
 	float		perception;
-	float		separation_ratio;
 	float		min_speed;
 	float		max_speed;
 	float		max_steer;
-	float		obstacle_avoidance;
 	float		max_alignment;
 	float		max_cohesion;
 	float		max_separation;
+	float		separation_ratio;
+	float		obstacle_avoidance;
 }				t_boid;
 
 // CLASS DEFINITIONS
 class Boid
 {
-	private:
-		float	frame_time_counter;
-
 	protected:
 		Vector2	acc;
 		float	rotation;
 
 	public:
-		float	radius;
-		Vector2 vel;
-		t_boid  properties;
-		t_average average;
-		Boid(t_boid properties);
-		Boid(void);
+		float		radius;
+		Vector2		vel;
+		t_boid		stats;
+		t_average	average;
+
+	public:
 		~Boid(void);
+		Boid(void);
+		Boid(t_boid stats);
 		void	getaverage(Boid *flock);
 		void	separate(void);
 		void	align(void);
