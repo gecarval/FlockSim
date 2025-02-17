@@ -81,7 +81,7 @@ int		SpatialHashing::hash(Vector2 center)
 
 void	SpatialHashing::insert(Boid *boid)
 {
-	const int	index = this->hash(boid->properties.pos);
+	const int	index = this->hash(boid->stats.pos);
 	t_boid_list	*new_boid;
 
 	new_boid = new t_boid_list;
