@@ -15,7 +15,6 @@ void	focus_boid_on_click(t_game *game)
 			game->player.focus = true;
 			break ;
 		}
-		game->player.focus = false;
 		list = list->next;
 	}
 }
@@ -34,6 +33,8 @@ void	engine_input(t_game *game)
 	const float		walkspeed = (0.8f * GetFrameTime()) / (game->player.camera.zoom * 20);
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 		focus_boid_on_click(game);
+	if (IsKeyPressed(KEY_F))
+		game->player.focus = false;
 	if (IsKeyDown(KEY_LEFT_SHIFT) && game->player.focus == false)
 		game->player.shifting = true;
 	else

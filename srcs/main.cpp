@@ -27,7 +27,7 @@ void	update_engine(t_game *game)
 	{
 		engine_input(game);
 		if (game->pause == false)
-			update_flock(game);
+			game->flock.updateflock();
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 		BeginMode2D(game->player.camera);
