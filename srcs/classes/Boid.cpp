@@ -180,13 +180,17 @@ void Boid::update(float gamespeed)
 
 void Boid::lifestatsupdate(void)
 {
-	const float foodtoenergy = 1.0f * GetFrameTime();
-	if (this->stats.life.energy < 1000 - foodtoenergy)
+	const float		foodtoenergy = 50.0f * GetFrameTime();
+	if (this->stats.life.energy < 1000 - foodtoenergy && this->stats.life.food > 0)
+	{
+		this->stats.life.food -= foodtoenergy;
 		this->stats.life.energy += foodtoenergy;
+	}
+	else if (this->stats.life.energy > 0)
+		this->stats.life.energy -= foodtoenergy;
 	this->stats.life.age += GetFrameTime();
-	this->stats.life.energy -= GetFrameTime();
 	if (this->stats.life.energy <= 0)
-		this->stats.life.health -= 1.0f * GetFrameTime();
+		this->stats.life.health -= 3.0f * GetFrameTime();
 	if (this->stats.life.health <= 0)
 	{
 		this->stats.life.health = 100;
@@ -194,6 +198,6 @@ void Boid::lifestatsupdate(void)
 		this->stats.life.age = 0;
 		this->stats.life.generation += 1;
 		this->stats.life.children = 0;
-		this->stats.life.food = 0;
+		this->stats.life.food = 1000;
 	}
 }
