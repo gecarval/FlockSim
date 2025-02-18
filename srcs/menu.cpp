@@ -23,6 +23,8 @@ void	set_values(Flock *flock, t_boid stats, t_check_box check)
 		save = flock->boids[i].stats;
 		flock->boids[i].stats = stats;
 		flock->boids[i].stats.pos = save.pos;
+		flock->boids[i].stats.id = save.id;
+		flock->boids[i].stats.life = save.life;
 	}
 }
 
@@ -33,12 +35,12 @@ void	render_boid_imguiwindow_lifestats(t_boid *boid)
 	ImGui::Begin("Boid Stats", NULL, ImGuiWindowFlags_NoResize);
 	ImGui::Text("Life Stats");
 	ImGui::Text("Boid %d", boid->id);
-	ImGui::Text("Health: %f", boid->life.health);
-	ImGui::Text("Energy: %f", boid->life.energy);
-	ImGui::Text("Age: %f", boid->life.age);
+	ImGui::Text("Health: %.2f", boid->life.health);
+	ImGui::Text("Energy: %.2f", boid->life.energy);
+	ImGui::Text("Age: %.2f", boid->life.age);
 	ImGui::Text("Generation: %d", boid->life.generation);
 	ImGui::Text("Children: %d", boid->life.children);
-	ImGui::Text("Food: %d", boid->life.food);
+	ImGui::Text("Food: %.2f", boid->life.food);
 	ImGui::End();
 }
 

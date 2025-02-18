@@ -27,7 +27,7 @@ typedef struct s_lifestats
 	float		age;
 	int			generation;
 	int			children;
-	int			food;
+	float		food;
 }				t_lifestats;
 
 typedef struct s_boid
