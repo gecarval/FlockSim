@@ -2,6 +2,8 @@
 
 void	update_flock(t_game *game)
 {
+	if (game->pause == true)
+		return ;
 	if (game->flock.options.mirror == true)
 		game->flock.mirror();
 	if (game->flock.options.avoidborder == true)
@@ -41,5 +43,6 @@ void	engine_draw(t_game *game)
 	{
 		DrawCircleLines(focused_boid_world.x, focused_boid_world.y,
 						game->player.focused_boid->radius * 3, RED);
+		DrawText("Press F to unfocus", focused_boid_world.x + 10, focused_boid_world.y - 10, 10, RED);
 	}
 }

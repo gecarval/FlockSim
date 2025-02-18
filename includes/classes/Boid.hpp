@@ -33,6 +33,7 @@ typedef struct s_lifestats
 typedef struct s_boid
 {
 	t_lifestats	life;
+	int			id;
 	Vector2		pos;
 	Color		color;
 	float		perception;
@@ -68,6 +69,7 @@ class Boid
 		void	align(void);
 		void	cohese(void);
 		void	update(float gamespeed);
+		void	lifestatsupdate(void);
 		void	mirror(void);
 		void	avoidborder(void);
 		void	draw_boid(void);

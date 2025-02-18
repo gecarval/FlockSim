@@ -4,7 +4,10 @@
 Flock::Flock()
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
 		this->boids[i] = Boid();
+		this->boids[i].stats.id = i + 1;
+	}
 	this->options = {true, true, true, true, true, true, 2, 15};
 	this->check = {true, false, false, false};
 	this->hash = SpatialHashing();
@@ -109,6 +112,42 @@ void Flock::hashaverage(void)
 	}
 }
 
+void Flock::updateflock(void)
+{
+	if (this->options.separate == true || this->options.align == true
+		|| this->options.cohese == true)
+	{
+		if (this->options.alignAlgorithm == 0)
+			;
+		else if (this->options.alignAlgorithm == 1)
+			this->average();
+		else if (this->options.alignAlgorithm == 2)
+		{
+			this->hash.clear();
+			this->gethash();
+			this->hashaverage();
+		}
+	}
+	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
+		if (this->options.mirror == true)
+			this->boids[i].mirror();
+		if (this->options.avoidborder == true)
+			this->boids[i].avoidborder();
+	}
+	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
+		if (this->options.separate == true)
+			this->boids[i].separate();
+		if (this->options.align == true)
+			this->boids[i].align();
+		if (this->options.cohese == true)
+			this->boids[i].cohese();
+		this->boids[i].update(this->options.gamespeed);
+		this->boids[i].lifestatsupdate();
+	}
+}
+
 void Flock::separate(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
@@ -149,6 +188,12 @@ void Flock::gethash(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->hash.insert(&this->boids[i]);
+}
+
+void Flock::lifeupdate(void)
+{
+	for (size_t i = 0; i < NB_BOIDS; i++)
+		this->boids[i].lifestatsupdate();
 }
 
 void Flock::draw(Camera2D camera, RenderTexture2D texture)

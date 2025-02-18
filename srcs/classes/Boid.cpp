@@ -6,7 +6,7 @@ Boid::Boid(void)
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
 	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 1, 0},
-		Vector2Zero(), GREEN, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1};
+		0, Vector2Zero(), GREEN, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1};
 	this->stats.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
 		static_cast<float>(GetRandomValue(0, HEIGHT))};
 	this->vel = {static_cast<float>(GetRandomValue(-this->stats.max_speed, this->stats.max_speed)),
@@ -176,4 +176,24 @@ void Boid::update(float gamespeed)
 	this->vel = Vector2Add(this->vel, Vector2Scale(this->acc, GetFrameTime() * gamespeed));
 	this->stats.pos = Vector2Add(this->stats.pos, Vector2Scale(this->vel, GetFrameTime() * gamespeed));
 	this->acc = Vector2Zero();
+}
+
+void Boid::lifestatsupdate(void)
+{
+	const float foodtoenergy = 1.0f * GetFrameTime();
+	if (this->stats.life.energy < 1000 - foodtoenergy)
+		this->stats.life.energy += foodtoenergy;
+	this->stats.life.age += GetFrameTime();
+	this->stats.life.energy -= GetFrameTime();
+	if (this->stats.life.energy <= 0)
+		this->stats.life.health -= 1.0f * GetFrameTime();
+	if (this->stats.life.health <= 0)
+	{
+		this->stats.life.health = 100;
+		this->stats.life.energy = 1000;
+		this->stats.life.age = 0;
+		this->stats.life.generation += 1;
+		this->stats.life.children = 0;
+		this->stats.life.food = 0;
+	}
 }

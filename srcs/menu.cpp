@@ -26,6 +26,22 @@ void	set_values(Flock *flock, t_boid stats, t_check_box check)
 	}
 }
 
+void	render_boid_imguiwindow_lifestats(t_boid *boid)
+{
+	ImGui::SetNextWindowPos(ImVec2(WIDTH / 2 - 100, HEIGHT / 2 - 100), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Boid Stats", NULL, ImGuiWindowFlags_NoResize);
+	ImGui::Text("Life Stats");
+	ImGui::Text("Boid %d", boid->id);
+	ImGui::Text("Health: %f", boid->life.health);
+	ImGui::Text("Energy: %f", boid->life.energy);
+	ImGui::Text("Age: %f", boid->life.age);
+	ImGui::Text("Generation: %d", boid->life.generation);
+	ImGui::Text("Children: %d", boid->life.children);
+	ImGui::Text("Food: %d", boid->life.food);
+	ImGui::End();
+}
+
 void	render_imgui(t_game *game)
 {
 	t_boid		stats;
@@ -127,6 +143,8 @@ void	render_imgui(t_game *game)
     if (ImGui::Button("Randomize Boids Position") == true)
         set_random_values(&game->flock);
     set_values(&game->flock, stats, check);
-    ImGui::End();
-    rlImGuiEnd();
+	ImGui::End();
+	if (game->player.focus == true)
+		render_boid_imguiwindow_lifestats(&game->player.focused_boid->stats);
+	rlImGuiEnd();
 }
