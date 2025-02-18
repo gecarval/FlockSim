@@ -24,7 +24,11 @@ SRC =	imgui_demo.cpp						\
 		./srcs/classes/Boid.cpp				\
 		./srcs/classes/Flock.cpp			\
 		./srcs/classes/SpatialHashing.cpp	\
+		./srcs/input.cpp					\
+		./srcs/menu.cpp						\
+		./srcs/update.cpp					\
 		./srcs/main.cpp
+
 
 INCS = -I./includes/classes/ -L./includes/classes/ -I./includes -L./includes/ -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 OBJ = $(SRC:.cpp=.o)
