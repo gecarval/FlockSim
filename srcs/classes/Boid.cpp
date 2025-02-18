@@ -45,37 +45,37 @@ void Boid::draw_boid(void)
 void Boid::draw_perception(void)
 {
 	const float radius = this->stats.perception;
-	DrawCircleLines(this->stats.pos.x, this->stats.pos.y, radius, GREEN);
+	DrawCircleLines(this->stats.pos.x, this->stats.pos.y, radius, BLUE);
 	const float avoid_radius = radius * this->stats.separation_ratio;
-	DrawCircleLines(this->stats.pos.x, this->stats.pos.y, avoid_radius, PINK);
+	DrawCircleLines(this->stats.pos.x, this->stats.pos.y, avoid_radius, RED);
 }
 
 void Boid::draw_velocity(void)
 {
 	const float line_length = 1 * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->vel * line_length);
-	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, RED);
+	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, GREEN);
 }
 
 void Boid::draw_align(void)
 {
 	const float line_length = 100 * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->average.vel * line_length);
-	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, GREEN);
+	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, BLUE);
 }
 
 void Boid::draw_avoid(void)
 {
 	const float line_length = 15 * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->average.sep * line_length);
-	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, PINK);
+	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, RED);
 }
 
 void Boid::draw_cohese(void)
 {
 	const float line_length = 40 * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->average.pos * line_length);
-	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, BLUE);
+	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, PINK);
 }
 
 void Boid::getaverage(Boid *flock)

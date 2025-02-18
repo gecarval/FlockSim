@@ -17,6 +17,9 @@
 // DATA STRUCTURES
 typedef struct s_player {
 	Camera2D	camera;
+	Boid		*focused_boid;
+	bool		focus;
+	bool		shifting;
 }	t_player;
 
 typedef struct s_texture2d {
@@ -35,5 +38,9 @@ typedef struct s_game
 }					t_game;
 
 // FUNCTION PROTOTYPES
+void	update_flock(t_game *game);
+void	engine_draw(t_game *game);
+void	engine_input(t_game *game);
+void	render_imgui(t_game *game);
 
 #endif
