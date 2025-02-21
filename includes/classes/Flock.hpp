@@ -30,6 +30,7 @@ typedef struct s_globaloptions
 	bool	avoidborder;
 	int		alignAlgorithm;
 	float	gamespeed;
+	int		boids_alive;
 }				t_globaloptions;
 
 // CLASS DEFINITIONS
@@ -39,6 +40,7 @@ class Flock
 		t_check_box		check;
 		t_globaloptions	options;
         Boid boids[NB_BOIDS];
+		t_food *food;
 		SpatialHashing hash;
         Flock(void);
         ~Flock(void);
@@ -53,6 +55,10 @@ class Flock
 		void avoidborder(void);
 		void updateflock(void);
 		void lifeupdate(void);
+		void remove_food(t_food *food);
+		void generate_food(void);
+		void generate_one_food(void);
+		void generate_food_overtime(void);
         void draw(Camera2D camera, RenderTexture2D texture);
 };
 

@@ -28,6 +28,7 @@ typedef struct s_lifestats
 	int			generation;
 	int			children;
 	float		food;
+	bool		alive;
 }				t_lifestats;
 
 typedef struct s_boid
@@ -45,6 +46,8 @@ typedef struct s_boid
 	float		max_separation;
 	float		separation_ratio;
 	float		obstacle_avoidance;
+	float		apetite;
+	float		max_speed_food;
 }				t_boid;
 
 // CLASS DEFINITIONS
@@ -69,9 +72,13 @@ class Boid
 		void	align(void);
 		void	cohese(void);
 		void	update(float gamespeed);
-		void	lifestatsupdate(void);
+		void	lifestatsupdate(int *boids_alive, Boid *boids);
 		void	mirror(void);
 		void	avoidborder(void);
+		void	attract_towards(Vector2 target);
+		void	flee_from(Vector2 target);
+		t_boid	tweakstats(t_boid stats);
+		Boid	procreate(void);
 		void	draw_boid(void);
 		void	draw_perception(void);
 		void	draw_velocity(void);
