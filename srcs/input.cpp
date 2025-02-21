@@ -9,7 +9,8 @@ void	focus_boid_on_click(t_game *game)
 	list = game->flock.hash.table[mousehash].boids;
 	while (list != NULL)
 	{
-		if (CheckCollisionCircles(mouseposworld, 5.0f, list->boid->stats.pos, list->boid->radius) == true)
+		if (CheckCollisionCircles(mouseposworld, 5.0f, list->boid->stats.pos, list->boid->radius) == true &&
+				list->boid->stats.life.alive == true)
 		{
 			game->player.focused_boid = list->boid;
 			game->player.focus = true;

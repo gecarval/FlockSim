@@ -97,7 +97,9 @@ void Flock::hashaverage(void)
 					foodlist = foodlist->next;
 				}
 				if (closest_food != nullptr)
-					this->boids[i].attract_towards(closest_food->food->pos);
+				{
+					;//this->boids[i].attract_towards(closest_food->food->pos);
+				}
 				while (tmp != nullptr)
 				{
 					if (&this->boids[i] == tmp->boid || tmp->boid->stats.life.alive == false)
@@ -280,8 +282,8 @@ void Flock::generate_food(void)
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		new_food = new t_food;
-		new_food->pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
-						static_cast<float>(GetRandomValue(0, HEIGHT))};
+		new_food->pos = {static_cast<float>(GetRandomValue(50, WIDTH - 50)),
+						static_cast<float>(GetRandomValue(50, HEIGHT - 50))};
 		new_food->radius = 1;
 		new_food->energy = 100;
 		if (this->food == nullptr)
@@ -313,10 +315,10 @@ void Flock::generate_food_overtime(void)
 	static float timer = 0;
 
 	timer += GetFrameTime();
-	while (timer >= 0.01)
+	while (timer >= FOOD_GEN)
 	{
 		this->generate_one_food();
-		timer -= 0.01;
+		timer -= FOOD_GEN;
 	}
 }
 
