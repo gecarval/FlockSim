@@ -2,10 +2,11 @@
 # define BOID_HPP
 
 // MACROS
-# define WIDTH 2000
-# define HEIGHT 2000
-# define NB_BOIDS 1000
+# define WIDTH 5000
+# define HEIGHT 5000
+# define NB_BOIDS 3000
 # define BOID_SIZE 3
+# define FOOD_GEN 0.003f
 
 // INCLUDES
 # include "raylib.h"

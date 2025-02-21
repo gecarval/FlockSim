@@ -5,7 +5,7 @@ Boid::Boid(void)
 {
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
-	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 1, 0, true},
+	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 0, 0, true},
 		0, Vector2Zero(), RED, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1, 0.1, 2};
 	this->stats.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
 		static_cast<float>(GetRandomValue(0, HEIGHT))};
@@ -220,7 +220,7 @@ void Boid::lifestatsupdate(int *boids_alive, Boid *boids)
 		this->stats.life.alive = false;
 		*boids_alive -= 1;
 	}
-	if (this->stats.life.energy > 500 && *boids_alive < NB_BOIDS)
+	if (this->stats.life.energy > 500 && this->stats.life.age > 20 && *boids_alive < NB_BOIDS)
 	{
 		this->stats.life.energy -= 500;
 		this->stats.life.children += 1;
@@ -238,14 +238,26 @@ void Boid::lifestatsupdate(int *boids_alive, Boid *boids)
 t_boid Boid::tweakstats(t_boid stats)
 {
 	t_boid newstats = stats;
+	newstats.life = (t_lifestats){100.0f, 2000.0f, 0.0f,
+					stats.life.generation + 1, 0, 0, true};
 	newstats.perception = stats.perception + GetRandomValue(-5, 5);
-	newstats.max_steer = stats.max_steer + GetRandomValue(-5, 5) / 100.0f;
-	newstats.max_cohesion = stats.max_cohesion + GetRandomValue(-5, 5) / 100.0f;
-	newstats.max_separation = stats.max_separation + GetRandomValue(-5, 5) / 100.0f;
-	newstats.separation_ratio = stats.separation_ratio + GetRandomValue(-5, 5) / 100.0f;
-	newstats.obstacle_avoidance = stats.obstacle_avoidance + GetRandomValue(-5, 5) / 100.0f;
-	newstats.apetite = stats.apetite + GetRandomValue(-5, 5) / 100.0f;
-	newstats.max_speed_food = stats.max_speed_food + GetRandomValue(-100, 100) / 10.0f;
+	newstats.max_steer = stats.max_steer + (float)GetRandomValue(-1, 1) / 100.0f;
+	if (newstats.max_steer < 0)
+		newstats.max_steer = 0;
+	newstats.max_cohesion = stats.max_cohesion + (float)GetRandomValue(-1, 1) / 100.0f;
+	if (newstats.max_cohesion < 0)
+		newstats.max_cohesion = 0;
+	newstats.max_separation = stats.max_separation + (float)GetRandomValue(-1, 1) / 100.0f;
+	if (newstats.max_separation < 0)
+		newstats.max_separation = 0;
+	newstats.separation_ratio = stats.separation_ratio + (float)GetRandomValue(-1, 1) / 100.0f;
+	if (newstats.separation_ratio < 0)
+		newstats.separation_ratio = 0;
+	newstats.obstacle_avoidance = stats.obstacle_avoidance + (float)GetRandomValue(-1, 1) / 100.0f;
+	if (newstats.obstacle_avoidance < 0)
+		newstats.obstacle_avoidance = 0;
+//	newstats.apetite = stats.apetite + GetRandomValue(-5, 5) / 100.0f;
+//	newstats.max_speed_food = stats.max_speed_food + GetRandomValue(-100, 100) / 10.0f;
 	return newstats;
 }
 
