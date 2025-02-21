@@ -8,21 +8,16 @@ Flock::Flock()
 		this->boids[i] = Boid();
 		this->boids[i].stats.id = i + 1;
 	}
-	this->options = {true, true, true, true, true, true, 2, 15};
+	this->options = {true, true, true, true, true, true, 2, 15, NB_BOIDS};
 	this->check = {true, false, false, false};
 	this->hash = SpatialHashing();
+	this->food = nullptr;
 }
 
 // DESTRUCTOR
 Flock::~Flock()
 {
 	this->hash.~SpatialHashing();
-}
-
-void Flock::average(void)
-{
-	for (size_t i = 0; i < NB_BOIDS; i++)
-		this->boids[i].getaverage(this->boids);
 }
 
 // MEMBER FUNCTIONS
@@ -33,13 +28,15 @@ void Flock::hashaverage(void)
 	int			y;
 	int			ncheckonx;
 	int			ncheckony;
-	const int	hash_grid = sqrt(HASH_LEN);
+	const int	hash_grid = HASH_CALC;
 	float		total;
 	float		total_avoid;
 	t_boid_list	*tmp;
+	t_food_list	*prev_foodlist;
+	t_food_list	*foodlist;
+	t_food_list *closest_food;
 
 	hash = 0;
-	tmp = nullptr;
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		total = 0;
@@ -61,10 +58,49 @@ void Flock::hashaverage(void)
 				if (hash + x + (y * hash_grid) < 0 || hash + x + (y
 						* hash_grid) >= HASH_LEN)
 					continue ;
+				tmp = nullptr;
+				foodlist = nullptr;
+				prev_foodlist = nullptr;
+				closest_food = nullptr;
 				tmp = this->hash.table[hash + x + (y * hash_grid)].boids;
+				foodlist = this->hash.table[hash + x + (y * hash_grid)].food;
+				while (foodlist != nullptr)
+				{
+					if (CheckCollisionCircles(this->boids[i].stats.pos,
+							this->boids[i].radius,
+							foodlist->food->pos,
+							foodlist->food->radius + 1) == true)
+					{
+						this->boids[i].stats.life.food += foodlist->food->energy;
+						if (prev_foodlist == nullptr)
+							this->hash.table[hash + x + (y * hash_grid)].food = foodlist->next;
+						else
+							prev_foodlist->next = foodlist->next;
+						this->remove_food(foodlist->food);
+						delete foodlist;
+						foodlist = this->hash.table[hash + x + (y * hash_grid)].food;
+						continue ;
+					}
+					if (CheckCollisionCircles(this->boids[i].stats.pos,
+							this->boids[i].stats.perception,
+							foodlist->food->pos,
+							foodlist->food->radius) == true)
+					{
+						if (closest_food == nullptr)
+							closest_food = foodlist;
+						else if (Vector2Distance(this->boids[i].stats.pos,
+								foodlist->food->pos) < Vector2Distance(this->boids[i].stats.pos,
+								closest_food->food->pos))
+							closest_food = foodlist;
+					}
+					prev_foodlist = foodlist;
+					foodlist = foodlist->next;
+				}
+				if (closest_food != nullptr)
+					this->boids[i].attract_towards(closest_food->food->pos);
 				while (tmp != nullptr)
 				{
-					if (&this->boids[i] == tmp->boid)
+					if (&this->boids[i] == tmp->boid || tmp->boid->stats.life.alive == false)
 					{
 						tmp = tmp->next;
 						continue ;
@@ -130,22 +166,32 @@ void Flock::updateflock(void)
 	}
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
+		if (this->boids[i].stats.life.alive == false)
+			continue ;
 		if (this->options.mirror == true)
 			this->boids[i].mirror();
 		if (this->options.avoidborder == true)
 			this->boids[i].avoidborder();
-	}
-	for (size_t i = 0; i < NB_BOIDS; i++)
-	{
 		if (this->options.separate == true)
 			this->boids[i].separate();
 		if (this->options.align == true)
 			this->boids[i].align();
 		if (this->options.cohese == true)
 			this->boids[i].cohese();
-		this->boids[i].update(this->options.gamespeed);
-		this->boids[i].lifestatsupdate();
 	}
+	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
+		if (this->boids[i].stats.life.alive == false)
+			continue ;
+		this->boids[i].update(this->options.gamespeed);
+		this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids);
+	}
+}
+
+void Flock::average(void)
+{
+	for (size_t i = 0; i < NB_BOIDS; i++)
+		this->boids[i].getaverage(this->boids);
 }
 
 void Flock::separate(void)
@@ -186,21 +232,106 @@ void Flock::avoidborder(void)
 
 void Flock::gethash(void)
 {
+	t_food *food;
+
 	for (size_t i = 0; i < NB_BOIDS; i++)
 		this->hash.insert(&this->boids[i]);
+	food = this->food;
+	while (food != nullptr)
+	{
+		this->hash.insert(food);
+		food = food->next;
+	}
 }
 
 void Flock::lifeupdate(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
-		this->boids[i].lifestatsupdate();
+		this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids);
+}
+
+void Flock::remove_food(t_food *food)
+{
+	t_food *tmp;
+	t_food *prev;
+
+	tmp = this->food;
+	prev = nullptr;
+	while (tmp != nullptr)
+	{
+		if (tmp == food)
+		{
+			if (prev == nullptr)
+				this->food = tmp->next;
+			else
+				prev->next = tmp->next;
+			delete tmp;
+			break ;
+		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
+}
+
+void Flock::generate_food(void)
+{
+	t_food *new_food;
+
+	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
+		new_food = new t_food;
+		new_food->pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
+						static_cast<float>(GetRandomValue(0, HEIGHT))};
+		new_food->radius = 1;
+		new_food->energy = 100;
+		if (this->food == nullptr)
+			new_food->next = nullptr;
+		else
+			new_food->next = this->food;
+		this->food = new_food;
+	}
+}
+
+void Flock::generate_one_food(void)
+{
+	t_food *new_food;
+
+	new_food = new t_food;
+	new_food->pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
+					static_cast<float>(GetRandomValue(0, HEIGHT))};
+	new_food->radius = 1;
+	new_food->energy = 100;
+	if (this->food == nullptr)
+		new_food->next = nullptr;
+	else
+		new_food->next = this->food;
+	this->food = new_food;
+}
+
+void Flock::generate_food_overtime(void)
+{
+	static float timer = 0;
+
+	timer += GetFrameTime();
+	while (timer >= 0.01)
+	{
+		this->generate_one_food();
+		timer -= 0.01;
+	}
 }
 
 void Flock::draw(Camera2D camera, RenderTexture2D texture)
 {
+	t_food *food;
+
+	if (this->check.draw_hash == true)
+		this->hash.drawhashmaptexture(texture);
+	if (this->check.draw_hash == true)
+		this->hash.draw(camera);
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-		// this is also considering the camera.zoom
+		if (this->boids[i].stats.life.alive == false)
+			continue ;
 		if (this->boids[i].stats.pos.x > (camera.target.x - camera.offset.x / camera.zoom)
 				&& this->boids[i].stats.pos.x < (camera.target.x + camera.offset.x / camera.zoom)
 				&& this->boids[i].stats.pos.y > (camera.target.y - camera.offset.y / camera.zoom)
@@ -221,9 +352,11 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 			if (this->check.draw_perception == true)
 				this->boids[i].draw_perception();
 		}
-		if (this->check.draw_hash == true)
-            this->hash.drawhashmaptexture(texture);
-		if (this->check.draw_hash == true)
-			this->hash.draw(camera);
+	}
+	food = this->food;
+	while (food != nullptr)
+	{
+		DrawCircle(food->pos.x, food->pos.y, food->radius, GREEN);
+		food = food->next;
 	}
 }

@@ -17,6 +17,7 @@ void	init_engine(t_game *game)
 	game->textcolor = {0, 0, 0, 125};
     game->texture.hashmap = LoadRenderTexture(WIDTH, HEIGHT);
     game->flock.hash.renderhashmaptexture(game->texture.hashmap);
+	game->flock.generate_food();
 	SetTargetFPS(game->frame_limit);
 	rlImGuiSetup(true);
 }
@@ -27,7 +28,10 @@ void	update_engine(t_game *game)
 	{
 		engine_input(game);
 		if (game->pause == false)
+		{
 			game->flock.updateflock();
+			game->flock.generate_food_overtime();
+		}
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
 		BeginMode2D(game->player.camera);

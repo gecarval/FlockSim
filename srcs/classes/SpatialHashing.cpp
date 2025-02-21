@@ -3,7 +3,7 @@
 // CONSTRUCTOR
 SpatialHashing::SpatialHashing(void)
 {
-	const float div = sqrt(HASH_LEN);
+	const float div = HASH_CALC;
 	const float grid_height = HEIGHT / div;
 	const float grid_width = WIDTH / div;
 	float xi = 0;
@@ -17,6 +17,7 @@ SpatialHashing::SpatialHashing(void)
 		this->table[i].rect.height = grid_height;
 		this->table[i].center = {xi + grid_width / 2, yi + grid_height / 2};
 		this->table[i].boids = nullptr;
+		this->table[i].food = nullptr;
 		if (xi + grid_width >= WIDTH)
 		{
 			xi = 0;
@@ -32,6 +33,8 @@ SpatialHashing::~SpatialHashing(void)
 {
 	t_boid_list *tmp = nullptr;
 	t_boid_list *next = nullptr;
+	t_food_list *tmp_food = nullptr;
+	t_food_list *next_food = nullptr;
 
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
@@ -43,6 +46,14 @@ SpatialHashing::~SpatialHashing(void)
 			tmp = next;
 		}
 		this->table[i].boids = nullptr;
+		tmp_food = this->table[i].food;
+		while (tmp_food != nullptr)
+		{
+			next_food = tmp_food->next;
+			delete tmp_food;
+			tmp_food = next_food;
+		}
+		this->table[i].food = nullptr;
 	}
 }
 
@@ -51,6 +62,8 @@ void	SpatialHashing::clear(void)
 {
 	t_boid_list *tmp = nullptr;
 	t_boid_list *next = nullptr;
+	t_food_list *tmp_food = nullptr;
+	t_food_list *next_food = nullptr;
 
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
@@ -62,12 +75,20 @@ void	SpatialHashing::clear(void)
 			tmp = next;
 		}
 		this->table[i].boids = nullptr;
+		tmp_food = this->table[i].food;
+		while (tmp_food != nullptr)
+		{
+			next_food = tmp_food->next;
+			delete tmp_food;
+			tmp_food = next_food;
+		}
+		this->table[i].food = nullptr;
 	}
 }
 
 int		SpatialHashing::hash(Vector2 center)
 {
-	const float hash_grid = sqrtf(HASH_LEN);
+	const float hash_grid = HASH_CALC;
 	const float x = floor(center.x / (WIDTH / hash_grid));
 	const float y = floor(center.y / (HEIGHT / hash_grid));
 	const float result = x + y * hash_grid;
@@ -91,6 +112,20 @@ void	SpatialHashing::insert(Boid *boid)
 	else
 		new_boid->next = this->table[index].boids;
 	this->table[index].boids = new_boid;
+}
+
+void	SpatialHashing::insert(t_food *food)
+{
+	const int	index = this->hash(food->pos);
+	t_food_list	*new_food;
+
+	new_food = new t_food_list;
+	new_food->food = food;
+	if (this->table[index].food == nullptr)
+		new_food->next = nullptr;
+	else
+		new_food->next = this->table[index].food;
+	this->table[index].food = new_food;
 }
 
 void	SpatialHashing::draw_rect(Rectangle rect, Color color)

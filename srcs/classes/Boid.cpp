@@ -5,8 +5,8 @@ Boid::Boid(void)
 {
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
-	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 1, 0},
-		0, Vector2Zero(), GREEN, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1};
+	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 1, 0, true},
+		0, Vector2Zero(), RED, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1, 0.1, 2};
 	this->stats.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
 		static_cast<float>(GetRandomValue(0, HEIGHT))};
 	this->vel = {static_cast<float>(GetRandomValue(-this->stats.max_speed, this->stats.max_speed)),
@@ -52,28 +52,28 @@ void Boid::draw_perception(void)
 
 void Boid::draw_velocity(void)
 {
-	const float line_length = 1 * this->radius;
+	const float line_length = 1.0f * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->vel * line_length);
 	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, GREEN);
 }
 
 void Boid::draw_align(void)
 {
-	const float line_length = 100 * this->radius;
+	const float line_length = 100.0f * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->average.vel * line_length);
 	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, BLUE);
 }
 
 void Boid::draw_avoid(void)
 {
-	const float line_length = 15 * this->radius;
+	const float line_length = 15.0f * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->average.sep * line_length);
 	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, RED);
 }
 
 void Boid::draw_cohese(void)
 {
-	const float line_length = 40 * this->radius;
+	const float line_length = 40.0f * this->radius;
 	const Vector2 line = Vector2Add(this->stats.pos, this->average.pos * line_length);
 	DrawLine(this->stats.pos.x, this->stats.pos.y, line.x, line.y, PINK);
 }
@@ -148,11 +148,11 @@ void Boid::mirror(void)
 	if (this->stats.pos.x > WIDTH)
 		this->stats.pos.x = 1;
 	else if (this->stats.pos.x < 0)
-		this->stats.pos.x = WIDTH - 1;
+		this->stats.pos.x = WIDTH - 2;
 	if (this->stats.pos.y > HEIGHT)
 		this->stats.pos.y = 1;
 	else if (this->stats.pos.y < 0)
-		this->stats.pos.y = HEIGHT - 1;
+		this->stats.pos.y = HEIGHT - 2;
 }
 
 void Boid::avoidborder(void)
@@ -169,6 +169,30 @@ void Boid::avoidborder(void)
 	this->acc = Vector2Add(this->acc, border);
 }
 
+void Boid::attract_towards(Vector2 target)
+{
+	Vector2 desired = Vector2Subtract(target, this->stats.pos);
+	desired = Vector2Normalize(desired);
+	desired = Vector2Scale(desired, this->stats.apetite);
+	Vector2 steer = desired;
+	const float length = Vector2Length(steer);
+	if (length != 0 && length > this->stats.max_speed_food)
+		steer = Vector2Scale(Vector2Normalize(steer), this->stats.max_speed_food);
+	this->acc += Vector2Add(this->acc, steer);
+}
+
+void Boid::flee_from(Vector2 target)
+{
+	Vector2 desired = Vector2Subtract(this->stats.pos, target);
+	desired = Vector2Normalize(desired);
+	desired = Vector2Scale(desired, this->stats.apetite);
+	Vector2 steer = Vector2Subtract(desired, this->vel);
+	const float length = Vector2Length(steer);
+	if (length != 0 && length > this->stats.max_speed)
+		steer = Vector2Scale(Vector2Normalize(steer), this->stats.max_speed);
+	this->acc += Vector2Add(this->acc, steer);
+}
+
 void Boid::update(float gamespeed)
 {
 	this->vel = Vector2Min(this->vel, this->stats.min_speed);
@@ -178,7 +202,7 @@ void Boid::update(float gamespeed)
 	this->acc = Vector2Zero();
 }
 
-void Boid::lifestatsupdate(void)
+void Boid::lifestatsupdate(int *boids_alive, Boid *boids)
 {
 	const float		foodtoenergy = 50.0f * GetFrameTime();
 	if (this->stats.life.energy < 1000 - foodtoenergy && this->stats.life.food > 0)
@@ -191,13 +215,46 @@ void Boid::lifestatsupdate(void)
 	this->stats.life.age += GetFrameTime();
 	if (this->stats.life.energy <= 0)
 		this->stats.life.health -= 3.0f * GetFrameTime();
-	if (this->stats.life.health <= 0)
+	if (this->stats.life.health <= 0 && this->stats.life.alive == true)
 	{
-		this->stats.life.health = 100;
-		this->stats.life.energy = 1000;
-		this->stats.life.age = 0;
-		this->stats.life.generation += 1;
-		this->stats.life.children = 0;
-		this->stats.life.food = 1000;
+		this->stats.life.alive = false;
+		*boids_alive -= 1;
+	}
+	if (this->stats.life.energy > 500 && *boids_alive < NB_BOIDS)
+	{
+		this->stats.life.energy -= 500;
+		this->stats.life.children += 1;
+		for (size_t i = 0; i < NB_BOIDS; i++)
+		{
+			if (boids[i].stats.life.alive == false)
+			{
+				boids[i] = Boid(this->tweakstats(this->stats));
+				break ;
+			}
+		}
 	}
 }
+
+t_boid Boid::tweakstats(t_boid stats)
+{
+	t_boid newstats = stats;
+	newstats.perception = stats.perception + GetRandomValue(-5, 5);
+	newstats.max_steer = stats.max_steer + GetRandomValue(-5, 5) / 100.0f;
+	newstats.max_cohesion = stats.max_cohesion + GetRandomValue(-5, 5) / 100.0f;
+	newstats.max_separation = stats.max_separation + GetRandomValue(-5, 5) / 100.0f;
+	newstats.separation_ratio = stats.separation_ratio + GetRandomValue(-5, 5) / 100.0f;
+	newstats.obstacle_avoidance = stats.obstacle_avoidance + GetRandomValue(-5, 5) / 100.0f;
+	newstats.apetite = stats.apetite + GetRandomValue(-5, 5) / 100.0f;
+	newstats.max_speed_food = stats.max_speed_food + GetRandomValue(-100, 100) / 10.0f;
+	return newstats;
+}
+
+Boid Boid::procreate(void)
+{
+	t_boid stats = this->tweakstats(this->stats);
+
+	this->stats.life.energy -= 500;
+	this->stats.life.children += 1;
+	return Boid(stats);
+}
+

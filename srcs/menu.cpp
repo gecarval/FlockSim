@@ -25,6 +25,15 @@ void	set_values(Flock *flock, t_boid stats, t_check_box check)
 		flock->boids[i].stats.pos = save.pos;
 		flock->boids[i].stats.id = save.id;
 		flock->boids[i].stats.life = save.life;
+		flock->boids[i].stats.perception = stats.perception;
+		flock->boids[i].stats.max_steer = stats.max_steer;
+		flock->boids[i].stats.max_alignment = stats.max_alignment;
+		flock->boids[i].stats.max_cohesion = stats.max_cohesion;
+		flock->boids[i].stats.max_separation = stats.max_separation;
+		flock->boids[i].stats.separation_ratio = stats.separation_ratio;
+		flock->boids[i].stats.obstacle_avoidance = stats.obstacle_avoidance;
+		flock->boids[i].stats.apetite = stats.apetite;
+		flock->boids[i].stats.max_speed_food = stats.max_speed_food;
 	}
 }
 
@@ -41,6 +50,16 @@ void	render_boid_imguiwindow_lifestats(t_boid *boid)
 	ImGui::Text("Generation: %d", boid->life.generation);
 	ImGui::Text("Children: %d", boid->life.children);
 	ImGui::Text("Food: %.2f", boid->life.food);
+	ImGui::Text("Alive: %d", boid->life.alive);
+	ImGui::Separator();
+	ImGui::Text("Boid Stats");
+	ImGui::Text("Perception: %.2f", boid->perception);
+	ImGui::Text("Max Steer: %.2f", boid->max_steer);
+	ImGui::Text("Max Cohesion: %.2f", boid->max_cohesion);
+	ImGui::Text("Max Separation: %.2f", boid->max_separation);
+	ImGui::Text("Separation Ratio: %.2f", boid->separation_ratio);
+	ImGui::Text("Obstacle Avoidance: %.2f", boid->obstacle_avoidance);
+	ImGui::Text("Apetite: %.2f", boid->apetite);
 	ImGui::End();
 }
 
