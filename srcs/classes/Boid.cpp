@@ -5,7 +5,7 @@ Boid::Boid(void)
 {
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
-	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 0, 0, true},
+	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 0, 0, true, false},
 		0, Vector2Zero(), RED, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1, 0.1, 2};
 	this->stats.pos = {static_cast<float>(GetRandomValue(0, CANVAS_WIDTH)),
 		static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
@@ -20,9 +20,7 @@ Boid::Boid(t_boid stats)
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
 	this->stats = stats;
-	const float max_speed = this->stats.max_speed;
-	this->vel = {static_cast<float>(GetRandomValue(-max_speed, max_speed)),
-		static_cast<float>(GetRandomValue(-max_speed, max_speed))};
+	this->vel = Vector2Zero();
 	this->acc = Vector2Zero();
 	this->average = {Vector2Zero(), Vector2Zero(), Vector2Zero()};
 }
@@ -202,44 +200,48 @@ void Boid::update(float gamespeed)
 	this->acc = Vector2Zero();
 }
 
-void Boid::lifestatsupdate(int *boids_alive, Boid *boids)
+void Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 {
-	const float		foodtoenergy = 50.0f * GetFrameTime();
-	if (this->stats.life.energy < 1000 - foodtoenergy && this->stats.life.food > 0)
+	const float		foodtoenergy = 3.5f * GetFrameTime() * gamespeed;
+	if ((this->stats.life.health <= 0 || this->stats.life.age > 90) &&
+			this->stats.life.alive == true)
 	{
-		this->stats.life.food -= foodtoenergy;
+		this->stats.life.alive = false;
+		*boids_alive -= 1;
+		return ;
+	}
+	if (this->stats.life.energy < 2000 - foodtoenergy && this->stats.life.food > 0)
+	{
+		this->stats.life.food -= foodtoenergy / 2;
 		this->stats.life.energy += foodtoenergy;
 	}
 	else if (this->stats.life.energy > 0)
 		this->stats.life.energy -= foodtoenergy;
-	this->stats.life.age += GetFrameTime();
+	this->stats.life.age += GetFrameTime() * (gamespeed / 15);
 	if (this->stats.life.energy <= 0)
-		this->stats.life.health -= 3.0f * GetFrameTime();
-	if (this->stats.life.health <= 0 && this->stats.life.alive == true)
+		this->stats.life.health -= 0.2f * GetFrameTime() * gamespeed;
+	if (this->stats.life.energy > 1000 && this->stats.life.age > 20 && *boids_alive < NB_BOIDS)
 	{
-		this->stats.life.alive = false;
-		*boids_alive -= 1;
-	}
-	if (this->stats.life.energy > 500 && this->stats.life.age > 20 && *boids_alive < NB_BOIDS)
-	{
-		this->stats.life.energy -= 500;
-		this->stats.life.children += 1;
 		for (size_t i = 0; i < NB_BOIDS; i++)
 		{
 			if (boids[i].stats.life.alive == false)
 			{
-				boids[i] = Boid(this->tweakstats(this->stats));
+				boids[i] = this->procreate(boids_alive);
 				break ;
 			}
 		}
 	}
+	if (this->stats.life.energy < 0)
+		this->stats.life.energy = 0;
+	if (this->stats.life.food < 0)
+		this->stats.life.food = 0;
 }
 
 t_boid Boid::tweakstats(t_boid stats)
 {
 	t_boid newstats = stats;
-	newstats.life = (t_lifestats){100.0f, 2000.0f, 0.0f,
-					stats.life.generation + 1, 0, 0, true};
+	newstats.life = (t_lifestats){100.0f, 1000.0f, 0.0f,
+					stats.life.generation + 1, 0, 0, true, stats.life.smell};
 	newstats.perception = stats.perception + GetRandomValue(-5, 5);
 	newstats.max_steer = stats.max_steer + (float)GetRandomValue(-1, 1) / 100.0f;
 	if (newstats.max_steer < 0)
@@ -256,17 +258,20 @@ t_boid Boid::tweakstats(t_boid stats)
 	newstats.obstacle_avoidance = stats.obstacle_avoidance + (float)GetRandomValue(-1, 1) / 100.0f;
 	if (newstats.obstacle_avoidance < 0)
 		newstats.obstacle_avoidance = 0;
-//	newstats.apetite = stats.apetite + GetRandomValue(-5, 5) / 100.0f;
-//	newstats.max_speed_food = stats.max_speed_food + GetRandomValue(-100, 100) / 10.0f;
+	if (this->stats.life.smell == true)
+		newstats.apetite = stats.apetite + GetRandomValue(-5, 5) / 100.0f;
+	if (this->stats.life.smell == true)
+		newstats.max_speed_food = stats.max_speed_food + (float)GetRandomValue(-10, 10) / 10.0f;
 	return newstats;
 }
 
-Boid Boid::procreate(void)
+Boid Boid::procreate(int *boids_alive)
 {
 	t_boid stats = this->tweakstats(this->stats);
 
-	this->stats.life.energy -= 500;
+	this->stats.life.energy -= 1000;
 	this->stats.life.children += 1;
+	*boids_alive += 1;
 	return Boid(stats);
 }
 

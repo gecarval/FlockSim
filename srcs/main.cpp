@@ -30,10 +30,10 @@ void	update_engine(t_game *game)
 		if (game->pause == false)
 		{
 			game->flock.updateflock();
-			game->flock.generate_food_overtime();
+			game->flock.generate_food_overtime(game->flock.options.gamespeed);
 		}
 		BeginDrawing();
-		ClearBackground(RAYWHITE);
+		ClearBackground({0, 0, 24, 255});
 		BeginMode2D(game->player.camera);
 		game->flock.draw(game->player.camera, game->texture.hashmap);
 		EndMode2D();

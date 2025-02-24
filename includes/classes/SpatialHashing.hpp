@@ -4,7 +4,7 @@
 # include "Boid.hpp"
 
 // MACROS
-# define HASH_QUAD_SIZE 150
+# define HASH_QUAD_SIZE 100
 # define HASH_CALC (((CANVAS_WIDTH + CANVAS_HEIGHT) / 2) / HASH_QUAD_SIZE)
 # define HASH_LEN HASH_CALC * HASH_CALC
 // STRUCTURES

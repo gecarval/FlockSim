@@ -58,7 +58,7 @@ class Flock
 		void remove_food(t_food *food);
 		void generate_food(void);
 		void generate_one_food(void);
-		void generate_food_overtime(void);
+		void generate_food_overtime(float gamespeed);
         void draw(Camera2D camera, RenderTexture2D texture);
 };
 

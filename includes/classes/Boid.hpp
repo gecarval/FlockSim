@@ -6,9 +6,9 @@
 # define CANVAS_HEIGHT 5000
 # define NB_BOIDS 3000
 # define BOID_SIZE 3
-# define FOOD_GEN (1 / (float)(NB_BOIDS / 10))
+# define FOOD_GEN 0.003f
 # define FOOD_RADIUS 2
-# define FOOD_ENERGY 100
+# define FOOD_ENERGY 300
 
 // INCLUDES
 # include "raylib.h"
@@ -32,6 +32,7 @@ typedef struct s_lifestats
 	int			children;
 	float		food;
 	bool		alive;
+	bool		smell;
 }				t_lifestats;
 
 typedef struct s_boid
@@ -75,13 +76,13 @@ class Boid
 		void	align(void);
 		void	cohese(void);
 		void	update(float gamespeed);
-		void	lifestatsupdate(int *boids_alive, Boid *boids);
+		void	lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed);
 		void	mirror(void);
 		void	avoidborder(void);
 		void	attract_towards(Vector2 target);
 		void	flee_from(Vector2 target);
 		t_boid	tweakstats(t_boid stats);
-		Boid	procreate(void);
+		Boid	procreate(int *boids_alive);
 		void	draw_boid(void);
 		void	draw_perception(void);
 		void	draw_velocity(void);
