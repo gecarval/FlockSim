@@ -4,8 +4,8 @@
 SpatialHashing::SpatialHashing(void)
 {
 	const float div = HASH_CALC;
-	const float grid_height = HEIGHT / div;
-	const float grid_width = WIDTH / div;
+	const float grid_height = CANVAS_HEIGHT / div;
+	const float grid_width = CANVAS_WIDTH / div;
 	float xi = 0;
 	float yi = 0;
 
@@ -18,7 +18,7 @@ SpatialHashing::SpatialHashing(void)
 		this->table[i].center = {xi + grid_width / 2, yi + grid_height / 2};
 		this->table[i].boids = nullptr;
 		this->table[i].food = nullptr;
-		if (xi + grid_width >= WIDTH)
+		if (xi + grid_width >= CANVAS_WIDTH)
 		{
 			xi = 0;
 			yi += grid_height;
@@ -89,8 +89,8 @@ void	SpatialHashing::clear(void)
 int		SpatialHashing::hash(Vector2 center)
 {
 	const float hash_grid = HASH_CALC;
-	const float x = floor(center.x / (WIDTH / hash_grid));
-	const float y = floor(center.y / (HEIGHT / hash_grid));
+	const float x = floor(center.x / (CANVAS_WIDTH / hash_grid));
+	const float y = floor(center.y / (CANVAS_HEIGHT / hash_grid));
 	const float result = x + y * hash_grid;
 
 	if (result <= 0)

@@ -7,8 +7,8 @@ Boid::Boid(void)
 	this->radius = BOID_SIZE;
 	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 0, 0, true},
 		0, Vector2Zero(), RED, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1, 0.1, 2};
-	this->stats.pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
-		static_cast<float>(GetRandomValue(0, HEIGHT))};
+	this->stats.pos = {static_cast<float>(GetRandomValue(0, CANVAS_WIDTH)),
+		static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
 	this->vel = {static_cast<float>(GetRandomValue(-this->stats.max_speed, this->stats.max_speed)),
 		static_cast<float>(GetRandomValue(-this->stats.max_speed, this->stats.max_speed))};
 	this->acc = Vector2Zero();
@@ -145,14 +145,14 @@ void Boid::cohese(void)
 
 void Boid::mirror(void)
 {
-	if (this->stats.pos.x > WIDTH)
+	if (this->stats.pos.x > CANVAS_WIDTH)
 		this->stats.pos.x = 1;
 	else if (this->stats.pos.x < 0)
-		this->stats.pos.x = WIDTH - 2;
-	if (this->stats.pos.y > HEIGHT)
+		this->stats.pos.x = CANVAS_WIDTH - 2;
+	if (this->stats.pos.y > CANVAS_HEIGHT)
 		this->stats.pos.y = 1;
 	else if (this->stats.pos.y < 0)
-		this->stats.pos.y = HEIGHT - 2;
+		this->stats.pos.y = CANVAS_HEIGHT - 2;
 }
 
 void Boid::avoidborder(void)
@@ -160,12 +160,12 @@ void Boid::avoidborder(void)
 	Vector2 border = {0, 0};
 	if (this->stats.pos.x < this->stats.perception)
 		border.x = this->stats.obstacle_avoidance * (this->stats.perception - this->stats.pos.x);
-	else if (this->stats.pos.x > WIDTH - this->stats.perception)
-		border.x = -this->stats.obstacle_avoidance * (this->stats.pos.x - (WIDTH - this->stats.perception));
+	else if (this->stats.pos.x > CANVAS_WIDTH - this->stats.perception)
+		border.x = -this->stats.obstacle_avoidance * (this->stats.pos.x - (CANVAS_WIDTH - this->stats.perception));
 	if (this->stats.pos.y < this->stats.perception)
 		border.y = this->stats.obstacle_avoidance * (this->stats.perception - this->stats.pos.y);
-	else if (this->stats.pos.y > HEIGHT - this->stats.perception)
-		border.y = -this->stats.obstacle_avoidance * (this->stats.pos.y - (HEIGHT - this->stats.perception));
+	else if (this->stats.pos.y > CANVAS_HEIGHT - this->stats.perception)
+		border.y = -this->stats.obstacle_avoidance * (this->stats.pos.y - (CANVAS_HEIGHT - this->stats.perception));
 	this->acc = Vector2Add(this->acc, border);
 }
 

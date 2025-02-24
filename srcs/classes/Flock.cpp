@@ -282,10 +282,10 @@ void Flock::generate_food(void)
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		new_food = new t_food;
-		new_food->pos = {static_cast<float>(GetRandomValue(50, WIDTH - 50)),
-						static_cast<float>(GetRandomValue(50, HEIGHT - 50))};
-		new_food->radius = 1;
-		new_food->energy = 100;
+		new_food->pos = {static_cast<float>(GetRandomValue(50, CANVAS_WIDTH - 50)),
+						static_cast<float>(GetRandomValue(50, CANVAS_HEIGHT - 50))};
+		new_food->radius = FOOD_RADIUS;
+		new_food->energy = FOOD_ENERGY;
 		if (this->food == nullptr)
 			new_food->next = nullptr;
 		else
@@ -299,10 +299,10 @@ void Flock::generate_one_food(void)
 	t_food *new_food;
 
 	new_food = new t_food;
-	new_food->pos = {static_cast<float>(GetRandomValue(0, WIDTH)),
-					static_cast<float>(GetRandomValue(0, HEIGHT))};
-	new_food->radius = 1;
-	new_food->energy = 100;
+	new_food->pos = {static_cast<float>(GetRandomValue(0, CANVAS_WIDTH)),
+					static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
+	new_food->radius = FOOD_RADIUS;
+	new_food->energy = FOOD_ENERGY;
 	if (this->food == nullptr)
 		new_food->next = nullptr;
 	else

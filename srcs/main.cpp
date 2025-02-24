@@ -2,7 +2,7 @@
 
 void	init_engine(t_game *game)
 {
-	game->player.camera.target = (Vector2){ WIDTH / 2.0f, HEIGHT / 2.0f };
+	game->player.camera.target = (Vector2){ CANVAS_WIDTH / 2.0f, CANVAS_HEIGHT / 2.0f };
     game->player.camera.offset = (Vector2){ WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f };
     game->player.camera.rotation = 0.0f;
     game->player.camera.zoom = 1.0f;
@@ -15,7 +15,7 @@ void	init_engine(t_game *game)
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Flocking Simulation");
 	game->flock.gethash();
 	game->textcolor = {0, 0, 0, 125};
-    game->texture.hashmap = LoadRenderTexture(WIDTH, HEIGHT);
+    game->texture.hashmap = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
     game->flock.hash.renderhashmaptexture(game->texture.hashmap);
 	game->flock.generate_food();
 	SetTargetFPS(game->frame_limit);
@@ -43,9 +43,9 @@ void	update_engine(t_game *game)
 		render_imgui(game);
 		if (game->pause == true)
 		{
-			DrawText("PAUSED", WIDTH / 2 - 122, HEIGHT / 2, 50, game->textcolor);
-			DrawText("Press SPACE to resume", WIDTH / 2 - 110, HEIGHT / 2 + 50, 15, game->textcolor);
-			DrawText("Press RIGHT to update by steps", WIDTH / 2 - 140, HEIGHT / 2 + 75, 15, game->textcolor);
+			DrawText("PAUSED", CANVAS_WIDTH / 2 - 122, CANVAS_HEIGHT / 2, 50, game->textcolor);
+			DrawText("Press SPACE to resume", CANVAS_WIDTH / 2 - 110, CANVAS_HEIGHT / 2 + 50, 15, game->textcolor);
+			DrawText("Press RIGHT to update by steps", CANVAS_WIDTH / 2 - 140, CANVAS_HEIGHT / 2 + 75, 15, game->textcolor);
 		}
 		EndDrawing();
 	}

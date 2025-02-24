@@ -51,13 +51,13 @@ void	engine_input(t_game *game)
 	else if (IsKeyDown(KEY_E))
 		game->player.camera.rotation--;
 	if (IsKeyDown(KEY_W))
-		game->player.camera.target.y -= (HEIGHT * walkspeed);
+		game->player.camera.target.y -= (CANVAS_HEIGHT * walkspeed);
 	if (IsKeyDown(KEY_A))
-		game->player.camera.target.x -= (WIDTH * walkspeed);
+		game->player.camera.target.x -= (CANVAS_WIDTH * walkspeed);
 	if (IsKeyDown(KEY_S))
-		game->player.camera.target.y += (HEIGHT * walkspeed);
+		game->player.camera.target.y += (CANVAS_HEIGHT * walkspeed);
 	if (IsKeyDown(KEY_D))
-		game->player.camera.target.x += (WIDTH * walkspeed);
+		game->player.camera.target.x += (CANVAS_WIDTH * walkspeed);
 	if (IsKeyPressed(KEY_R))
 		game->player.camera.rotation = 0.0f;
 	if (IsKeyPressed(KEY_SPACE))
