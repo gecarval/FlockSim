@@ -138,9 +138,9 @@ void    SpatialHashing::renderhashmaptexture(RenderTexture2D texture)
     BeginTextureMode(texture);
     for (size_t i = 0; i < HASH_LEN; i++)
     {
-        this->draw_rect(this->table[i].rect, GRAY);
+        this->draw_rect(this->table[i].rect, WHITE);
         DrawText(std::to_string(i).c_str(),
-                this->table[i].center.x, this->table[i].center.y, 10, BLACK);
+                this->table[i].center.x, this->table[i].center.y, 10, WHITE);
     }
     EndTextureMode();
 }
@@ -149,11 +149,16 @@ void    SpatialHashing::drawhashmaptexture(RenderTexture2D texture)
 {
     DrawTextureRec(texture.texture, (Rectangle){0, 0,
             (float)texture.texture.width, (float)-texture.texture.height},
-            (Vector2){0, 0}, WHITE);
+            (Vector2){0, 0}, DARKGRAY);
 }
 
 void	SpatialHashing::draw(Camera2D camera)
 {
+	t_boid_list *tmp;
+	int		amount;
+
+	amount = 0;
+	tmp = nullptr;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
 		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
@@ -162,6 +167,59 @@ void	SpatialHashing::draw(Camera2D camera)
 				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
 			continue ;
 		if (this->table[i].boids != nullptr)
-			this->draw_rect(this->table[i].rect, GREEN);
+		{
+			amount = 0;
+			tmp = this->table[i].boids;
+			while (tmp != nullptr)
+			{
+				if (tmp->boid->stats.life.alive == true)
+					amount++;
+				tmp = tmp->next;
+			}
+			if (amount > 0 && amount <= 6)
+				this->draw_rect(this->table[i].rect, YELLOW);
+		}
+	}
+	for (size_t i = 0; i < HASH_LEN; i++)
+	{
+		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
+				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
+				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
+				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
+			continue ;
+		if (this->table[i].boids != nullptr)
+		{
+			amount = 0;
+			tmp = this->table[i].boids;
+			while (tmp != nullptr)
+			{
+				if (tmp->boid->stats.life.alive == true)
+					amount++;
+				tmp = tmp->next;
+			}
+			if (amount > 6 && amount <= 16)
+				this->draw_rect(this->table[i].rect, ORANGE);
+		}
+	}
+	for (size_t i = 0; i < HASH_LEN; i++)
+	{
+		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
+				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
+				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
+				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
+			continue ;
+		if (this->table[i].boids != nullptr)
+		{
+			amount = 0;
+			tmp = this->table[i].boids;
+			while (tmp != nullptr)
+			{
+				if (tmp->boid->stats.life.alive == true)
+					amount++;
+				tmp = tmp->next;
+			}
+			if (amount > 16)
+				this->draw_rect(this->table[i].rect, RED);
+		}
 	}
 }

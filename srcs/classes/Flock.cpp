@@ -3,12 +3,24 @@
 // CONSTRUCTOR
 Flock::Flock()
 {
-	for (size_t i = 0; i < NB_BOIDS; i++)
+	int		i;
+
+	i = 0;
+	while (i < NB_BOIDS / 10)
 	{
 		this->boids[i] = Boid();
 		this->boids[i].stats.id = i + 1;
+		i++;
 	}
-	this->options = {true, true, true, true, true, true, 2, 15, NB_BOIDS};
+	while (i < NB_BOIDS)
+	{
+		this->boids[i] = Boid();
+		this->boids[i].stats.id = i + 1;
+		this->boids[i].stats.life.alive = false;
+		this->boids[i].stats.life.health = 0;
+		i++;
+	}
+	this->options = {true, true, true, true, true, true, 2, 15, NB_BOIDS / 10};
 	this->check = {true, false, false, false};
 	this->hash = SpatialHashing();
 	this->food = nullptr;
@@ -84,7 +96,8 @@ void Flock::hashaverage(void)
 					if (CheckCollisionCircles(this->boids[i].stats.pos,
 							this->boids[i].stats.perception,
 							foodlist->food->pos,
-							foodlist->food->radius) == true)
+							foodlist->food->radius) == true &&
+							this->boids[i].stats.life.smell == true)
 					{
 						if (closest_food == nullptr)
 							closest_food = foodlist;
@@ -96,18 +109,13 @@ void Flock::hashaverage(void)
 					prev_foodlist = foodlist;
 					foodlist = foodlist->next;
 				}
-				if (closest_food != nullptr)
-				{
-					;//this->boids[i].attract_towards(closest_food->food->pos);
-				}
+				if (closest_food != nullptr && this->boids[i].stats.life.smell == true)
+					this->boids[i].attract_towards(closest_food->food->pos);
 				while (tmp != nullptr)
 				{
-					if (&this->boids[i] == tmp->boid || tmp->boid->stats.life.alive == false)
-					{
-						tmp = tmp->next;
-						continue ;
-					}
-					if (CheckCollisionCircles(this->boids[i].stats.pos,
+					if (&this->boids[i] == tmp->boid ||
+						tmp->boid->stats.life.alive == false ||
+						CheckCollisionCircles(this->boids[i].stats.pos,
 							this->boids[i].stats.perception,
 							tmp->boid->stats.pos,
 							tmp->boid->radius) == false)
@@ -120,7 +128,8 @@ void Flock::hashaverage(void)
 					this->boids[i].average.pos = Vector2Add(this->boids[i].average.pos,
 							tmp->boid->stats.pos);
 					total++;
-					if (CheckCollisionCircles(this->boids[i].stats.pos,
+					if (tmp->boid->stats.life.age <= 2 ||
+							CheckCollisionCircles(this->boids[i].stats.pos,
 							this->boids[i].stats.perception
 							* this->boids[i].stats.separation_ratio,
 							tmp->boid->stats.pos,
@@ -145,7 +154,11 @@ void Flock::hashaverage(void)
 				{total, total});
 		if (total_avoid <= 0)
 			continue ;
-		this->boids[i].average.sep = Vector2Divide(this->boids[i].average.sep,
+		if (this->boids[i].stats.life.age <= 3)
+			this->boids[i].average.sep = Vector2Divide(this->boids[i].average.sep,
+				{total_avoid * 3, total_avoid * 3});
+		else
+			this->boids[i].average.sep = Vector2Divide(this->boids[i].average.sep,
 				{total_avoid, total_avoid});
 	}
 }
@@ -186,7 +199,7 @@ void Flock::updateflock(void)
 		if (this->boids[i].stats.life.alive == false)
 			continue ;
 		this->boids[i].update(this->options.gamespeed);
-		this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids);
+		this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids, this->options.gamespeed);
 	}
 }
 
@@ -249,7 +262,7 @@ void Flock::gethash(void)
 void Flock::lifeupdate(void)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
-		this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids);
+		this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids, this->options.gamespeed);
 }
 
 void Flock::remove_food(t_food *food)
@@ -277,13 +290,14 @@ void Flock::remove_food(t_food *food)
 
 void Flock::generate_food(void)
 {
+	return ;
 	t_food *new_food;
 
-	for (size_t i = 0; i < NB_BOIDS; i++)
+	for (size_t i = 0; i < NB_BOIDS / 10; i++)
 	{
 		new_food = new t_food;
-		new_food->pos = {static_cast<float>(GetRandomValue(50, CANVAS_WIDTH - 50)),
-						static_cast<float>(GetRandomValue(50, CANVAS_HEIGHT - 50))};
+		new_food->pos = {static_cast<float>(GetRandomValue(210, CANVAS_WIDTH - 210)),
+						static_cast<float>(GetRandomValue(210, CANVAS_HEIGHT - 210))};
 		new_food->radius = FOOD_RADIUS;
 		new_food->energy = FOOD_ENERGY;
 		if (this->food == nullptr)
@@ -299,8 +313,12 @@ void Flock::generate_one_food(void)
 	t_food *new_food;
 
 	new_food = new t_food;
-	new_food->pos = {static_cast<float>(GetRandomValue(0, CANVAS_WIDTH)),
-					static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
+	// this uses trigonometric so that the food is generated in a circle with more abundance at the borders	
+	const float angle = GetRandomValue(0, 360) * DEG2RAD;
+	const float radius = GetRandomValue(0, (CANVAS_WIDTH - 200) / 2);
+	const float x = (CANVAS_WIDTH / 2);
+	const float y = (CANVAS_HEIGHT / 2);
+	new_food->pos = {x + radius * cos(angle), y + radius * sin(angle)};
 	new_food->radius = FOOD_RADIUS;
 	new_food->energy = FOOD_ENERGY;
 	if (this->food == nullptr)
@@ -310,11 +328,11 @@ void Flock::generate_one_food(void)
 	this->food = new_food;
 }
 
-void Flock::generate_food_overtime(void)
+void Flock::generate_food_overtime(float gamespeed)
 {
 	static float timer = 0;
 
-	timer += GetFrameTime();
+	timer += GetFrameTime() * gamespeed / 15;
 	while (timer >= FOOD_GEN)
 	{
 		this->generate_one_food();
@@ -358,7 +376,7 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 	food = this->food;
 	while (food != nullptr)
 	{
-		DrawCircle(food->pos.x, food->pos.y, food->radius, GREEN);
+		DrawCircle(food->pos.x, food->pos.y, food->radius, (Color){32, 160, 32, 255});
 		food = food->next;
 	}
 }
