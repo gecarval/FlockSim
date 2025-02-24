@@ -2,11 +2,13 @@
 # define BOID_HPP
 
 // MACROS
-# define WIDTH 5000
-# define HEIGHT 5000
+# define CANVAS_WIDTH 5000
+# define CANVAS_HEIGHT 5000
 # define NB_BOIDS 3000
 # define BOID_SIZE 3
-# define FOOD_GEN 0.003f
+# define FOOD_GEN (1 / (float)(NB_BOIDS / 10))
+# define FOOD_RADIUS 2
+# define FOOD_ENERGY 100
 
 // INCLUDES
 # include "raylib.h"

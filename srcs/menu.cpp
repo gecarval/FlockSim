@@ -5,7 +5,7 @@ void	set_random_values(Flock *flock)
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		flock->boids[i].stats.pos = {static_cast<float>(GetRandomValue(0,
-					WIDTH)), static_cast<float>(GetRandomValue(0, HEIGHT))};
+					CANVAS_WIDTH)), static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
 		flock->boids[i].vel = {static_cast<float>(GetRandomValue(-flock->boids[i].stats.max_speed,
 					flock->boids[i].stats.max_speed)),
 			static_cast<float>(GetRandomValue(-flock->boids[i].stats.max_speed,
@@ -29,7 +29,7 @@ void	set_values(Flock *flock, t_boid stats, t_check_box check)
 
 void	render_boid_imguiwindow_lifestats(t_boid *boid)
 {
-	ImGui::SetNextWindowPos(ImVec2(WIDTH / 2 - 100, HEIGHT / 2 - 100), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(CANVAS_WIDTH / 2 - 100, CANVAS_HEIGHT / 2 - 100), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Boid Stats", NULL, ImGuiWindowFlags_NoResize);
 	ImGui::Text("Life Stats");
@@ -111,7 +111,7 @@ void	render_imgui(t_game *game)
 		ImGui::SetTooltip("Draws the hash table of the boids.");
 	if (ImGui::BeginPopupModal("Warning", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		if (WIDTH + HEIGHT > 20000)
+		if (CANVAS_WIDTH + CANVAS_HEIGHT > 20000)
 		{
 			ImGui::Text("The hash table is too big to be drawn.");
 			ImGui::Text("Please reduce the size of the canvas.");
