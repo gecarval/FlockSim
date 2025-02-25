@@ -7,6 +7,9 @@ Boid::Boid(void)
 	this->radius = BOID_SIZE;
 	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 0, 0, true, false},
 		0, Vector2Zero(), RED, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1, 0.1, 2};
+	this->stats.color = (Color){static_cast<unsigned char>(Remap(this->stats.max_steer, 0.1, 0, 0, 255)),
+					static_cast<unsigned char>(Remap(this->stats.perception, 0, 200, 0, 255)),
+					static_cast<unsigned char>(Remap(this->stats.max_steer, 0, 0.1, 0, 255)), 255};
 	this->stats.pos = {static_cast<float>(GetRandomValue(0, CANVAS_WIDTH)),
 		static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
 	this->vel = {static_cast<float>(GetRandomValue(-this->stats.max_speed, this->stats.max_speed)),
@@ -242,20 +245,30 @@ t_boid Boid::tweakstats(t_boid stats)
 	t_boid newstats = stats;
 	newstats.life = (t_lifestats){100.0f, 1000.0f, 0.0f,
 					stats.life.generation + 1, 0, 0, true, stats.life.smell};
-	newstats.perception = stats.perception + GetRandomValue(-5, 5);
-	newstats.max_steer = stats.max_steer + (float)GetRandomValue(-1, 1) / 100.0f;
+	newstats.color = (Color){static_cast<unsigned char>(Remap(newstats.max_steer, 0.1, 0, 0, 255)),
+					static_cast<unsigned char>(Remap(newstats.perception, 0, 200, 0, 255)),
+					static_cast<unsigned char>(Remap(newstats.max_steer, 0, 0.1, 0, 255)), 255};
+	newstats.perception = stats.perception + GetRandomValue(-20, 20);
+	if (newstats.perception < 0)
+		newstats.perception = 0;
+	newstats.max_steer = stats.max_steer +
+		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
 	if (newstats.max_steer < 0)
 		newstats.max_steer = 0;
-	newstats.max_cohesion = stats.max_cohesion + (float)GetRandomValue(-1, 1) / 100.0f;
+	newstats.max_cohesion = stats.max_cohesion +
+		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
 	if (newstats.max_cohesion < 0)
 		newstats.max_cohesion = 0;
-	newstats.max_separation = stats.max_separation + (float)GetRandomValue(-1, 1) / 100.0f;
+	newstats.max_separation = stats.max_separation +
+		static_cast<float>(GetRandomValue(-5, 5)) / 100.0f;
 	if (newstats.max_separation < 0)
 		newstats.max_separation = 0;
-	newstats.separation_ratio = stats.separation_ratio + (float)GetRandomValue(-1, 1) / 100.0f;
+	newstats.separation_ratio = stats.separation_ratio +
+		static_cast<float>(GetRandomValue(-5, 5)) / 100.0f;
 	if (newstats.separation_ratio < 0)
 		newstats.separation_ratio = 0;
-	newstats.obstacle_avoidance = stats.obstacle_avoidance + (float)GetRandomValue(-1, 1) / 100.0f;
+	newstats.obstacle_avoidance = stats.obstacle_avoidance +
+		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
 	if (newstats.obstacle_avoidance < 0)
 		newstats.obstacle_avoidance = 0;
 	if (this->stats.life.smell == true)
@@ -274,4 +287,3 @@ Boid Boid::procreate(int *boids_alive)
 	*boids_alive += 1;
 	return Boid(stats);
 }
-
