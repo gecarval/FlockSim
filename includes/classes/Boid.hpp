@@ -2,13 +2,13 @@
 # define BOID_HPP
 
 // MACROS
-# define CANVAS_WIDTH 5000
-# define CANVAS_HEIGHT 5000
-# define NB_BOIDS 3000
-# define BOID_SIZE 3
-# define FOOD_GEN 0.003f
-# define FOOD_RADIUS 2
-# define FOOD_ENERGY 300
+const int CANVAS_WIDTH = 5000;
+const int CANVAS_HEIGHT = 5000;
+const int NB_BOIDS = 3000;
+const int BOID_SIZE = 3;
+const float FOOD_GEN = 0.003f;
+const float FOOD_RADIUS = 2;
+const int FOOD_ENERGY = 300;
 
 // INCLUDES
 # include "raylib.h"
