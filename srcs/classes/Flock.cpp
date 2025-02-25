@@ -33,7 +33,7 @@ Flock::~Flock()
 }
 
 // MEMBER FUNCTIONS
-void Flock::hashaverage(void)
+inline void Flock::hashaverage(void)
 {
 	int			hash;
 	int			x;
