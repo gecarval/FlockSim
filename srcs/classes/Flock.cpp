@@ -314,15 +314,17 @@ void Flock::generate_one_food(void)
 {
 	t_food *new_food;
 
-	if (this->options.food_amount >= (NB_BOIDS * 3))
+	if (this->options.food_amount >= NB_BOIDS)
 		return ;
 	new_food = new t_food;
 	// this uses trigonometric so that the food is generated in a circle with more abundance at the borders	
-	const float angle = GetRandomValue(0, 360) * DEG2RAD;
-	const float radius = GetRandomValue(0, (CANVAS_WIDTH - 200) / 2);
+	const float angle = GetRandomValue(360, 0) * DEG2RAD;
+	const float radius = GetRandomValue((CANVAS_WIDTH * 0.5f) / 2, 0);
 	const float x = (CANVAS_WIDTH / 2);
 	const float y = (CANVAS_HEIGHT / 2);
 	new_food->pos = {x + radius * cos(angle), y + radius * sin(angle)};
+	new_food->pos = {static_cast<float>(GetRandomValue(210, CANVAS_WIDTH - 210)),
+					static_cast<float>(GetRandomValue(210, CANVAS_HEIGHT - 210))};
 	new_food->radius = FOOD_RADIUS;
 	new_food->energy = FOOD_ENERGY;
 	if (this->food == nullptr)
