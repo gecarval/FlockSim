@@ -84,9 +84,6 @@ void	render_imgui(t_game *game)
 		ImGui::SliderFloat("Perception", &game->player.focused_boid->stats.perception, 0, 200);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("The perception radius of each boid.");
-		ImGui::SliderFloat("Obstacle Avoidance", &game->player.focused_boid->stats.obstacle_avoidance, 0, 0.1);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
 		ImGui::SliderFloat("Alignment Ratio", &game->player.focused_boid->stats.max_steer, 0, 0.1);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("Shows the maximum steering force of the alignment force.\nThe force that makes boids follow each other.");
@@ -99,6 +96,9 @@ void	render_imgui(t_game *game)
 		ImGui::SliderFloat("Separation Ratio", &game->player.focused_boid->stats.separation_ratio, 0, 1);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("Shows the ratio of the separation force.\nThe ratio is based on the perception radius of the boid.");
+		ImGui::SliderFloat("Obstacle Avoidance", &game->player.focused_boid->stats.obstacle_avoidance, 0, 0.1);
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
 	}
 	ImGui::Separator();
 	ImGui::Text("Display Options");
