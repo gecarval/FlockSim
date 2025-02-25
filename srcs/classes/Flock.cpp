@@ -76,7 +76,7 @@ void Flock::hashaverage(void)
 				closest_food = nullptr;
 				tmp = this->hash.table[hash + x + (y * hash_grid)].boids;
 				foodlist = this->hash.table[hash + x + (y * hash_grid)].food;
-				while (foodlist != nullptr)
+				while (foodlist != nullptr && this->boids[i].stats.life.food <= 2000)
 				{
 					if (CheckCollisionCircles(this->boids[i].stats.pos,
 							this->boids[i].radius,
