@@ -71,6 +71,7 @@ void	render_imgui(t_game *game)
 	ImGui::Text("Flocking stats");
 	ImGui::Text("In Game Minutes: %.2f", ingameseconds / 60);
 	ImGui::Text("Number of Boids: %d", game->flock.options.boids_alive);
+	ImGui::Text("Number of Food: %d", game->flock.options.food_amount);
 	ImGui::SliderFloat("Min Speed", &stats.min_speed, 0, 10);
 	ImGui::SliderFloat("Max Speed", &stats.max_speed, 0, 10);
 	ImGui::SliderFloat("Max Alignment", &stats.max_alignment, 0, 10);

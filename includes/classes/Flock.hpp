@@ -31,6 +31,7 @@ typedef struct s_globaloptions
 	int		alignAlgorithm;
 	float	gamespeed;
 	int		boids_alive;
+	int		food_amount;
 }				t_globaloptions;
 
 // CLASS DEFINITIONS
