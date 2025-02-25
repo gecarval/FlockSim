@@ -376,6 +376,10 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 	food = this->food;
 	while (food != nullptr)
 	{
+		if (food->pos.x > (camera.target.x - camera.offset.x / camera.zoom)
+				&& food->pos.x < (camera.target.x + camera.offset.x / camera.zoom)
+				&& food->pos.y > (camera.target.y - camera.offset.y / camera.zoom)
+				&& food->pos.y < (camera.target.y + camera.offset.y / camera.zoom))
 		DrawCircle(food->pos.x, food->pos.y, food->radius, (Color){32, 160, 32, 255});
 		food = food->next;
 	}
