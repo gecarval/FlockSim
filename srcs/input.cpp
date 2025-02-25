@@ -40,8 +40,7 @@ void	engine_input(t_game *game)
 		game->player.shifting = true;
 	else
 		game->player.shifting = false;
-	game->player.camera.zoom += ((float)GetMouseWheelMove() * 5.0f * GetFrameTime() *
-									game->player.camera.zoom);
+	game->player.camera.zoom += ((float)GetMouseWheelMove() * 0.1f * game->player.camera.zoom);
 	if (game->player.camera.zoom > 3.0f)
 		game->player.camera.zoom = 3.0f;
     else if (game->player.camera.zoom < 0.1f)
