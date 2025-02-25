@@ -20,7 +20,7 @@ Flock::Flock()
 		this->boids[i].stats.life.health = 0;
 		i++;
 	}
-	this->options = {true, true, true, true, true, true, 2, 15, NB_BOIDS / 10};
+	this->options = {true, true, true, true, true, true, 2, 15, NB_BOIDS / 10, 0};
 	this->check = {true, false, false, false};
 	this->hash = SpatialHashing();
 	this->food = nullptr;
@@ -305,6 +305,7 @@ void Flock::generate_food(void)
 		else
 			new_food->next = this->food;
 		this->food = new_food;
+		this->options.food_amount += 1;
 	}
 }
 
@@ -326,6 +327,7 @@ void Flock::generate_one_food(void)
 	else
 		new_food->next = this->food;
 	this->food = new_food;
+	this->options.food_amount += 1;
 }
 
 void Flock::generate_food_overtime(float gamespeed)
