@@ -281,6 +281,7 @@ void Flock::remove_food(t_food *food)
 			else
 				prev->next = tmp->next;
 			delete tmp;
+			this->options.food_amount -= 1;
 			break ;
 		}
 		prev = tmp;
@@ -313,6 +314,8 @@ void Flock::generate_one_food(void)
 {
 	t_food *new_food;
 
+	if (this->options.food_amount >= (NB_BOIDS * 3))
+		return ;
 	new_food = new t_food;
 	// this uses trigonometric so that the food is generated in a circle with more abundance at the borders	
 	const float angle = GetRandomValue(0, 360) * DEG2RAD;
@@ -350,6 +353,16 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 		this->hash.drawhashmaptexture(texture);
 	if (this->check.draw_hash == true)
 		this->hash.draw(camera);
+	food = this->food;
+	while (food != nullptr)
+	{
+		if (food->pos.x > (camera.target.x - camera.offset.x / camera.zoom)
+				&& food->pos.x < (camera.target.x + camera.offset.x / camera.zoom)
+				&& food->pos.y > (camera.target.y - camera.offset.y / camera.zoom)
+				&& food->pos.y < (camera.target.y + camera.offset.y / camera.zoom))
+		DrawCircle(food->pos.x, food->pos.y, food->radius, (Color){32, 160, 32, 255});
+		food = food->next;
+	}
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
 		if (this->boids[i].stats.life.alive == false)
@@ -374,15 +387,5 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 			if (this->check.draw_perception == true)
 				this->boids[i].draw_perception();
 		}
-	}
-	food = this->food;
-	while (food != nullptr)
-	{
-		if (food->pos.x > (camera.target.x - camera.offset.x / camera.zoom)
-				&& food->pos.x < (camera.target.x + camera.offset.x / camera.zoom)
-				&& food->pos.y > (camera.target.y - camera.offset.y / camera.zoom)
-				&& food->pos.y < (camera.target.y + camera.offset.y / camera.zoom))
-		DrawCircle(food->pos.x, food->pos.y, food->radius, (Color){32, 160, 32, 255});
-		food = food->next;
 	}
 }
