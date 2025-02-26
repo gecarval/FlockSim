@@ -29,6 +29,25 @@ void	engine_input_event_handler(t_game *game)
 				Vector2Scale(Vector2Subtract(GetMousePosition(), game->player.camera.offset), 0.05f));
 }
 
+void	spawn_boid(t_game *game)
+{
+	for (size_t i = 0; i < NB_BOIDS; i++)
+	{
+		if (game->flock.boids[i].stats.life.alive == false)
+		{
+			game->flock.boids[i] = Boid(game->flock.boids[0].stats);
+			game->flock.boids[i].stats.id = i + 1;
+			game->flock.boids[i].stats.life.alive = true;
+			game->flock.boids[i].stats.pos = GetScreenToWorld2D(GetMousePosition(), game->player.camera);
+			game->flock.boids[i].vel = {static_cast<float>(GetRandomValue(-game->flock.boids[i].stats.max_speed,
+						game->flock.boids[i].stats.max_speed)),
+				static_cast<float>(GetRandomValue(-game->flock.boids[i].stats.max_speed,
+						game->flock.boids[i].stats.max_speed))};
+			break ;
+		}
+	}
+}
+
 void	engine_input(t_game *game)
 {
 	const float		walkspeed = (0.8f * GetFrameTime()) / (game->player.camera.zoom * 20);
@@ -36,6 +55,8 @@ void	engine_input(t_game *game)
 		focus_boid_on_click(game);
 	if (IsKeyPressed(KEY_F))
 		game->player.focus = false;
+	if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON))
+		spawn_boid(game);
 	if (IsKeyDown(KEY_LEFT_SHIFT) && game->player.focus == false)
 		game->player.shifting = true;
 	else
