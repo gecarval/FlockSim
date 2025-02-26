@@ -12,6 +12,9 @@ void	init_engine(t_game *game)
 	game->flock = Flock();
 	game->pause = false;
 	game->frame_limit = 60;
+	game->spawn.circle = { {CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2}, 100 };
+	game->spawn.rect = { 200, 200, CANVAS_WIDTH - 400, CANVAS_HEIGHT - 400};
+	game->spawn.oncollision = true;
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Flocking Simulation");
 	game->flock.gethash();
 	game->textcolor = {0, 0, 0, 125};
@@ -22,20 +25,31 @@ void	init_engine(t_game *game)
 	rlImGuiSetup(true);
 }
 
+void	update_objects(t_game *game)
+{
+	if (game->pause == false)
+	{
+		game->flock.updateflock();
+		if (game->spawn.active == true)
+			game->flock.generate_food_overtime(game->flock.options.gamespeed,
+					game->spawn.circle, game->spawn.oncollision);
+		else
+			game->flock.generate_food_overtime(game->flock.options.gamespeed,
+					game->spawn.rect, game->spawn.oncollision);
+	}
+}
+
 void	update_engine(t_game *game)
 {
 	while (!WindowShouldClose())
 	{
 		engine_input(game);
-		if (game->pause == false)
-		{
-			game->flock.updateflock();
-			game->flock.generate_food_overtime(game->flock.options.gamespeed);
-		}
+		update_objects(game);
 		BeginDrawing();
 		ClearBackground({0, 0, 24, 255});
 		BeginMode2D(game->player.camera);
 		game->flock.draw(game->player.camera, game->texture.hashmap);
+		engine_drawin_camera(game);
 		EndMode2D();
 		engine_draw(game);
 		if (game->flock.options.show_fps == true)

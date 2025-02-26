@@ -15,6 +15,15 @@ const int WINDOW_HEIGHT = 900;
 # include <iostream>
 
 // DATA STRUCTURES
+typedef struct s_spawn
+{
+	Circle		circle;
+	Rectangle	rect;
+	bool		draw;
+	bool		active;
+	bool		oncollision;
+}	t_spawn;
+
 typedef struct s_player {
 	Camera2D	camera;
 	Boid		*focused_boid;
@@ -30,6 +39,7 @@ typedef struct s_texture2d {
 typedef struct s_game
 {
 	t_player	player;
+	t_spawn		spawn;
     t_texture2d texture;
     Color       textcolor;
 	Flock		flock;
@@ -40,6 +50,7 @@ typedef struct s_game
 // FUNCTION PROTOTYPES
 void	update_flock(t_game *game);
 void	engine_draw(t_game *game);
+void	engine_drawin_camera(t_game *game);
 void	engine_input(t_game *game);
 void	render_imgui(t_game *game);
 

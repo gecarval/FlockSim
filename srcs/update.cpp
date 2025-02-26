@@ -31,6 +31,23 @@ void	update_flock(t_game *game)
 	game->flock.update();
 }
 
+void	engine_drawin_camera(t_game *game)
+{
+	if (game->spawn.draw == true)
+	{
+		if (game->spawn.active == true)
+		{
+			DrawCircleLines(game->spawn.circle.pos.x, game->spawn.circle.pos.y,
+					game->spawn.circle.radius, RED);
+		}
+		else
+		{
+			DrawRectangleLines(game->spawn.rect.x, game->spawn.rect.y,
+					game->spawn.rect.width, game->spawn.rect.height, RED);
+		}
+	}
+}
+
 void	engine_draw(t_game *game)
 {
 	Vector2	focused_boid_pos = Vector2Zero();
