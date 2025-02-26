@@ -43,6 +43,7 @@ inline void Flock::hashaverage(void)
 	const int	hash_grid = HASH_CALC;
 	float		total;
 	float		total_avoid;
+	int			counter;
 	t_boid_list	*tmp;
 	t_food_list	*prev_foodlist;
 	t_food_list	*foodlist;
@@ -70,13 +71,16 @@ inline void Flock::hashaverage(void)
 				if (hash + x + (y * hash_grid) < 0 || hash + x + (y
 						* hash_grid) >= HASH_LEN)
 					continue ;
+				counter = 0;
 				tmp = nullptr;
 				foodlist = nullptr;
 				prev_foodlist = nullptr;
 				closest_food = nullptr;
 				tmp = this->hash.table[hash + x + (y * hash_grid)].boids;
 				foodlist = this->hash.table[hash + x + (y * hash_grid)].food;
-				while (foodlist != nullptr && this->boids[i].stats.life.food <= 2000)
+				while (foodlist != nullptr && this->boids[i].stats.life.food <= 2000 &&
+						counter < 2 && CheckCollisionCircleRec(this->boids[i].stats.pos,
+						this->boids[i].radius, this->hash.table[hash + x + (y * hash_grid)].rect) == true)
 				{
 					if (CheckCollisionCircles(this->boids[i].stats.pos,
 							this->boids[i].radius,
@@ -91,6 +95,7 @@ inline void Flock::hashaverage(void)
 						this->remove_food(foodlist->food);
 						delete foodlist;
 						foodlist = this->hash.table[hash + x + (y * hash_grid)].food;
+						counter++;
 						continue ;
 					}
 					if (CheckCollisionCircles(this->boids[i].stats.pos,
@@ -102,16 +107,19 @@ inline void Flock::hashaverage(void)
 						if (closest_food == nullptr)
 							closest_food = foodlist;
 						else if (Vector2Distance(this->boids[i].stats.pos,
-								foodlist->food->pos) < Vector2Distance(this->boids[i].stats.pos,
+								foodlist->food->pos) <
+								Vector2Distance(this->boids[i].stats.pos,
 								closest_food->food->pos))
 							closest_food = foodlist;
 					}
 					prev_foodlist = foodlist;
 					foodlist = foodlist->next;
 				}
-				if (closest_food != nullptr && this->boids[i].stats.life.smell == true)
+				if (closest_food != nullptr && this->boids[i].stats.life.smell == true &&
+						this->boids[i].stats.life.food <= 2000)
 					this->boids[i].attract_towards(closest_food->food->pos);
-				while (tmp != nullptr)
+				counter = 0;
+				while (tmp != nullptr && counter < 5)
 				{
 					if (&this->boids[i] == tmp->boid ||
 						tmp->boid->stats.life.alive == false ||
@@ -127,6 +135,7 @@ inline void Flock::hashaverage(void)
 							tmp->boid->vel);
 					this->boids[i].average.pos = Vector2Add(this->boids[i].average.pos,
 							tmp->boid->stats.pos);
+					counter++;
 					total++;
 					if (tmp->boid->stats.life.age <= 2 ||
 							CheckCollisionCircles(this->boids[i].stats.pos,
