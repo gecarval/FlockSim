@@ -30,7 +30,7 @@ void	set_values(Flock *flock, t_boid stats, t_check_box check)
 void	render_boid_imguiwindow_lifestats(t_boid *boid)
 {
 	ImGui::SetNextWindowPos(ImVec2(CANVAS_WIDTH / 2 - 100, CANVAS_HEIGHT / 2 - 100), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(300, 500), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Boid Stats", NULL, ImGuiWindowFlags_NoResize);
 	ImGui::Text("Life Stats");
 	ImGui::Text("Boid %d", boid->id);
@@ -52,6 +52,27 @@ void	render_boid_imguiwindow_lifestats(t_boid *boid)
 	ImGui::Text("Apetite: %.2f", boid->apetite);
 	ImGui::Text("Max Speed into Food: %.2f", boid->max_speed_food);
 	ImGui::Checkbox("Smells Food", &boid->life.smell);
+	ImGui::Separator();
+	ImGui::Separator();
+	ImGui::Text("Boid stats");
+	ImGui::SliderFloat("Perception", &boid->perception, 0, MAX_PERCEPTION);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("The perception radius of each boid.");
+	ImGui::SliderFloat("Alignment Ratio", &boid->max_steer, 0, MAX_ALIGN);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the maximum steering force of the alignment force.\nThe force that makes boids follow each other.");
+	ImGui::SliderFloat("Max Cohesion", &boid->max_cohesion, 0, MAX_COHESE);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the maximum influence of the cohesion force.\nThe force that makes boids stick together.");
+	ImGui::SliderFloat("Max Separation", &boid->max_separation, 0, MAX_SEPARATE);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the maximum influence of the separation force.\nthe force that makes boids avoid each other when they get too close.");
+	ImGui::SliderFloat("Separation Ratio", &boid->separation_ratio, 0, MAX_SEPARATION_RATIO);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Shows the ratio of the separation force.\nThe ratio is based on the perception radius of the boid.");
+	ImGui::SliderFloat("Obstacle Avoidance", &boid->obstacle_avoidance, 0, MAX_OBSTACLE_AVOIDANCE);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
 	ImGui::End();
 }
 
@@ -77,29 +98,6 @@ void	render_imgui(t_game *game)
 	ImGui::SliderFloat("Max Alignment", &stats.max_alignment, 0, 10);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Shows the maximum influence of the alignment force.");
-	if (game->player.focus == true)
-	{
-		ImGui::Separator();
-		ImGui::Text("Boid stats");
-		ImGui::SliderFloat("Perception", &game->player.focused_boid->stats.perception, 0, 200);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("The perception radius of each boid.");
-		ImGui::SliderFloat("Alignment Ratio", &game->player.focused_boid->stats.max_steer, 0, 0.1);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("Shows the maximum steering force of the alignment force.\nThe force that makes boids follow each other.");
-		ImGui::SliderFloat("Max Cohesion", &game->player.focused_boid->stats.max_cohesion, 0, 0.1);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("Shows the maximum influence of the cohesion force.\nThe force that makes boids stick together.");
-		ImGui::SliderFloat("Max Separation", &game->player.focused_boid->stats.max_separation, 0, 1);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("Shows the maximum influence of the separation force.\nthe force that makes boids avoid each other when they get too close.");
-		ImGui::SliderFloat("Separation Ratio", &game->player.focused_boid->stats.separation_ratio, 0, 1);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("Shows the ratio of the separation force.\nThe ratio is based on the perception radius of the boid.");
-		ImGui::SliderFloat("Obstacle Avoidance", &game->player.focused_boid->stats.obstacle_avoidance, 0, 0.1);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
-	}
 	ImGui::Separator();
 	ImGui::Text("Display Options");
 	ImGui::Checkbox("Draw Boids", &check.draw);
@@ -117,7 +115,7 @@ void	render_imgui(t_game *game)
 		ImGui::SetTooltip("Draws the hash table of the boids.");
 	if (ImGui::BeginPopupModal("Warning", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		if (CANVAS_WIDTH + CANVAS_HEIGHT > 20000)
+		if (CANVAS_WIDTH + CANVAS_HEIGHT > 500000)
 		{
 			ImGui::Text("The hash table is too big to be drawn.");
 			ImGui::Text("Please reduce the size of the canvas.");

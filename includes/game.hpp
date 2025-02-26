@@ -2,8 +2,8 @@
 # define GAME_HPP
 
 // MACROS
-# define WINDOW_WIDTH 1600
-# define WINDOW_HEIGHT 900
+const int WINDOW_WIDTH = 1600;
+const int WINDOW_HEIGHT = 900;
 
 // INCLUDES
 # include "./classes/Boid.hpp"
