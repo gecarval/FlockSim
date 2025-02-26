@@ -158,6 +158,17 @@ void	SpatialHashing::draw(Camera2D camera)
 	int		amount;
 
 	amount = 0;
+	for (size_t i = 0; (i < HASH_LEN && CANVAS_WIDTH + CANVAS_HEIGHT > 20000) ; i++)
+	{
+		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
+				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
+				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
+				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
+			continue ;
+		this->draw_rect(this->table[i].rect, DARKGRAY);
+		DrawText(std::to_string(i).c_str(),
+				this->table[i].center.x, this->table[i].center.y, 10, DARKGRAY);
+	}
 	tmp = nullptr;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
@@ -180,6 +191,7 @@ void	SpatialHashing::draw(Camera2D camera)
 				this->draw_rect(this->table[i].rect, YELLOW);
 		}
 	}
+	tmp = nullptr;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
 		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
@@ -201,6 +213,7 @@ void	SpatialHashing::draw(Camera2D camera)
 				this->draw_rect(this->table[i].rect, ORANGE);
 		}
 	}
+	tmp = nullptr;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
 		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
