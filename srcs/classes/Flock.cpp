@@ -310,21 +310,18 @@ void Flock::generate_food(void)
 	}
 }
 
-void Flock::generate_one_food(void)
+bool Flock::generate_one_food(Circle circle, bool oncollision)
 {
 	t_food *new_food;
 
 	if (this->options.food_amount >= NB_BOIDS)
-		return ;
+		return (true);
+	const float x = static_cast<float>(GetRandomValue(0, CANVAS_WIDTH));
+	const float y = static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT));
+	if (CheckCollisionPointCircle({x, y}, circle.pos, circle.radius) == !oncollision)
+		return (false);
 	new_food = new t_food;
-	// this uses trigonometric so that the food is generated in a circle with more abundance at the borders	
-	const float angle = GetRandomValue(360, 0) * DEG2RAD;
-	const float radius = GetRandomValue((CANVAS_WIDTH * 0.5f) / 2, 0);
-	const float x = (CANVAS_WIDTH / 2);
-	const float y = (CANVAS_HEIGHT / 2);
-	new_food->pos = {x + radius * cos(angle), y + radius * sin(angle)};
-	new_food->pos = {static_cast<float>(GetRandomValue(210, CANVAS_WIDTH - 210)),
-					static_cast<float>(GetRandomValue(210, CANVAS_HEIGHT - 210))};
+	new_food->pos = {x, y};
 	new_food->radius = FOOD_RADIUS;
 	new_food->energy = FOOD_ENERGY;
 	if (this->food == nullptr)
@@ -333,17 +330,53 @@ void Flock::generate_one_food(void)
 		new_food->next = this->food;
 	this->food = new_food;
 	this->options.food_amount += 1;
+	return (true);
 }
 
-void Flock::generate_food_overtime(float gamespeed)
+bool Flock::generate_one_food(Rectangle rect, bool oncollision)
+{
+	t_food *new_food;
+
+	if (this->options.food_amount >= NB_BOIDS)
+		return (true);
+	const float x = static_cast<float>(GetRandomValue(0, CANVAS_WIDTH));
+	const float y = static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT));
+	if (CheckCollisionPointRec({x, y}, rect) == !oncollision)
+		return (false);
+	new_food = new t_food;
+	new_food->pos = {x, y};
+	new_food->radius = FOOD_RADIUS;
+	new_food->energy = FOOD_ENERGY;
+	if (this->food == nullptr)
+		new_food->next = nullptr;
+	else
+		new_food->next = this->food;
+	this->food = new_food;
+	this->options.food_amount += 1;
+	return (true);
+}
+
+void Flock::generate_food_overtime(float gamespeed, Circle circle, bool oncollision)
 {
 	static float timer = 0;
 
 	timer += GetFrameTime() * gamespeed / 15;
 	while (timer >= FOOD_GEN)
 	{
-		this->generate_one_food();
-		timer -= FOOD_GEN;
+		if (this->generate_one_food(circle, oncollision) == true)
+			timer -= FOOD_GEN;
+	}
+}
+
+void Flock::generate_food_overtime(float gamespeed, Rectangle rect, bool oncollision)
+{
+	static float timer = 0;
+
+	timer += GetFrameTime() * gamespeed / 15;
+	while (timer >= FOOD_GEN)
+	{
+		if (this->generate_one_food(rect, oncollision) == true)
+			timer -= FOOD_GEN;
 	}
 }
 

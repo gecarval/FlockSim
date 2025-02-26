@@ -163,6 +163,21 @@ void	render_imgui(t_game *game)
 		ImGui::SetTooltip("The boids will alignment algorithm.\n0-No Alignment\n1-n^2 Alignment iterating each one with every other\n2-nlogn Alignment iterating each one with the hash.");
 	if (ImGui::Button("Randomize Boids Position") == true)
 		set_random_values(&game->flock);
+	ImGui::Separator();
+	ImGui::Text("Food Spawn Settings");
+	ImGui::Checkbox("Draw Spawn", &game->spawn.draw);
+	ImGui::Checkbox("Spawn on Collision", &game->spawn.oncollision);
+	ImGui::Checkbox("Spawn Rectangule | Circle", &game->spawn.active);
+	ImGui::Text("Circle Spawn Settings");
+	ImGui::SliderFloat("Circle Radius", &game->spawn.circle.radius, 0, CANVAS_WIDTH * 0.75);
+	ImGui::SliderFloat("Circle Center X", &game->spawn.circle.pos.x, 0, CANVAS_WIDTH);
+	ImGui::SliderFloat("Circle Center Y", &game->spawn.circle.pos.y, 0, CANVAS_HEIGHT);
+	ImGui::Text("Rectangle Spawn Settings");
+	ImGui::SliderFloat("Rectangle Width", &game->spawn.rect.width, 0, CANVAS_WIDTH);
+	ImGui::SliderFloat("Rectangle Height", &game->spawn.rect.height, 0, CANVAS_HEIGHT);
+	ImGui::SliderFloat("Rectangle Beginning X", &game->spawn.rect.x, 0, CANVAS_WIDTH);
+	ImGui::SliderFloat("Rectangle Beginning Y", &game->spawn.rect.y, 0, CANVAS_HEIGHT);
+	ImGui::Separator();
 	set_values(&game->flock, stats, check);
 	game->flock.options.gamespeed =  (gamespeedmult * 15.0f);
 	if (game->pause == false)
