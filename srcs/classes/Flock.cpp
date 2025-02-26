@@ -393,7 +393,7 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 {
 	t_food *food;
 
-	if (this->check.draw_hash == true)
+	if (this->check.draw_hash == true && CANVAS_WIDTH + CANVAS_HEIGHT <= 20000)
 		this->hash.drawhashmaptexture(texture);
 	if (this->check.draw_hash == true)
 		this->hash.draw(camera);

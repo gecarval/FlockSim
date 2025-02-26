@@ -4,7 +4,7 @@
 # include "Boid.hpp"
 
 // MACROS
-const int HASH_QUAD_SIZE = 50;
+const int HASH_QUAD_SIZE = 100;
 const int HASH_CALC = (((CANVAS_WIDTH + CANVAS_HEIGHT) / 2) / HASH_QUAD_SIZE);
 const int HASH_LEN = HASH_CALC * HASH_CALC;
 // STRUCTURES

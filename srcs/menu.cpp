@@ -115,24 +115,19 @@ void	render_imgui(t_game *game)
 		ImGui::SetTooltip("Draws the hash table of the boids.");
 	if (ImGui::BeginPopupModal("Warning", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		if (CANVAS_WIDTH + CANVAS_HEIGHT > 500000)
-		{
-			ImGui::Text("The hash table is too big to be drawn.");
-			ImGui::Text("Please reduce the size of the canvas.");
-		}
-		else
+		if (CANVAS_WIDTH + CANVAS_HEIGHT > 20000)
 		{
 			ImGui::Text("Are you sure you want to draw the hash table?\nThis will slow down the simulation.");
-			if (ImGui::Button("Enable"))
-			{
-				check.draw_hash = true;
-				ImGui::CloseCurrentPopup();
-			}
-			if (ImGui::Button("Disable"))
-			{
-				check.draw_hash = false;
-				ImGui::CloseCurrentPopup();
-			}
+		}
+		if (ImGui::Button("Enable"))
+		{
+			check.draw_hash = true;
+			ImGui::CloseCurrentPopup();
+		}
+		if (ImGui::Button("Disable"))
+		{
+			check.draw_hash = false;
+			ImGui::CloseCurrentPopup();
 		}
 		if (ImGui::Button("Close"))
 			ImGui::CloseCurrentPopup();
