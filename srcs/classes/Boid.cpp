@@ -251,26 +251,38 @@ t_boid Boid::tweakstats(t_boid stats)
 	newstats.perception = stats.perception + GetRandomValue(-20, 20);
 	if (newstats.perception < 0)
 		newstats.perception = 0;
+	else if (newstats.perception > MAX_PERCEPTION)
+		newstats.perception = MAX_PERCEPTION;
 	newstats.max_steer = stats.max_steer +
 		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
 	if (newstats.max_steer < 0)
 		newstats.max_steer = 0;
+	else if (newstats.max_steer > MAX_ALIGN)
+		newstats.max_steer = MAX_ALIGN;
 	newstats.max_cohesion = stats.max_cohesion +
 		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
 	if (newstats.max_cohesion < 0)
 		newstats.max_cohesion = 0;
+	else if (newstats.max_cohesion > MAX_COHESE)
+		newstats.max_cohesion = MAX_COHESE;
 	newstats.max_separation = stats.max_separation +
 		static_cast<float>(GetRandomValue(-5, 5)) / 100.0f;
 	if (newstats.max_separation < 0)
 		newstats.max_separation = 0;
+	else if (newstats.max_separation > MAX_SEPARATE)
+		newstats.max_separation = MAX_SEPARATE;
 	newstats.separation_ratio = stats.separation_ratio +
 		static_cast<float>(GetRandomValue(-5, 5)) / 100.0f;
 	if (newstats.separation_ratio < 0)
 		newstats.separation_ratio = 0;
+	else if (newstats.separation_ratio > MAX_SEPARATION_RATIO)
+		newstats.separation_ratio = MAX_SEPARATION_RATIO;
 	newstats.obstacle_avoidance = stats.obstacle_avoidance +
 		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
 	if (newstats.obstacle_avoidance < 0)
 		newstats.obstacle_avoidance = 0;
+	else if (newstats.obstacle_avoidance > MAX_OBSTACLE_AVOIDANCE)
+		newstats.obstacle_avoidance = MAX_OBSTACLE_AVOIDANCE;
 	if (this->stats.life.smell == true)
 		newstats.apetite = stats.apetite + GetRandomValue(-5, 5) / 100.0f;
 	if (this->stats.life.smell == true)
