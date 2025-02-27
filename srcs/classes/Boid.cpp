@@ -156,6 +156,20 @@ void Boid::mirror(void)
 		this->stats.pos.y = CANVAS_HEIGHT;
 }
 
+void Boid::runfromborder(void)
+{
+	Vector2 border = {0, 0};
+	if (this->stats.pos.x < this->stats.perception)
+		border.x = RUNBORDER * (this->stats.perception - this->stats.pos.x);
+	else if (this->stats.pos.x > CANVAS_WIDTH - this->stats.perception)
+		border.x = -RUNBORDER * (this->stats.pos.x - (CANVAS_WIDTH - this->stats.perception));
+	if (this->stats.pos.y < this->stats.perception)
+		border.y = RUNBORDER * (this->stats.perception - this->stats.pos.y);
+	else if (this->stats.pos.y > CANVAS_HEIGHT - this->stats.perception)
+		border.y = -RUNBORDER * (this->stats.pos.y - (CANVAS_HEIGHT - this->stats.perception));
+	this->acc = Vector2Add(this->acc, border);
+}
+
 void Boid::avoidborder(void)
 {
 	Vector2 border = {0, 0};
@@ -203,7 +217,7 @@ void Boid::update(float gamespeed)
 	this->acc = Vector2Zero();
 }
 
-void Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
+bool Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 {
 	const float		foodtoenergy = FOOD_CONSUMPTION * GetFrameTime() * gamespeed;
 	this->stats.life.age += GetFrameTime() * (gamespeed / 15);
@@ -214,7 +228,7 @@ void Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 	{
 		this->stats.life.alive = false;
 		*boids_alive -= 1;
-		return ;
+		return (true);
 	}
 	if (this->stats.life.energy < MAX_ENERGY - foodtoenergy && this->stats.life.food > 0)
 	{
@@ -239,6 +253,7 @@ void Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 		this->stats.life.energy = 0;
 	if (this->stats.life.food < 0)
 		this->stats.life.food = 0;
+	return (false);
 }
 
 t_boid Boid::tweakstats(t_boid stats)
