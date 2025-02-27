@@ -51,6 +51,8 @@ void	spawn_boid(t_game *game)
 void	engine_input(t_game *game)
 {
 	const float		walkspeed = (0.8f * GetFrameTime()) / (game->player.camera.zoom * 20);
+	static const float	zoommin = 0.1f / ((float)CANVAS_WIDTH / 5000.0f);
+
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 		focus_boid_on_click(game);
 	if (IsKeyPressed(KEY_F))
@@ -64,8 +66,8 @@ void	engine_input(t_game *game)
 	game->player.camera.zoom += ((float)GetMouseWheelMove() * 0.1f * game->player.camera.zoom);
 	if (game->player.camera.zoom > 3.0f)
 		game->player.camera.zoom = 3.0f;
-    else if (game->player.camera.zoom < 0.1f)
-		game->player.camera.zoom = 0.1f;
+    else if (game->player.camera.zoom < zoommin)
+		game->player.camera.zoom = zoommin;
 	if (IsKeyDown(KEY_Q))
 		game->player.camera.rotation++;
 	else if (IsKeyDown(KEY_E))
