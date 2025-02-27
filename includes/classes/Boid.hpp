@@ -11,9 +11,10 @@ const int CANVAS_WIDTH = 20000;
 const int CANVAS_HEIGHT = 20000;
 const int NB_BOIDS = 30000;
 const int BOID_SIZE = 3;
+const float RUNBORDER = 0.1f;
 // FOOD
 const float FOOD_GEN = 0.003f;
-const float FOOD_RADIUS = 2;
+const float FOOD_RADIUS = 2.0f;
 const int FOOD_ENERGY = 300;
 const Color FOOD_COLOR = (Color){32, 160, 32, 255};
 // MAX MUTATION STATS
@@ -102,8 +103,9 @@ class Boid
 		void	align(void);
 		void	cohese(void);
 		void	update(float gamespeed);
-		void	lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed);
+		bool	lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed);
 		void	mirror(void);
+		void	runfromborder(void);
 		void	avoidborder(void);
 		void	attract_towards(Vector2 target);
 		void	flee_from(Vector2 target);

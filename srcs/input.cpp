@@ -43,6 +43,7 @@ void	spawn_boid(t_game *game)
 						game->flock.boids[i].stats.max_speed)),
 				static_cast<float>(GetRandomValue(-game->flock.boids[i].stats.max_speed,
 						game->flock.boids[i].stats.max_speed))};
+			game->flock.options.boids_alive++;
 			break ;
 		}
 	}

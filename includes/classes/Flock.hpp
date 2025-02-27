@@ -59,6 +59,7 @@ class Flock
 		void lifeupdate(void);
 		void remove_food(t_food *food);
 		void generate_food(void);
+		void generate_one_meat(Vector2 pos);
 		bool generate_one_food(Circle circle, bool oncollision);
 		bool generate_one_food(Rectangle rect, bool oncollision);
 		void generate_food_overtime(float gamespeed, Rectangle rect, bool oncollision);

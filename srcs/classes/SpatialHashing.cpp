@@ -62,8 +62,6 @@ void	SpatialHashing::clear(void)
 {
 	t_boid_list *tmp = nullptr;
 	t_boid_list *next = nullptr;
-	t_food_list *tmp_food = nullptr;
-	t_food_list *next_food = nullptr;
 
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
@@ -75,14 +73,6 @@ void	SpatialHashing::clear(void)
 			tmp = next;
 		}
 		this->table[i].boids = nullptr;
-		tmp_food = this->table[i].food;
-		while (tmp_food != nullptr)
-		{
-			next_food = tmp_food->next;
-			delete tmp_food;
-			tmp_food = next_food;
-		}
-		this->table[i].food = nullptr;
 	}
 }
 
