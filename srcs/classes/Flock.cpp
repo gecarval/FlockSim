@@ -310,6 +310,7 @@ void Flock::generate_food(void)
 						static_cast<float>(GetRandomValue(210, CANVAS_HEIGHT - 210))};
 		new_food->radius = FOOD_RADIUS;
 		new_food->energy = FOOD_ENERGY;
+		new_food->color = FOOD_COLOR;
 		if (this->food == nullptr)
 			new_food->next = nullptr;
 		else
@@ -322,6 +323,7 @@ void Flock::generate_food(void)
 bool Flock::generate_one_food(Circle circle, bool oncollision)
 {
 	t_food *new_food;
+	t_food *tmp;
 
 	if (this->options.food_amount >= NB_BOIDS)
 		return (true);
@@ -329,10 +331,18 @@ bool Flock::generate_one_food(Circle circle, bool oncollision)
 	const float y = static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT));
 	if (CheckCollisionPointCircle({x, y}, circle.pos, circle.radius) == !oncollision)
 		return (false);
+	tmp = this->food;
+	while (tmp != nullptr)
+	{
+		if (CheckCollisionCircles({x, y}, FOOD_RADIUS, tmp->pos, tmp->radius) == true)
+			return (true);
+		tmp = tmp->next;
+	}
 	new_food = new t_food;
 	new_food->pos = {x, y};
 	new_food->radius = FOOD_RADIUS;
 	new_food->energy = FOOD_ENERGY;
+	new_food->color = FOOD_COLOR;
 	if (this->food == nullptr)
 		new_food->next = nullptr;
 	else
@@ -345,6 +355,7 @@ bool Flock::generate_one_food(Circle circle, bool oncollision)
 bool Flock::generate_one_food(Rectangle rect, bool oncollision)
 {
 	t_food *new_food;
+	t_food *tmp;
 
 	if (this->options.food_amount >= NB_BOIDS)
 		return (true);
@@ -352,10 +363,20 @@ bool Flock::generate_one_food(Rectangle rect, bool oncollision)
 	const float y = static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT));
 	if (CheckCollisionPointRec({x, y}, rect) == !oncollision)
 		return (false);
+	tmp = this->food;
+	while (tmp != nullptr)
+	{
+		if (x > tmp->pos.x - tmp->radius && x < tmp->pos.x + tmp->radius &&
+			y > tmp->pos.y - tmp->radius && y < tmp->pos.y + tmp->radius)
+			if (CheckCollisionCircles({x, y}, FOOD_RADIUS, tmp->pos, tmp->radius) == true)
+				return (true);
+		tmp = tmp->next;
+	}
 	new_food = new t_food;
 	new_food->pos = {x, y};
 	new_food->radius = FOOD_RADIUS;
 	new_food->energy = FOOD_ENERGY;
+	new_food->color = FOOD_COLOR;
 	if (this->food == nullptr)
 		new_food->next = nullptr;
 	else
@@ -404,7 +425,7 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 				&& food->pos.x < (camera.target.x + camera.offset.x / camera.zoom)
 				&& food->pos.y > (camera.target.y - camera.offset.y / camera.zoom)
 				&& food->pos.y < (camera.target.y + camera.offset.y / camera.zoom))
-		DrawCircle(food->pos.x, food->pos.y, food->radius, (Color){32, 160, 32, 255});
+		DrawCircle(food->pos.x, food->pos.y, food->radius, food->color);
 		food = food->next;
 	}
 	for (size_t i = 0; i < NB_BOIDS; i++)

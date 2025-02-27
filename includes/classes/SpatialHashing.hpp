@@ -14,6 +14,7 @@ typedef struct s_food
 	Vector2	pos;
 	float	radius;
 	float	energy;
+	Color	color;
 	struct s_food	*next;
 }				t_food;
 

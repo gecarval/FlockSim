@@ -22,18 +22,20 @@ typedef struct s_spawn
 	bool		draw;
 	bool		active;
 	bool		oncollision;
-}	t_spawn;
+}					t_spawn;
 
-typedef struct s_player {
+typedef struct s_player
+{
 	Camera2D	camera;
 	Boid		*focused_boid;
 	bool		focus;
 	bool		shifting;
-}	t_player;
+}					t_player;
 
-typedef struct s_texture2d {
+typedef struct s_texture2d
+{
     RenderTexture2D hashmap;
-}	t_texture2d;
+}					t_texture2d;
 
 // MAIN GAME ENGINE DATA STRUCTURE
 typedef struct s_game

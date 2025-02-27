@@ -147,13 +147,13 @@ void Boid::cohese(void)
 void Boid::mirror(void)
 {
 	if (this->stats.pos.x > CANVAS_WIDTH)
-		this->stats.pos.x = 1;
+		this->stats.pos.x = 0;
 	else if (this->stats.pos.x < 0)
-		this->stats.pos.x = CANVAS_WIDTH - 2;
+		this->stats.pos.x = CANVAS_WIDTH;
 	if (this->stats.pos.y > CANVAS_HEIGHT)
-		this->stats.pos.y = 1;
+		this->stats.pos.y = 0;
 	else if (this->stats.pos.y < 0)
-		this->stats.pos.y = CANVAS_HEIGHT - 2;
+		this->stats.pos.y = CANVAS_HEIGHT;
 }
 
 void Boid::avoidborder(void)
