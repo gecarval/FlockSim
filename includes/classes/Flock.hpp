@@ -18,6 +18,7 @@ typedef struct s_check_box
 	bool	draw_perception;
 	bool	draw_velocity;
 	bool	draw_hash;
+	bool	draw_food;
 }				t_check_box;
 
 typedef struct s_globaloptions
