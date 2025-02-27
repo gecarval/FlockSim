@@ -43,6 +43,7 @@ typedef struct s_game
     t_texture2d texture;
     Color       textcolor;
 	Flock		flock;
+	double		ingameseconds;
 	bool		pause;
 	int			frame_limit;
 }					t_game;
