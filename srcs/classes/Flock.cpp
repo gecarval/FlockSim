@@ -21,7 +21,7 @@ Flock::Flock()
 		i++;
 	}
 	this->options = {true, true, true, true, true, true, 2, 15, NB_BOIDS / 10, 0};
-	this->check = {true, false, false, false};
+	this->check = {true, false, false, false, true};
 	this->hash = SpatialHashing();
 	this->food = nullptr;
 }
@@ -398,7 +398,7 @@ void Flock::draw(Camera2D camera, RenderTexture2D texture)
 	if (this->check.draw_hash == true)
 		this->hash.draw(camera);
 	food = this->food;
-	while (food != nullptr)
+	while (food != nullptr && this->check.draw_food == true)
 	{
 		if (food->pos.x > (camera.target.x - camera.offset.x / camera.zoom)
 				&& food->pos.x < (camera.target.x + camera.offset.x / camera.zoom)
