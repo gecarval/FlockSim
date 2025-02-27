@@ -9,20 +9,20 @@ void	init_engine(t_game *game)
 	game->player.focus = false;
 	game->player.shifting = false;
 	game->player.focused_boid = NULL;
-	game->flock = Flock();
 	game->pause = false;
 	game->frame_limit = 60;
 	game->spawn.circle = { {CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2}, 100 };
 	game->spawn.rect = { 200, 200, CANVAS_WIDTH - 400, CANVAS_HEIGHT - 400};
 	game->spawn.oncollision = true;
-	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Flocking Simulation");
-	game->flock.gethash();
 	game->textcolor = {0, 0, 0, 125};
+	game->flock = Flock();
+	game->flock.gethash();
+	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Flocking Simulation");
+	SetTargetFPS(game->frame_limit);
+	rlImGuiSetup(true);
     game->texture.hashmap = LoadRenderTexture(CANVAS_WIDTH, CANVAS_HEIGHT);
     game->flock.hash.renderhashmaptexture(game->texture.hashmap);
 	game->flock.generate_food();
-	SetTargetFPS(game->frame_limit);
-	rlImGuiSetup(true);
 }
 
 void	update_objects(t_game *game)
