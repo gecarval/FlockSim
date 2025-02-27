@@ -1,20 +1,40 @@
 #ifndef BOID_HPP
 # define BOID_HPP
 
+// INCLUDES
+# include "raylib.h"
+# include "raymath.h"
+# include <iostream>
+
 // MACROS
 const int CANVAS_WIDTH = 20000;
 const int CANVAS_HEIGHT = 20000;
 const int NB_BOIDS = 30000;
 const int BOID_SIZE = 3;
+// FOOD
 const float FOOD_GEN = 0.003f;
 const float FOOD_RADIUS = 2;
 const int FOOD_ENERGY = 300;
+const Color FOOD_COLOR = (Color){32, 160, 32, 255};
+// MAX MUTATION STATS
 const float MAX_PERCEPTION = 200.0f;
 const float MAX_ALIGN = 0.1f;
 const float MAX_COHESE = 0.1f;
 const float MAX_SEPARATE = 1.0f;
 const float MAX_SEPARATION_RATIO = 1.0f;
 const float MAX_OBSTACLE_AVOIDANCE = 0.1f;
+// LIFE STATS
+const float MAX_HEALTH = 100.0f;
+const float MAX_ENERGY = 2000.0f;
+const float MAX_FOOD = 1000.0f;
+const float MAX_AGE = 90.0f;
+const float MIN_BIRTH_AGE = 20.0f;
+const float MIN_BIRTH_ENERGY = 1000.0f;
+const float FOOD_CONSUMPTION = 3.5f;
+const float STARVATION_DAMAGE = 0.2f;
+const float MAX_APETITE = 0.0f;
+const float MAX_SPEED_FOOD = 7.5f;
+const int MUTATION_RATE = 5;
 
 // INCLUDES
 # include "raylib.h"
