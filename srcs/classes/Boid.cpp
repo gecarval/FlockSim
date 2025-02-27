@@ -5,7 +5,7 @@ Boid::Boid(void)
 {
 	this->rotation = 0;
 	this->radius = BOID_SIZE;
-	this->stats = (t_boid){(t_lifestats){100.0f, 1000.0f, 0.0f, 0, 0, 0, true, false},
+	this->stats = (t_boid){(t_lifestats){MAX_HEALTH, MIN_BIRTH_ENERGY, 0.0f, 0, 0, 0, true, false},
 		0, Vector2Zero(), RED, 50, 0.0, 10, 0.06, 5, 0.035, 0.5, 0.35, 0.1, 0.1, 2};
 	this->stats.color = (Color){static_cast<unsigned char>(Remap(this->stats.max_steer, 0.1, 0, 0, 255)),
 					static_cast<unsigned char>(Remap(this->stats.perception, 0, 200, 0, 255)),
@@ -205,7 +205,10 @@ void Boid::update(float gamespeed)
 
 void Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 {
-	const float		foodtoenergy = 3.5f * GetFrameTime() * gamespeed;
+	const float		foodtoenergy = FOOD_CONSUMPTION * GetFrameTime() * gamespeed;
+	this->stats.life.age += GetFrameTime() * (gamespeed / 15);
+	if (this->stats.life.energy <= 0)
+		this->stats.life.health -= STARVATION_DAMAGE * GetFrameTime() * gamespeed;
 	if ((this->stats.life.health <= 0 || this->stats.life.age > 90) &&
 			this->stats.life.alive == true)
 	{
@@ -213,17 +216,15 @@ void Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 		*boids_alive -= 1;
 		return ;
 	}
-	if (this->stats.life.energy < 2000 - foodtoenergy && this->stats.life.food > 0)
+	if (this->stats.life.energy < MAX_ENERGY - foodtoenergy && this->stats.life.food > 0)
 	{
 		this->stats.life.food -= foodtoenergy / 2;
 		this->stats.life.energy += foodtoenergy;
 	}
 	else if (this->stats.life.energy > 0)
 		this->stats.life.energy -= foodtoenergy;
-	this->stats.life.age += GetFrameTime() * (gamespeed / 15);
-	if (this->stats.life.energy <= 0)
-		this->stats.life.health -= 0.2f * GetFrameTime() * gamespeed;
-	if (this->stats.life.energy > 1000 && this->stats.life.age > 20 && *boids_alive < NB_BOIDS)
+	if (this->stats.life.energy > MIN_BIRTH_ENERGY &&
+			this->stats.life.age > MIN_BIRTH_AGE && *boids_alive < NB_BOIDS)
 	{
 		for (size_t i = 0; i < NB_BOIDS; i++)
 		{
@@ -243,58 +244,44 @@ void Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 t_boid Boid::tweakstats(t_boid stats)
 {
 	t_boid newstats = stats;
-	newstats.life = (t_lifestats){100.0f, 1000.0f, 0.0f,
+	newstats.life = (t_lifestats){MAX_HEALTH, MIN_BIRTH_ENERGY, 0.0f,
 					stats.life.generation + 1, 0, 0, true, stats.life.smell};
-	newstats.color = (Color){static_cast<unsigned char>(Remap(newstats.max_steer, 0.1, 0, 0, 255)),
-					static_cast<unsigned char>(Remap(newstats.perception, 0, 200, 0, 255)),
-					static_cast<unsigned char>(Remap(newstats.max_steer, 0, 0.1, 0, 255)), 255};
 	newstats.perception = stats.perception + GetRandomValue(-20, 20);
-	if (newstats.perception < 0)
-		newstats.perception = 0;
-	else if (newstats.perception > MAX_PERCEPTION)
-		newstats.perception = MAX_PERCEPTION;
+	newstats.perception = Clamp(newstats.perception, 0, MAX_PERCEPTION);
 	newstats.max_steer = stats.max_steer +
-		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
-	if (newstats.max_steer < 0)
-		newstats.max_steer = 0;
-	else if (newstats.max_steer > MAX_ALIGN)
-		newstats.max_steer = MAX_ALIGN;
+		static_cast<float>(GetRandomValue(-MUTATION_RATE, MUTATION_RATE)) / 1000.0f;
+	newstats.max_steer = Clamp(newstats.max_steer, 0, MAX_ALIGN);
 	newstats.max_cohesion = stats.max_cohesion +
-		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
-	if (newstats.max_cohesion < 0)
-		newstats.max_cohesion = 0;
-	else if (newstats.max_cohesion > MAX_COHESE)
-		newstats.max_cohesion = MAX_COHESE;
+		static_cast<float>(GetRandomValue(-MUTATION_RATE, MUTATION_RATE)) / 1000.0f;
+	newstats.max_cohesion = Clamp(newstats.max_cohesion, 0, MAX_COHESE);
 	newstats.max_separation = stats.max_separation +
-		static_cast<float>(GetRandomValue(-5, 5)) / 100.0f;
-	if (newstats.max_separation < 0)
-		newstats.max_separation = 0;
-	else if (newstats.max_separation > MAX_SEPARATE)
-		newstats.max_separation = MAX_SEPARATE;
+		static_cast<float>(GetRandomValue(-MUTATION_RATE, MUTATION_RATE)) / 100.0f;
+	newstats.max_separation = Clamp(newstats.max_separation, 0, MAX_SEPARATE);
 	newstats.separation_ratio = stats.separation_ratio +
-		static_cast<float>(GetRandomValue(-5, 5)) / 100.0f;
-	if (newstats.separation_ratio < 0)
-		newstats.separation_ratio = 0;
-	else if (newstats.separation_ratio > MAX_SEPARATION_RATIO)
-		newstats.separation_ratio = MAX_SEPARATION_RATIO;
+		static_cast<float>(GetRandomValue(-MUTATION_RATE, MUTATION_RATE)) / 100.0f;
+	newstats.separation_ratio = Clamp(newstats.separation_ratio, 0, MAX_SEPARATION_RATIO);
 	newstats.obstacle_avoidance = stats.obstacle_avoidance +
-		static_cast<float>(GetRandomValue(-5, 5)) / 1000.0f;
-	if (newstats.obstacle_avoidance < 0)
-		newstats.obstacle_avoidance = 0;
-	else if (newstats.obstacle_avoidance > MAX_OBSTACLE_AVOIDANCE)
-		newstats.obstacle_avoidance = MAX_OBSTACLE_AVOIDANCE;
+		static_cast<float>(GetRandomValue(-MUTATION_RATE, MUTATION_RATE)) / 1000.0f;
+	newstats.obstacle_avoidance = Clamp(newstats.obstacle_avoidance, 0, MAX_OBSTACLE_AVOIDANCE);
 	if (this->stats.life.smell == true)
-		newstats.apetite = stats.apetite + GetRandomValue(-5, 5) / 100.0f;
+		newstats.apetite = stats.apetite + GetRandomValue(-MUTATION_RATE, MUTATION_RATE) / 100.0f;
+	newstats.apetite = Clamp(newstats.apetite, 0, MAX_APETITE);
 	if (this->stats.life.smell == true)
-		newstats.max_speed_food = stats.max_speed_food + (float)GetRandomValue(-10, 10) / 10.0f;
-	return newstats;
+		newstats.max_speed_food = stats.max_speed_food +
+			(float)GetRandomValue(-MUTATION_RATE, MUTATION_RATE) / 10.0f;
+	newstats.max_speed_food = Clamp(newstats.max_speed_food, 0, MAX_SPEED_FOOD);
+	// Get Color based on genes
+	newstats.color = (Color){static_cast<unsigned char>(Remap(newstats.max_steer, MAX_ALIGN, 0, 0, 255)),
+					static_cast<unsigned char>(Remap(newstats.perception, 0, MAX_PERCEPTION, 0, 255)),
+					static_cast<unsigned char>(Remap(newstats.max_steer, 0, MAX_ALIGN, 0, 255)), 255};
+	return (newstats);
 }
 
 Boid Boid::procreate(int *boids_alive)
 {
 	t_boid stats = this->tweakstats(this->stats);
 
-	this->stats.life.energy -= 1000;
+	this->stats.life.energy -= MIN_BIRTH_ENERGY;
 	this->stats.life.children += 1;
 	*boids_alive += 1;
 	return Boid(stats);

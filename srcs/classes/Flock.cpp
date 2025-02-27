@@ -78,7 +78,7 @@ inline void Flock::hashaverage(void)
 				closest_food = nullptr;
 				tmp = this->hash.table[hash + x + (y * hash_grid)].boids;
 				foodlist = this->hash.table[hash + x + (y * hash_grid)].food;
-				while (foodlist != nullptr && this->boids[i].stats.life.food <= 2000 &&
+				while (foodlist != nullptr && this->boids[i].stats.life.food <= MAX_FOOD &&
 						counter < 2 && CheckCollisionCircleRec(this->boids[i].stats.pos,
 						this->boids[i].radius, this->hash.table[hash + x + (y * hash_grid)].rect) == true)
 				{
@@ -116,7 +116,7 @@ inline void Flock::hashaverage(void)
 					foodlist = foodlist->next;
 				}
 				if (closest_food != nullptr && this->boids[i].stats.life.smell == true &&
-						this->boids[i].stats.life.food <= 2000)
+						this->boids[i].stats.life.food <= MAX_FOOD)
 					this->boids[i].attract_towards(closest_food->food->pos);
 				counter = 0;
 				while (tmp != nullptr && counter < 5)
@@ -137,7 +137,7 @@ inline void Flock::hashaverage(void)
 							tmp->boid->stats.pos);
 					counter++;
 					total++;
-					if (tmp->boid->stats.life.age <= 2 ||
+					if (tmp->boid->stats.life.age <= 2.0f ||
 							CheckCollisionCircles(this->boids[i].stats.pos,
 							this->boids[i].stats.perception
 							* this->boids[i].stats.separation_ratio,
