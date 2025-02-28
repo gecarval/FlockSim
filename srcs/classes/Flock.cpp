@@ -20,7 +20,7 @@ Flock::Flock()
 		this->boids[i].stats.life.health = 0;
 		i++;
 	}
-	this->options = {true, true, true, true, true, true, 2, 15, NB_BOIDS / 10, 0};
+	this->options = {true, true, true, true, true, true, false, 2, 15, NB_BOIDS / 10, 0};
 	this->check = {true, false, false, false, true};
 	this->hash = SpatialHashing();
 	this->food = nullptr;
@@ -213,7 +213,8 @@ void Flock::updateflock(void)
 		if (this->boids[i].stats.life.alive == false)
 			continue ;
 		this->boids[i].update(this->options.gamespeed);
-		this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids, this->options.gamespeed);
+		if (this->boids[i].lifestatsupdate(&this->options.boids_alive, this->boids, this->options.gamespeed) == true && this->options.food_ondeath == true)
+			this->generate_one_meat(this->boids[i].stats.pos);
 	}
 }
 
@@ -324,7 +325,7 @@ void Flock::generate_one_meat(Vector2 pos)
 	t_food *tmp = nullptr;
 	t_food_list *tmp_list = nullptr;
 
-	if (this->options.food_amount >= NB_BOIDS)
+	if (this->options.food_amount >= NB_FOOD)
 		return ;
 	if (CheckCollisionPointRec(pos, {0, 0, CANVAS_WIDTH, CANVAS_HEIGHT}) == false)
 		return ;
@@ -358,7 +359,7 @@ bool Flock::generate_one_food(Circle circle, bool oncollision)
 	t_food *tmp = nullptr;
 	t_food_list *tmp_list = nullptr;
 
-	if (this->options.food_amount >= NB_BOIDS)
+	if (this->options.food_amount >= NB_FOOD)
 		return (true);
 	const float x = static_cast<float>(GetRandomValue(0, CANVAS_WIDTH));
 	const float y = static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT));
@@ -395,7 +396,7 @@ bool Flock::generate_one_food(Rectangle rect, bool oncollision)
 	t_food *tmp = nullptr;
 	t_food_list *tmp_list = nullptr;
 
-	if (this->options.food_amount >= NB_BOIDS)
+	if (this->options.food_amount >= NB_FOOD)
 		return (true);
 	const float x = static_cast<float>(GetRandomValue(0, CANVAS_WIDTH));
 	const float y = static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT));

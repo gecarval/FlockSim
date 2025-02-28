@@ -149,17 +149,20 @@ void	render_engine_settings(t_game *game, float *gamespeedmult)
 	ImGui::Checkbox("Align", &game->flock.options.align);
 	ImGui::Checkbox("Cohese", &game->flock.options.cohese);
 	ImGui::Checkbox("Separate", &game->flock.options.separate);
-	ImGui::InputInt("Frame Rate Limit Number", &game->frame_limit);
+	ImGui::Checkbox("Food on Death", &game->flock.options.food_ondeath);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Caps the max frame rate of the engine.");
-	if (ImGui::Button("Limit Frame Rate") == true)
-		SetTargetFPS(game->frame_limit);
+		ImGui::SetTooltip("When a boid dies, it will generate food (meat) at its position.");
 	ImGui::SliderFloat("GameSpeed", gamespeedmult, 0.1, 10.0);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("The speed of the flock simulation.\nPlease Note that high speeds may be unstable.");
 	ImGui::SliderInt("Alignment Algorithm", &game->flock.options.alignAlgorithm, 0, 2);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("The boids will alignment algorithm.\n0-No Alignment\n1-n^2 Alignment iterating each one with every other\n2-nlogn Alignment iterating each one with the hash.");
+	ImGui::InputInt("Frame Rate Limit Number", &game->frame_limit);
+	if (ImGui::IsItemHovered())
+		ImGui::SetTooltip("Caps the max frame rate of the engine.");
+	if (ImGui::Button("Limit Frame Rate") == true)
+		SetTargetFPS(game->frame_limit);
 	ImGui::Separator();
 }
 
