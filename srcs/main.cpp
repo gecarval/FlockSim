@@ -11,9 +11,12 @@ void	init_engine(t_game *game)
 	game->player.focused_boid = NULL;
 	game->pause = false;
 	game->frame_limit = 60;
+	game->spawn.draw = false;
 	game->spawn.circle = { {CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2}, CANVAS_HEIGHT / 4 };
 	game->spawn.rect = { 200, 200, CANVAS_WIDTH - 400, CANVAS_HEIGHT - 400};
 	game->spawn.oncollision = true;
+	game->spawn.active = false;
+	game->ingameseconds = 0;
 	game->textcolor = {0, 0, 0, 125};
 	game->flock = Flock();
 	game->flock.gethash();

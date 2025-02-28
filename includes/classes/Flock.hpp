@@ -29,6 +29,7 @@ typedef struct s_globaloptions
 	bool	cohese;
 	bool	mirror;
 	bool	avoidborder;
+	bool	food_ondeath;
 	int		alignAlgorithm;
 	float	gamespeed;
 	int		boids_alive;

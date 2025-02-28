@@ -10,8 +10,9 @@
 const int CANVAS_WIDTH = 20000;
 const int CANVAS_HEIGHT = 20000;
 const int NB_BOIDS = 30000;
+const int NB_FOOD = NB_BOIDS * 2;
 const int BOID_SIZE = 3;
-const float RUNBORDER = 0.1f;
+const float RUNBORDER = 1.0f;
 // FOOD
 const float FOOD_GEN = 0.003f;
 const float FOOD_RADIUS = 2.0f;
