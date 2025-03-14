@@ -1,21 +1,24 @@
 #include "../includes/game.hpp"
 
-void	set_random_values(Flock *flock)
+void set_random_values(Flock *flock)
 {
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
-		flock->boids[i].stats.pos = {static_cast<float>(GetRandomValue(0,
-					CANVAS_WIDTH)), static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
-		flock->boids[i].vel = {static_cast<float>(GetRandomValue(-flock->boids[i].stats.max_speed,
-					flock->boids[i].stats.max_speed)),
+		flock->boids[i].stats.pos = {
+			static_cast<float>(GetRandomValue(0, CANVAS_WIDTH)),
+			static_cast<float>(GetRandomValue(0, CANVAS_HEIGHT))};
+		flock->boids[i].vel = {
 			static_cast<float>(GetRandomValue(-flock->boids[i].stats.max_speed,
-					flock->boids[i].stats.max_speed))};
+											  flock->boids[i].stats.max_speed)),
+			static_cast<float>(
+				GetRandomValue(-flock->boids[i].stats.max_speed,
+							   flock->boids[i].stats.max_speed))};
 	}
 }
 
-void	set_values(Flock *flock, t_boid stats)
+void set_values(Flock *flock, t_boid stats)
 {
-	t_boid	save;
+	t_boid save;
 
 	for (size_t i = 0; i < NB_BOIDS; i++)
 	{
@@ -26,9 +29,11 @@ void	set_values(Flock *flock, t_boid stats)
 	}
 }
 
-void	render_boid_imguiwindow_lifestats(t_boid *boid)
+void render_boid_imguiwindow_lifestats(t_boid *boid)
 {
-	ImGui::SetNextWindowPos(ImVec2(CANVAS_WIDTH / 2 - 100, CANVAS_HEIGHT / 2 - 100), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(
+		ImVec2((float)CANVAS_WIDTH / 2 - 100, (float)CANVAS_HEIGHT / 2 - 100),
+		ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(300, 500), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Boid Stats", NULL, ImGuiWindowFlags_NoResize);
 	ImGui::Text("Life Stats");
@@ -58,23 +63,36 @@ void	render_boid_imguiwindow_lifestats(t_boid *boid)
 		ImGui::SetTooltip("The perception radius of each boid.");
 	ImGui::SliderFloat("Alignment Ratio", &boid->max_steer, 0, MAX_ALIGN);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Shows the maximum steering force of the alignment force.\nThe force that makes boids follow each other.");
+		ImGui::SetTooltip(
+			"Shows the maximum steering force of the alignment "
+			"force.\nThe force that makes boids follow each other.");
 	ImGui::SliderFloat("Max Cohesion", &boid->max_cohesion, 0, MAX_COHESE);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Shows the maximum influence of the cohesion force.\nThe force that makes boids stick together.");
-	ImGui::SliderFloat("Max Separation", &boid->max_separation, 0, MAX_SEPARATE);
+		ImGui::SetTooltip(
+			"Shows the maximum influence of the cohesion force.\nThe "
+			"force that makes boids stick together.");
+	ImGui::SliderFloat("Max Separation", &boid->max_separation, 0,
+					   MAX_SEPARATE);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Shows the maximum influence of the separation force.\nthe force that makes boids avoid each other when they get too close.");
-	ImGui::SliderFloat("Separation Ratio", &boid->separation_ratio, 0, MAX_SEPARATION_RATIO);
+		ImGui::SetTooltip(
+			"Shows the maximum influence of the separation force.\nthe force "
+			"that "
+			"makes boids avoid each other when they get too close.");
+	ImGui::SliderFloat("Separation Ratio", &boid->separation_ratio, 0,
+					   MAX_SEPARATION_RATIO);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Shows the ratio of the separation force.\nThe ratio is based on the perception radius of the boid.");
-	ImGui::SliderFloat("Obstacle Avoidance", &boid->obstacle_avoidance, 0, MAX_OBSTACLE_AVOIDANCE);
+		ImGui::SetTooltip(
+			"Shows the ratio of the separation force.\nThe ratio is "
+			"based on the perception radius of the boid.");
+	ImGui::SliderFloat("Obstacle Avoidance", &boid->obstacle_avoidance, 0,
+					   MAX_OBSTACLE_AVOIDANCE);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("The limit of force of the obstacle avoidance force.");
+		ImGui::SetTooltip(
+			"The limit of force of the obstacle avoidance force.");
 	ImGui::End();
 }
 
-void	render_flock_settings(t_game *game, t_boid *stats)
+void render_flock_settings(t_game *game, t_boid *stats)
 {
 	ImGui::Text("Flocking stats");
 	ImGui::Text("In Game Minutes: %.2f", game->ingameseconds / 60);
@@ -94,7 +112,7 @@ void	render_flock_settings(t_game *game, t_boid *stats)
 	ImGui::Separator();
 }
 
-void	render_display_options(t_game *game)
+void render_display_options(t_game *game)
 {
 	ImGui::Text("Display Options");
 	ImGui::Checkbox("Show FPS", &game->flock.options.show_fps);
@@ -114,11 +132,14 @@ void	render_display_options(t_game *game)
 		ImGui::OpenPopup("Warning");
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Draws the hash table of the boids.");
-	if (ImGui::BeginPopupModal("Warning", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Warning", nullptr,
+							   ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		if (CANVAS_WIDTH + CANVAS_HEIGHT > 20000)
 		{
-			ImGui::Text("Are you sure you want to draw the hash table?\nThis will slow down the simulation.");
+			ImGui::Text(
+				"Are you sure you want to draw the hash table?\nThis will "
+				"slow down the simulation.");
 		}
 		if (ImGui::Button("Enable"))
 		{
@@ -137,7 +158,7 @@ void	render_display_options(t_game *game)
 	ImGui::Separator();
 }
 
-void	render_engine_settings(t_game *game, float *gamespeedmult)
+void render_engine_settings(t_game *game, float *gamespeedmult)
 {
 	ImGui::Text("Engine Options");
 	ImGui::Checkbox("Mirror", &game->flock.options.mirror);
@@ -151,13 +172,21 @@ void	render_engine_settings(t_game *game, float *gamespeedmult)
 	ImGui::Checkbox("Separate", &game->flock.options.separate);
 	ImGui::Checkbox("Food on Death", &game->flock.options.food_ondeath);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("When a boid dies, it will generate food (meat) at its position.");
+		ImGui::SetTooltip(
+			"When a boid dies, it will generate food (meat) at its position.");
 	ImGui::SliderFloat("GameSpeed", gamespeedmult, 0.1, 10.0);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("The speed of the flock simulation.\nPlease Note that high speeds may be unstable.");
-	ImGui::SliderInt("Alignment Algorithm", &game->flock.options.alignAlgorithm, 0, 2);
+		ImGui::SetTooltip(
+			"The speed of the flock simulation.\nPlease Note that "
+			"high speeds may be unstable.");
+	ImGui::SliderInt("Alignment Algorithm", &game->flock.options.alignAlgorithm,
+					 0, 2);
 	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("The boids will alignment algorithm.\n0-No Alignment\n1-n^2 Alignment iterating each one with every other\n2-nlogn Alignment iterating each one with the hash.");
+		ImGui::SetTooltip("The boids will alignment algorithm.\n0-No "
+						  "Alignment\n1-n^2 Alignment "
+						  "iterating each one with every other\n2-nlogn "
+						  "Alignment iterating each "
+						  "one with the hash.");
 	ImGui::InputInt("Frame Rate Limit Number", &game->frame_limit);
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Caps the max frame rate of the engine.");
@@ -166,28 +195,35 @@ void	render_engine_settings(t_game *game, float *gamespeedmult)
 	ImGui::Separator();
 }
 
-void	render_spawn_settings(t_game *game)
+void render_spawn_settings(t_game *game)
 {
 	ImGui::Text("Food Spawn Settings");
 	ImGui::Checkbox("Draw Spawn", &game->spawn.draw);
 	ImGui::Checkbox("Spawn on Collision", &game->spawn.oncollision);
 	ImGui::Checkbox("Spawn Rectangule | Circle", &game->spawn.active);
 	ImGui::Text("Circle Spawn Settings");
-	ImGui::SliderFloat("Circle Radius", &game->spawn.circle.radius, 0, CANVAS_WIDTH * 0.75);
-	ImGui::SliderFloat("Circle Center X", &game->spawn.circle.pos.x, 0, CANVAS_WIDTH);
-	ImGui::SliderFloat("Circle Center Y", &game->spawn.circle.pos.y, 0, CANVAS_HEIGHT);
+	ImGui::SliderFloat("Circle Radius", &game->spawn.circle.radius, 0,
+					   CANVAS_WIDTH * 0.75);
+	ImGui::SliderFloat("Circle Center X", &game->spawn.circle.pos.x, 0,
+					   CANVAS_WIDTH);
+	ImGui::SliderFloat("Circle Center Y", &game->spawn.circle.pos.y, 0,
+					   CANVAS_HEIGHT);
 	ImGui::Text("Rectangle Spawn Settings");
-	ImGui::SliderFloat("Rectangle Width", &game->spawn.rect.width, 0, CANVAS_WIDTH);
-	ImGui::SliderFloat("Rectangle Height", &game->spawn.rect.height, 0, CANVAS_HEIGHT);
-	ImGui::SliderFloat("Rectangle Beginning X", &game->spawn.rect.x, 0, CANVAS_WIDTH);
-	ImGui::SliderFloat("Rectangle Beginning Y", &game->spawn.rect.y, 0, CANVAS_HEIGHT);
+	ImGui::SliderFloat("Rectangle Width", &game->spawn.rect.width, 0,
+					   CANVAS_WIDTH);
+	ImGui::SliderFloat("Rectangle Height", &game->spawn.rect.height, 0,
+					   CANVAS_HEIGHT);
+	ImGui::SliderFloat("Rectangle Beginning X", &game->spawn.rect.x, 0,
+					   CANVAS_WIDTH);
+	ImGui::SliderFloat("Rectangle Beginning Y", &game->spawn.rect.y, 0,
+					   CANVAS_HEIGHT);
 	ImGui::Separator();
 }
 
-void	render_imgui(t_game *game)
+void render_imgui(t_game *game)
 {
-	t_boid		stats;
-	static float		gamespeedmult = 1.0f;
+	t_boid stats;
+	static float gamespeedmult = 1.0f;
 
 	stats = game->flock.boids[0].stats;
 	if (game->player.focus == true)
@@ -199,9 +235,10 @@ void	render_imgui(t_game *game)
 	render_engine_settings(game, &gamespeedmult);
 	render_spawn_settings(game);
 	set_values(&game->flock, stats);
-	game->flock.options.gamespeed =  (gamespeedmult * 15.0f);
+	game->flock.options.gamespeed = (gamespeedmult * 15.0f);
 	if (game->pause == false)
-		game->ingameseconds += GetFrameTime() * (game->flock.options.gamespeed / 15.0f);
+		game->ingameseconds +=
+			GetFrameTime() * (game->flock.options.gamespeed / 15.0f);
 	ImGui::End();
 	if (game->player.focus == true)
 		render_boid_imguiwindow_lifestats(&game->player.focused_boid->stats);

@@ -58,7 +58,7 @@ SpatialHashing::~SpatialHashing(void)
 }
 
 // MEMBER FUNCTIONS
-void	SpatialHashing::clear(void)
+void SpatialHashing::clear(void)
 {
 	t_boid_list *tmp = nullptr;
 	t_boid_list *next = nullptr;
@@ -76,7 +76,7 @@ void	SpatialHashing::clear(void)
 	}
 }
 
-int		SpatialHashing::hash(Vector2 center)
+int SpatialHashing::hash(Vector2 center)
 {
 	const float hash_grid = HASH_CALC;
 	const float x = floor(center.x / (CANVAS_WIDTH / hash_grid));
@@ -90,10 +90,10 @@ int		SpatialHashing::hash(Vector2 center)
 	return (static_cast<int>(result));
 }
 
-void	SpatialHashing::insert(Boid *boid)
+void SpatialHashing::insert(Boid *boid)
 {
-	const int	index = this->hash(boid->stats.pos);
-	t_boid_list	*new_boid;
+	const int index = this->hash(boid->stats.pos);
+	t_boid_list *new_boid;
 
 	new_boid = new t_boid_list;
 	new_boid->boid = boid;
@@ -104,10 +104,10 @@ void	SpatialHashing::insert(Boid *boid)
 	this->table[index].boids = new_boid;
 }
 
-void	SpatialHashing::insert(t_food *food)
+void SpatialHashing::insert(t_food *food)
 {
-	const int	index = this->hash(food->pos);
-	t_food_list	*new_food;
+	const int index = this->hash(food->pos);
+	t_food_list *new_food;
 
 	new_food = new t_food_list;
 	new_food->food = food;
@@ -118,55 +118,65 @@ void	SpatialHashing::insert(t_food *food)
 	this->table[index].food = new_food;
 }
 
-void	SpatialHashing::draw_rect(Rectangle rect, Color color)
+void SpatialHashing::draw_rect(Rectangle rect, Color color)
 {
 	DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, color);
 }
 
-void    SpatialHashing::renderhashmaptexture(RenderTexture2D texture)
+void SpatialHashing::renderhashmaptexture(RenderTexture2D texture)
 {
-    BeginTextureMode(texture);
-    for (size_t i = 0; i < HASH_LEN; i++)
-    {
-        this->draw_rect(this->table[i].rect, WHITE);
-        DrawText(std::to_string(i).c_str(),
-                this->table[i].center.x, this->table[i].center.y, 10, WHITE);
-    }
-    EndTextureMode();
+	BeginTextureMode(texture);
+	for (size_t i = 0; i < HASH_LEN; i++)
+	{
+		this->draw_rect(this->table[i].rect, WHITE);
+		DrawText(std::to_string(i).c_str(), this->table[i].center.x,
+				 this->table[i].center.y, 10, WHITE);
+	}
+	EndTextureMode();
 }
 
-void    SpatialHashing::drawhashmaptexture(RenderTexture2D texture)
+void SpatialHashing::drawhashmaptexture(RenderTexture2D texture)
 {
-    DrawTextureRec(texture.texture, (Rectangle){0, 0,
-            (float)texture.texture.width, (float)-texture.texture.height},
-            (Vector2){0, 0}, DARKGRAY);
+	DrawTextureRec(texture.texture,
+				   (Rectangle){0, 0, (float)texture.texture.width,
+							   (float)-texture.texture.height},
+				   (Vector2){0, 0}, DARKGRAY);
 }
 
-void	SpatialHashing::draw(Camera2D camera)
+void SpatialHashing::draw(Camera2D camera)
 {
 	t_boid_list *tmp;
-	int		amount;
+	int amount;
 
 	amount = 0;
-	for (size_t i = 0; (i < HASH_LEN && CANVAS_WIDTH + CANVAS_HEIGHT > 20000) ; i++)
+	for (size_t i = 0; (i < HASH_LEN && CANVAS_WIDTH + CANVAS_HEIGHT > 20000);
+		 i++)
 	{
-		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
-				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
-				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
-				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
-			continue ;
+		if (this->table[i].center.x <
+				(camera.target.x - camera.offset.x / camera.zoom) ||
+			this->table[i].center.x >
+				(camera.target.x + camera.offset.x / camera.zoom) ||
+			this->table[i].center.y <
+				(camera.target.y - camera.offset.y / camera.zoom) ||
+			this->table[i].center.y >
+				(camera.target.y + camera.offset.y / camera.zoom))
+			continue;
 		this->draw_rect(this->table[i].rect, DARKGRAY);
-		DrawText(std::to_string(i).c_str(),
-				this->table[i].center.x, this->table[i].center.y, 10, DARKGRAY);
+		DrawText(std::to_string(i).c_str(), this->table[i].center.x,
+				 this->table[i].center.y, 10, DARKGRAY);
 	}
 	tmp = nullptr;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
-		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
-				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
-				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
-				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
-			continue ;
+		if (this->table[i].center.x <
+				(camera.target.x - camera.offset.x / camera.zoom) ||
+			this->table[i].center.x >
+				(camera.target.x + camera.offset.x / camera.zoom) ||
+			this->table[i].center.y <
+				(camera.target.y - camera.offset.y / camera.zoom) ||
+			this->table[i].center.y >
+				(camera.target.y + camera.offset.y / camera.zoom))
+			continue;
 		if (this->table[i].boids != nullptr)
 		{
 			amount = 0;
@@ -184,11 +194,15 @@ void	SpatialHashing::draw(Camera2D camera)
 	tmp = nullptr;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
-		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
-				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
-				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
-				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
-			continue ;
+		if (this->table[i].center.x <
+				(camera.target.x - camera.offset.x / camera.zoom) ||
+			this->table[i].center.x >
+				(camera.target.x + camera.offset.x / camera.zoom) ||
+			this->table[i].center.y <
+				(camera.target.y - camera.offset.y / camera.zoom) ||
+			this->table[i].center.y >
+				(camera.target.y + camera.offset.y / camera.zoom))
+			continue;
 		if (this->table[i].boids != nullptr)
 		{
 			amount = 0;
@@ -206,11 +220,15 @@ void	SpatialHashing::draw(Camera2D camera)
 	tmp = nullptr;
 	for (size_t i = 0; i < HASH_LEN; i++)
 	{
-		if (this->table[i].center.x < (camera.target.x - camera.offset.x / camera.zoom)
-				|| this->table[i].center.x > (camera.target.x + camera.offset.x / camera.zoom)
-				|| this->table[i].center.y < (camera.target.y - camera.offset.y / camera.zoom)
-				|| this->table[i].center.y > (camera.target.y + camera.offset.y / camera.zoom))
-			continue ;
+		if (this->table[i].center.x <
+				(camera.target.x - camera.offset.x / camera.zoom) ||
+			this->table[i].center.x >
+				(camera.target.x + camera.offset.x / camera.zoom) ||
+			this->table[i].center.y <
+				(camera.target.y - camera.offset.y / camera.zoom) ||
+			this->table[i].center.y >
+				(camera.target.y + camera.offset.y / camera.zoom))
+			continue;
 		if (this->table[i].boids != nullptr)
 		{
 			amount = 0;
