@@ -6,11 +6,11 @@
 #    By: gecarval <gecarval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/20 08:19:33 by gecarval          #+#    #+#              #
-#    Updated: 2025/02/12 16:00:00 by gecarval         ###   ########.fr        #
+#    Updated: 2025/06/25 10:34:12 by gecarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CXX = c++
+CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -g
 STDRULE = 
 NAME = flocksim
