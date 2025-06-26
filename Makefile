@@ -1,4 +1,4 @@
-CXX = c++
+CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -g
 STDRULE = 
 NAME = flocksim
