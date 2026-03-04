@@ -292,11 +292,23 @@ bool Boid::lifestatsupdate(int *boids_alive, Boid *boids, float gamespeed)
 	if (this->stats.life.energy > MIN_BIRTH_ENERGY &&
 		this->stats.life.age > MIN_BIRTH_AGE && *boids_alive < NB_BOIDS)
 	{
-		for (size_t i = 0; i < NB_BOIDS; i++)
+		for (size_t j = 0; j < NB_BOIDS; j++)
 		{
-			if (boids[i].stats.life.alive == false)
+			const float avoid_radius = radius * this->stats.separation_ratio;
+			const float other_avoid_radius =
+				boids[j].radius * boids[j].stats.separation_ratio;
+			if (boids[j].stats.life.alive == true &&
+				CheckCollisionCircles(this->stats.pos, avoid_radius,
+									  boids[j].stats.pos, other_avoid_radius))
 			{
-				boids[i] = this->procreate(boids_alive);
+				for (size_t i = 0; i < NB_BOIDS; i++)
+				{
+					if (boids[i].stats.life.alive == false)
+					{
+						boids[i] = this->procreate(boids_alive);
+						break;
+					}
+				}
 				break;
 			}
 		}
