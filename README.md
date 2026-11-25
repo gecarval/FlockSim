@@ -12,6 +12,10 @@
 <img alt="Last commit" src="https://img.shields.io/github/last-commit/gecarval/FlockSim?color=green" />
 </p>
 
+<img src="docs/flock.svg" alt="Illustration of several colour-coded flocks of boids moving among food" width="100%" />
+
+<sub>Illustration made with a small boids simulation in Python, not a screenshot of the app.</sub>
+
 [Quick start](#-quick-start) · [Features](#-features) · [Controls](#-controls) · [How it works](#-how-it-works) · [Tuning](#-tuning)
 
 </div>
@@ -68,6 +72,8 @@ make -j"$(nproc)"     # raylib and Dear ImGui are bundled
 
 ## 🧠 How it works
 
+<img src="docs/rules.svg" alt="The three boids rules: separation, alignment and cohesion" width="100%" />
+
 <details>
 <summary><b>Flocking rules</b></summary>
 
@@ -85,6 +91,8 @@ The forces add up to an acceleration. Velocity is then limited to the range `[mi
 
 <details>
 <summary><b>Life, food and death</b></summary>
+
+<img src="docs/lifecycle.svg" alt="Life cycle: food, energy, breeding and children; starving and death; food on death" width="100%" />
 
 - Stored **food** turns into **energy** over time.
 - With no energy left, a boid loses **health** each tick until it dies.
@@ -109,6 +117,8 @@ Because only boids that live long enough and eat enough get to breed, the gene p
 <summary><b>Spatial hashing</b></summary>
 
 Comparing every boid with every other one would cost O(n²), which is about 900 million checks per frame at 30 000 boids. Instead, the world is split into **100 px cells** (`HASH_QUAD_SIZE`), so the 20 000 × 20 000 world has 40 000 cells. Each frame, every boid is filed into its cell. When a boid looks for neighbours it only reads the cells around it, which keeps the cost close to linear.
+
+<img src="docs/spatial-hash.svg" alt="Spatial hash grid: a boid only checks the 3 by 3 cells around it" width="100%" />
 </details>
 
 ## 🎛️ Tuning
