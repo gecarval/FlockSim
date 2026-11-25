@@ -23,7 +23,6 @@ Flock::Flock()
 	this->options = {true,	true, true, true,		   true, true,
 					 false, 2,	  15,	NB_BOIDS / 10, 0};
 	this->check = {true, false, false, false, true};
-	this->hash = SpatialHashing();
 	this->food = nullptr;
 }
 

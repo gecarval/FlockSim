@@ -21,7 +21,6 @@ void init_engine(t_game *game)
 	game->spawn.active = false;
 	game->ingameseconds = 0;
 	game->textcolor = {0, 0, 0, 125};
-	game->flock = Flock();
 	game->flock.gethash();
 	InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Flocking Simulation");
 	SetTargetFPS(game->frame_limit);
@@ -86,10 +85,13 @@ void end_engine(t_game *game)
 
 int main(void)
 {
-	t_game game;
+	// t_game holds every boid and the whole hash grid (about 5.4 MB), so it
+	// lives on the heap: on the stack it overflowed Linux's 8 MB default.
+	t_game *game = new t_game;
 
-	init_engine(&game);
-	update_engine(&game);
-	end_engine(&game);
+	init_engine(game);
+	update_engine(game);
+	end_engine(game);
+	delete game;
 	return (0);
 }

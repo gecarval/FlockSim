@@ -1,34 +1,105 @@
 <div align="center">
 
-# 🐦 FlockSim
+# FlockSim
 
-**A flocking and evolution simulator in C++. Thousands of boids swarm, eat, breed and mutate in real time.**
+### A petri dish for boids.
 
-<p>
-<img alt="C++" src="https://img.shields.io/badge/C%2B%2B-00599C?logo=cplusplus&logoColor=white" />
-<img alt="raylib" src="https://img.shields.io/badge/raylib-graphics-black?logo=raylib" />
-<img alt="Dear ImGui" src="https://img.shields.io/badge/Dear%20ImGui-UI-4b8bbe" />
-<img alt="Code size" src="https://img.shields.io/github/languages/code-size/gecarval/FlockSim?color=lightblue" />
-<img alt="Last commit" src="https://img.shields.io/github/last-commit/gecarval/FlockSim?color=green" />
-</p>
+Seed 3 000 identical birds into a 20 000 px world, scatter food, and let natural selection decide what a good flock looks like.
 
 <img src="docs/flock.svg" alt="Illustration of several colour-coded flocks of boids moving among food" width="100%" />
 
 <sub>Illustration made with a small boids simulation in Python, not a screenshot of the app.</sub>
 
-[Quick start](#-quick-start) · [Features](#-features) · [Controls](#-controls) · [How it works](#-how-it-works) · [Tuning](#-tuning)
+<p>
+<img alt="C++" src="https://img.shields.io/badge/C%2B%2B-00599C?logo=cplusplus&logoColor=white" />
+<img alt="raylib" src="https://img.shields.io/badge/raylib-graphics-black?logo=raylib" />
+<img alt="Dear ImGui" src="https://img.shields.io/badge/Dear%20ImGui-UI-4b8bbe" />
+<img alt="License" src="https://img.shields.io/github/license/gecarval/FlockSim?color=green" />
+</p>
+
+[The genome](#the-genome) · [Life in the dish](#life-in-the-dish) · [Experiments](#experiments-to-try) · [Controls](#controls) · [Build](#build-and-run) · [Under the hood](#under-the-hood)
 
 </div>
 
 ---
 
-## ✨ What it is
+Most boids demos stop at Craig Reynolds' three rules. In FlockSim the rules are only the body: every boid also carries a **genome** that decides *how strongly* it follows them. Boids that find food, live long enough and meet a mate pass a slightly mutated copy of their genes to a child. Nobody designs the flock; it drifts, generation by generation, toward whatever survives.
 
-FlockSim starts from Craig Reynolds' classic **boids** model and adds a **life cycle**. Every boid follows three local rules: separation, alignment and cohesion. It also has to find food to stay alive, and when it is old enough and well fed it breeds with a nearby mate. Each child inherits its parent's genes with small random mutations, so over many generations the flock's behaviour **evolves**. You can see the change as the boids' colours shift.
+All 3 000 starters share the same genes, so they all start the same purple. The colour of every child is computed from its genes, which turns the screen into a live map of the gene pool: when new colours spread, a new strategy is winning.
 
-Everything runs live in a 20 000 × 20 000 world with up to **30 000 boids**. A spatial hash grid keeps the neighbour lookups fast.
+## The genome
 
-## 🚀 Quick start
+Each boid has eight heritable genes. At every birth each gene moves by a random step and is clamped to its range (constants in [`Boid.hpp`](includes/classes/Boid.hpp), mutation in `Boid::tweakstats`).
+
+| Gene | Starts at | Step per birth | Range | What it controls |
+|---|---:|---:|---:|---|
+| `perception` | 50 | ± 20 | 0 – 200 | How far the boid can see its neighbours |
+| `max_steer` | 0.06 | ± 0.005 | 0 – 0.1 | How hard it turns to match their heading (alignment) |
+| `max_cohesion` | 0.035 | ± 0.005 | 0 – 0.1 | How hard it pulls toward the group's centre |
+| `max_separation` | 0.5 | ± 0.05 | 0 – 1.0 | How hard it pushes away from boids that are too close |
+| `separation_ratio` | 0.35 | ± 0.05 | 0 – 1.0 | How close is "too close" |
+| `obstacle_avoidance` | 0.1 | ± 0.005 | 0 – 0.1 | How hard it steers away from the world edge |
+| `apetite` | 0.1 | ± 0.05 ¹ | 0 – 0 ² | How hard it steers toward food it can smell |
+| `max_speed_food` | 2 | ± 0.5 ¹ | 0 – 7.5 | Top speed when chasing food |
+
+<sub>¹ Only mutates for boids with **Smells Food** switched on (off by default; toggle it in a boid's stats window).
+² `MAX_APETITE` is currently `0.0f`, so every child's appetite is clamped to 0. Raise it in `Boid.hpp` to let food-seeking evolve.</sub>
+
+### Reading the colours
+
+| Channel | Comes from | So… |
+|---|---|---|
+| 🔴 Red | low `max_steer` | red boids care little about matching their neighbours' heading |
+| 🟢 Green | `perception` | brighter green boids see further |
+| 🔵 Blue | high `max_steer` | blue boids align strongly and fly in tight formation |
+
+The starting genes give `rgb(102, 63, 153)`, a dull purple. Anything else on screen is a mutant.
+
+## Life in the dish
+
+<img src="docs/rules.svg" alt="The three boids rules: separation, alignment and cohesion" width="100%" />
+
+Every frame, each boid looks at the neighbours inside its `perception` radius and adds up three steering forces, each scaled by its own genes: **separation**, **alignment** and **cohesion**. Border avoidance and food are added on top, and the speed is kept between `min_speed` and `max_speed`.
+
+<img src="docs/lifecycle.svg" alt="Life cycle: food, energy, breeding and children; starving and death; food on death" width="100%" />
+
+At `GameSpeed` 1, one in-game year is 15 real seconds, so:
+
+| Milestone | In-game | Real time |
+|---|---:|---:|
+| Old enough to breed | age 20 | 5 min |
+| Dies of old age | age 90 | 22.5 min |
+
+- Eaten **food** is stored and slowly turned into **energy** (up to 2 000).
+- Out of energy, a boid loses **health** until it dies.
+- With more than **1 000 energy** and age over 20, touching another living boid produces a child. The parent pays 1 000 energy for it.
+- With **Food on Death** on, every corpse becomes food for the next generation.
+- The world holds at most **30 000** boids; when every slot is taken, nobody can breed until someone dies.
+
+## Experiments to try
+
+FlockSim is most fun as a sandbox. A few questions worth answering yourself:
+
+- **Which genes win?** Leave it running at a high `GameSpeed` and watch which colour takes over. Does it change if food only spawns in a small circle?
+- **No alignment.** Untick **Align** in Engine Options. Do flocks still form from cohesion alone?
+- **Famine.** Turn off **Food on Death** and shrink the spawn area. How low does the population fall before it recovers, if it does?
+- **Hunters.** Raise `MAX_APETITE` in `Boid.hpp`, rebuild, and switch on **Smells Food** for one boid. Do its descendants outcompete the rest?
+- **Crowding.** Raise **Separation Ratio** for everyone. Are loose flocks better or worse at finding food?
+- **Step through it.** Press `Space` to pause and `→` to advance one step at a time, with **Draw Forces** on, to see each force on each boid.
+
+## Controls
+
+| Camera | | Boids | |
+|---|---|---|---|
+| `W` `A` `S` `D` | move | `LMB` on a boid | follow it and open its stats |
+| Mouse wheel | zoom | `F` | stop following |
+| `Shift` + mouse | pan toward the cursor | `RMB` | spawn a boid at the cursor |
+| `Q` / `E` | rotate | `Space` | pause / resume |
+| `R` | reset rotation | `→` (paused) | advance one step |
+
+Everything else (flocking weights, speeds, food spawning, debug overlays) is live in the Dear ImGui panel.
+
+## Build and run
 
 ```bash
 git clone https://github.com/gecarval/FlockSim.git
@@ -37,125 +108,32 @@ make -j"$(nproc)"     # raylib and Dear ImGui are bundled
 ./flocksim
 ```
 
-> **Requirements:** `g++`, `make`, and a Linux desktop with OpenGL (X11, or Wayland through XWayland).
-> Other targets: `make run`, `make re`, `make clean`, `make debug` (runs under Valgrind with `valgrind.supp`).
+Needs `g++`, `make` and a Linux desktop with OpenGL (X11, or Wayland through XWayland). `make debug` runs it under Valgrind with `valgrind.supp`.
 
-## 🧩 Features
-
-| | Feature | Details |
-|---|---|---|
-| 🐦 | **Boids flocking** | Separation, alignment and cohesion, each with its own strength and radius |
-| 🧬 | **Evolution** | Children inherit and mutate perception, steering, cohesion, separation, obstacle avoidance and food-seeking genes |
-| 🎨 | **Colour shows genes** | A boid's colour comes from its genes, so you can watch lineages spread |
-| 🍖 | **Food and life cycle** | Boids have health, energy, age and stored food. They starve, age (max age 90) and can leave food behind when they die |
-| 💞 | **Breeding** | A boid older than 20 with more than 1000 energy breeds when it meets a mate |
-| ⚡ | **Spatial hashing** | A 200 × 200 grid of 100 px cells, so each boid only checks nearby cells |
-| 🧱 | **World edges** | Wrap around the edges (mirror), or have boids steer away from the border |
-| 🔍 | **Inspect any boid** | Click a boid to follow it with the camera and see all its stats live |
-| 🎛️ | **Live tuning** | Change every flocking weight, the game speed, food spawning and the debug overlays in Dear ImGui |
-| 🐞 | **Debug views** | Draw perception radii, force vectors, food, spawn zones and the hash grid |
-
-## 🎮 Controls
-
-| Input | Action |
-|---|---|
-| `W` `A` `S` `D` | Move the camera |
-| Mouse wheel | Zoom in and out |
-| `Shift` + mouse | Pan toward the cursor |
-| `Q` / `E` | Rotate the camera |
-| `R` | Reset the rotation |
-| `LMB` on a boid | Follow it and show its stats |
-| `F` | Stop following |
-| `RMB` | Spawn a boid at the cursor |
-| `Space` | Pause or resume |
-| `→` (while paused) | Advance one step |
-
-## 🧠 How it works
-
-<img src="docs/rules.svg" alt="The three boids rules: separation, alignment and cohesion" width="100%" />
-
-<details>
-<summary><b>Flocking rules</b></summary>
-
-Each frame, every boid looks at the boids within its **perception** radius:
-
-| Rule | Steers toward | Gene |
-|---|---|---|
-| **Separation** | Away from neighbours that are closer than `radius × separation_ratio` | `max_separation`, `separation_ratio` |
-| **Alignment** | The average heading of its neighbours | `max_steer` |
-| **Cohesion** | The average position of its neighbours | `max_cohesion` |
-| **Border avoidance** | Away from the world edge | `obstacle_avoidance` |
-
-The forces add up to an acceleration. Velocity is then limited to the range `[min_speed, max_speed]` and scaled by `GameSpeed`.
-</details>
-
-<details>
-<summary><b>Life, food and death</b></summary>
-
-<img src="docs/lifecycle.svg" alt="Life cycle: food, energy, breeding and children; starving and death; food on death" width="100%" />
-
-- Stored **food** turns into **energy** over time.
-- With no energy left, a boid loses **health** each tick until it dies.
-- A boid also dies of old age after **90** (in-game) years.
-- With **Food on Death** enabled, a dead boid leaves food where it died.
-- New food appears over time inside a rectangle or circle you choose, or where boids collide.
-</details>
-
-<details>
-<summary><b>Breeding and mutation</b></summary>
-
-A boid can breed when its **age > 20**, its **energy > 1000**, and it overlaps another living boid (its mate). The child takes a free slot and gets:
-
-- full health, the minimum breeding energy, age 0 and **generation + 1**;
-- each gene from the parent, plus a small random change (`MUTATION_RATE = 5`), limited to that gene's maximum;
-- a colour computed from those genes.
-
-Because only boids that live long enough and eat enough get to breed, the gene pool drifts toward whatever works in the current environment.
-</details>
-
-<details>
-<summary><b>Spatial hashing</b></summary>
-
-Comparing every boid with every other one would cost O(n²), which is about 900 million checks per frame at 30 000 boids. Instead, the world is split into **100 px cells** (`HASH_QUAD_SIZE`), so the 20 000 × 20 000 world has 40 000 cells. Each frame, every boid is filed into its cell. When a boid looks for neighbours it only reads the cells around it, which keeps the cost close to linear.
+## Under the hood
 
 <img src="docs/spatial-hash.svg" alt="Spatial hash grid: a boid only checks the 3 by 3 cells around it" width="100%" />
-</details>
 
-## 🎛️ Tuning
-
-The ImGui panel controls:
-
-- **Flocking:** min and max speed, perception, alignment, cohesion, separation, separation ratio, obstacle avoidance, the alignment algorithm, and `GameSpeed`
-- **Engine:** turn mirror, avoid border, align, cohese, separate and food on death on or off; limit the frame rate; randomise boid positions
-- **Food spawn:** draw the spawn zone, spawn food on collision, choose a rectangle or circle zone
-- **Display:** FPS, boids, perception radii, forces, food, the hash grid
-
-Compile-time constants (world size, boid cap, life thresholds, mutation limits) are in [`includes/classes/Boid.hpp`](includes/classes/Boid.hpp) and [`includes/classes/SpatialHashing.hpp`](includes/classes/SpatialHashing.hpp).
-
-## 🗂️ Project structure
+Comparing every boid with every other one would take about 900 million checks per frame at 30 000 boids. Instead the world is cut into **100 px cells** (`HASH_QUAD_SIZE`), 200 × 200 = 40 000 of them. Each frame every boid and food item is filed into its cell, and a boid only reads the cells around it.
 
 ```
-FlockSim/
-├── srcs/
-│   ├── main.cpp            # window, camera, main loop
-│   ├── update.cpp          # simulation step
-│   ├── input.cpp           # camera, focus, spawn, pause
-│   ├── menu.cpp            # Dear ImGui panels
-│   └── classes/
-│       ├── Boid.cpp        # steering, life cycle, breeding, mutation
-│       ├── Flock.cpp       # flock update, food, drawing
-│       └── SpatialHashing.cpp
-├── includes/               # headers, constants, bundled raylib + ImGui
-├── imgui*.cpp, rlImGui.cpp # Dear ImGui + raylib backend
-└── Makefile
+srcs/
+├── main.cpp                  window, camera, main loop
+├── update.cpp · input.cpp    simulation step, controls
+├── menu.cpp                  Dear ImGui panels
+└── classes/
+    ├── Boid.cpp              steering, life cycle, breeding, mutation
+    ├── Flock.cpp             flock update, food, drawing
+    └── SpatialHashing.cpp    the grid
+includes/                     headers + constants, bundled raylib / ImGui
+docs/                         README diagrams (python3 docs/make_diagrams.py docs)
 ```
 
-## 📚 References
+## Further reading
 
-- Craig Reynolds, [*Flocks, Herds, and Schools: A Distributed Behavioral Model*](https://www.red3d.com/cwr/papers/1987/boids.html) (SIGGRAPH 1987)
-- Craig Reynolds, [*Boids*](https://www.red3d.com/cwr/boids/)
+- Craig Reynolds, [*Flocks, Herds, and Schools: A Distributed Behavioral Model*](https://www.red3d.com/cwr/papers/1987/boids.html) (SIGGRAPH 1987) and [*Boids*](https://www.red3d.com/cwr/boids/)
 - Daniel Shiffman, [*The Nature of Code*: Autonomous Agents](https://natureofcode.com/autonomous-agents/)
-- [raylib](https://www.raylib.com/) · [Dear ImGui](https://github.com/ocornut/imgui) · [rlImGui](https://github.com/raylib-extras/rlImGui) · [Font Awesome](https://fontawesome.com/) (see `includes/extras/FontAwsome_LICENSE.txt`)
+- Built with [raylib](https://www.raylib.com/), [Dear ImGui](https://github.com/ocornut/imgui), [rlImGui](https://github.com/raylib-extras/rlImGui) and [Font Awesome](https://fontawesome.com/) (see `includes/extras/FontAwsome_LICENSE.txt`)
 
 ---
 
