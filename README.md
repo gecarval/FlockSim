@@ -151,6 +151,6 @@ FlockSim/
 
 <div align="center">
 
-Made by [Gerson Carvalho](https://github.com/gecarval) at 42
+Released under the [MIT License](./LICENSE) · Made by [Gerson Carvalho](https://github.com/gecarval) at 42
 
 </div>
